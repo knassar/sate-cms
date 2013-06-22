@@ -1,0 +1,495 @@
+<script id="pageData" type="text/javascript">
+    KN.thisPage.name = 'Pure CSS Icons (aka: Stupid CSS Tricks)';
+    KN.thisPage.date = new Date('2012-02-24');
+</script>
+<div id="pageIntro">
+    <p>
+        This is something I was toying around with recently. It all started with some new button designs that leveraged a clever combination of pseudo-elements and the CSS border-triangle trick. I started thinking, "What else can we use this for?" The result is pretty cool, if not actually terribly useful (images are much more practical, and real HTML5 techniques are much less brittle on supported browsers), but I'd though I'd share this:
+    </p>
+    <p>
+        Below is an image of what these look like on supported browsers. Right now, I've only tested them on Firefox and Webkit.
+    </p>
+    <p>
+        <img src="/images/stories/code/web/screen-capture-89.png" alt="Pure-CSS Icons">
+    </p>
+</div>
+<div id="pageContent">
+     <!--[if lt IE 9]>
+                    <style>
+                        div.ie6-8Disclaimer {
+                            margin: 10px 10px;
+                            border: #990000 1px dashed;
+                            padding: 10px 20px;
+                            background-color: #ffefef;
+                            color: #330000;
+                        }
+                    </style>
+                    <div class="ie6-8Disclaimer">
+                        This tutorial makes heavy use of CSS3. You may not be able to see the effects described with your current browser. 
+                    </div>
+    <![endif]-->        
+
+ 
+    <p>
+        To start these off, I decided to limit myself to a single element. I decided a &lt;span&gt; was appropriate, as it could contain explanatory text for accessibility:
+    </p>
+
+    <div class="code-example html">
+    <pre>    &lt;span class="icon"&gt;An Icon&lt;/span&gt;
+    </pre>
+    </div>
+
+    <div class="code-example css">
+    <pre>    /* first, we set up some resets and basic settings */
+        .icon,
+        .icon::before,
+        .icon::after
+        {
+            position: relative;
+            padding: 0;
+            margin: 0;
+        }
+
+        .icon {
+            font-size: 36px;
+            line-height: 0.8em
+            color: transparent;
+        }
+    </pre>
+    <style>
+        .icon,
+        .icon::before,
+        .icon::after
+        {
+            position: relative;
+            padding: 0;
+            margin: 0;
+        }
+
+        .icon {
+            font-size: 36px;
+            line-height: 0.8em;
+            color: transparent;
+        }
+    
+    </style>
+    </div>
+    <p>
+        The most interesting thing in the above code is the last style rule. The font-size sets the size of the icon. The transparent foreground color takes the span's text out of the picture. You'll notice that in all the future styling, I use only EMs for units. This allows us to alter the size of our icons globally by changing this font-size value. Alternately, we can add additional "small" and "large" classes to .icon which override the font-size.
+    </p>
+
+    <p>
+        I'm going to present these in order of descending complexity. I'll start off with the Document icon, since that's the hardest one, and illustrates most of the techniques I used. The Warning icon is a little easier, and once I've walked you through those two, there's no real need to explain the last three.
+    </p>
+    <p>
+        The individual icons are driven by classes. So first we add the "document" class to our icon markup:
+    </p>
+    <div class="code-example html">
+    <pre>    &lt;!-- Adding the document class to our icon --&gt;
+        &lt;span class="icon document"&gt;A Document&lt;/span&gt;
+    </pre>
+    </div>
+    <p>
+        To make the Document icon, we need two basic graphical elements, the page of the document, and some way to represent the folded-over corner. Happily, we know we can make triangles using element borders, and if we use the ::after pseudo-element, we can manipulate it independently of it's parent. 
+    </p>
+    <p>
+        Unfortunately, if we leave it at that, the "page" part of the icon will stick-out past the folded corner. We need a way to clip that corner off the original span. Since we can't clip on a diagonal, how do we do this?
+    </p>
+    <p>
+        The answer is to make use of the ::before pseudo-element to build up the page with the corner already missing:
+    </p>
+    <div class="code-example css">
+    <pre>    .icon.document {
+            display: inline-block;
+            width: 0.6em;
+            height: 0.6em;
+            top: 0.25em;
+
+            border: #999 1px solid;
+            border-top: none;
+            background-color: white;
+        }
+
+        .icon.document::before {
+            display: block;
+            content: "";
+            top: -0.25em;
+            left: -1px;
+            width: 0.355em;
+            height: 0.25em;
+            position: absolute;
+            background-color: white;
+            border: #999 1px solid;
+            border-right-color: transparent;
+            border-bottom: none;
+        }
+    </pre>
+    </div>
+    <div class="demo">
+        <p>
+            <span class="icon document1">A Document</span>
+        </p>
+        <style>
+        .icon.document1 {
+            display: inline-block;
+            width: 0.6em;
+            height: 0.6em;
+            top: 0.25em;
+
+            border: #999 1px solid;
+            border-top: none;
+            background-color: white;
+        }
+
+        .icon.document1::before {
+            display: block;
+            content: "";
+            top: -0.25em;
+            left: -1px;
+            width: 0.355em;
+            height: 0.25em;
+            position: absolute;
+            background-color: white;
+            border: #999 1px solid;
+            border-right-color: transparent;
+            border-bottom: none;
+        }
+        </style>
+    </div>
+    <p>
+        To finish off the Document with the folded corner, now we make use of the ::after element as promised:
+    </p>
+    <div class="code-example css">
+    <pre><div class="old">
+        .icon.document {
+            display: inline-block;
+            width: 0.6em;
+            height: 0.6em;
+            top: 0.25em;
+
+            border: #999 1px solid;
+            border-top: none;
+            background-color: white;
+        }
+
+        .icon.document::before {
+            display: block;
+            content: "";
+            top: -0.25em;
+            left: -1px;
+            width: 0.355em;
+            height: 0.25em;
+            position: absolute;
+            background-color: white;
+            border: #999 1px solid;
+            border-right-color: transparent;
+            border-bottom: none;
+        }</div>
+        .icon.document::after {
+            content: "";
+            display: block;
+            top: -0.25em;
+            right: -0.025em;
+            position: absolute;
+            border: #eef 0.125em solid;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            box-shadow: #aaa -1px 1px 1px;
+        }
+    </pre>
+    </div>
+    <p>
+        And here's the finished Document Icon:
+    </p>
+    <div class="demo">
+        <p>
+            <span class="icon document2">A Document</span>
+        </p>
+        <style>
+        .icon.document2 {
+            display: inline-block;
+            width: 0.6em;
+            height: 0.6em;
+            top: 0.25em;
+
+            border: #999 1px solid;
+            border-top: none;
+            background-color: white;
+        }
+
+        .icon.document2::before {
+            display: block;
+            content: "";
+            top: -0.25em;
+            left: -1px;
+            width: 0.355em;
+            height: 0.25em;
+            position: absolute;
+            background-color: white;
+            border: #999 1px solid;
+            border-right-color: transparent;
+            border-bottom: none;
+        }
+    
+        .icon.document2::after {
+            content: "";
+            display: block;
+            top: -0.25em;
+            right: -0.025em;
+            position: absolute;
+            border: #eef 0.125em solid;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            box-shadow: #aaa -1px 1px 1px;
+        }
+        </style>
+    </div>
+
+    <p>
+       On to the Warning icon. Again, we start by adding the "warning" class to our icon markup:
+    </p>
+    <div class="code-example html">
+    <pre>    &lt;span class="icon warning"&gt;Caution: &lt;/span&gt;
+    </pre>
+    </div>
+    <p>
+        To make the Warning icon, we need to make use of all three elements available to us. We want to preserve the actual span content for accessibility, so we need the ::after element to add "!". We could style the span element to form the triangular sign, but then we'd be left with pointy, sharp corners. Ideally, we want to round off the corners of the triangle. What I came up with was using the span element as a clipping boundary, the ::before element for the triangle, and the ::after element for the "!":
+    </p>
+    <div class="code-example css">
+    <pre>    .icon.warning {
+            display: inline-block;
+
+            top: 0.225em;
+
+            width: 1.15em;
+            height: 1.15em;
+
+            overflow: hidden;
+            border: none;
+            background-color: transparent;
+            border-radius: 0.625em;
+        }
+
+        .icon.warning::before {
+            content: "";
+            display: block;
+            top: -0.08em;
+            left: 0.0em;
+            position: absolute;
+            border: transparent 0.6em solid;
+            border-bottom-color: #fd3;
+            border-bottom-width: 1em;
+            border-top-width: 0;
+            box-shadow: #999 0 1px 1px;
+        }
+
+        .icon.warning::after {
+            display: block;
+            position: absolute;
+            top: 0.3em;
+            left: 0;
+            width: 100%;
+            padding: 0 1px;
+            text-align: center;
+            font-family: "Garamond";
+            content: "!";
+            font-size: 0.65em;
+            font-weight: bold;
+            color: #333;
+        }
+    </pre>
+    </div>
+    <div class="demo">
+        <p>
+            <span class="icon warning">Caution!</span>
+        </p>
+        <style>
+        .icon.warning {
+            display: inline-block;
+
+            top: 0.225em;
+
+            width: 1.15em;
+            height: 1.15em;
+
+            overflow: hidden;
+            border: none;
+            background-color: transparent;
+            border-radius: 0.625em;
+        }
+
+        .icon.warning::before {
+            content: "";
+            display: block;
+            top: -0.08em;
+            left: 0.0em;
+            position: absolute;
+            border: transparent 0.6em solid;
+            border-bottom-color: #fd3;
+            border-bottom-width: 1em;
+            border-top-width: 0;
+            box-shadow: #999 0 1px 1px;
+        }
+
+        .icon.warning::after {
+            display: block;
+            position: absolute;
+            top: 0.3em;
+            left: 0;
+            width: 100%;
+            padding: 0 1px;
+            text-align: center;
+            font-family: "Garamond";
+            content: "!";
+            font-size: 0.65em;
+            font-weight: bold;
+            color: #333;
+        }
+        </style>
+    </div>
+    <p>
+        I'm not going to walk through the other icons, because if you've followed me to this point, you can certainly figure out these... they're much easier:
+    </p>
+    <div class="demo">
+        <p>
+            <span class="icon good">Win!</span>
+            <span class="icon bad">FAIL!</span>
+            <span class="icon info">FYI: </span>
+        </p>
+        <style>
+
+        .icon.info,
+        .icon.good,
+        .icon.bad
+        {
+            display: inline-block;
+            top: 0.15em;
+            width: 1em;
+            height: 1em;
+
+            overflow: hidden;
+            border: none;
+            border-radius: 50%;
+            box-shadow: #999 0 1px 1px;
+        }
+
+        .icon.info::after,
+        .icon.good::after,
+        .icon.bad::after 
+        {
+            display: block;
+            position: absolute;
+            top: 0.25em;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: "Times New Roman", "Garamond", serif;
+            font-size: 0.65em;
+            color: white;
+        }
+
+        /* // info // */
+
+        .icon.info {
+            background-color: #33c;
+        }
+
+        .icon.info::after {
+            font-style: italic;
+            font-weight: bold;
+            content: "i";
+        }
+
+
+        /* // good // */
+
+        .icon.good {
+            background-color: #393;
+        }
+
+        .icon.good::after {
+            left: 0.012em;
+            content: "\2713"; /* ✓ */
+        }
+
+        /* // bad // */
+
+        .icon.bad {
+            background-color: #933;
+        }
+
+        .icon.bad::after {
+            content: "\00D7"; /* × */
+            font-weight: bold;
+        }
+
+        </style>
+    </div>
+    <div class="code-example css">
+    <pre>    .icon.info,
+        .icon.good,
+        .icon.bad
+        {
+            display: inline-block;
+            top: 0.15em;
+            width: 1em;
+            height: 1em;
+
+            overflow: hidden;
+            border: none;
+            border-radius: 50%;
+            box-shadow: #999 0 1px 1px;
+        }
+
+        .icon.info::after,
+        .icon.good::after,
+        .icon.bad::after 
+        {
+            display: block;
+            position: absolute;
+            top: 0.25em;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: "Times New Roman", "Garamond", serif;
+            font-size: 0.65em;
+            color: white;
+        }
+
+        /* // info // */
+
+        .icon.info {
+            background-color: #33c;
+        }
+
+        .icon.info::after {
+            font-style: italic;
+            font-weight: bold;
+            content: "i";
+        }
+
+
+        /* // good // */
+
+        .icon.good {
+            background-color: #393;
+        }
+
+        .icon.good::after {
+            left: 0.012em;
+            content: "\2713"; /* ✓ */
+        }
+
+        /* // bad // */
+
+        .icon.bad {
+            background-color: #933;
+        }
+
+        .icon.bad::after {
+            content: "\00D7"; /* × */
+            font-weight: bold;
+        }
+    </pre>
+    </div>
+</div>

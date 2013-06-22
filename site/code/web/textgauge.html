@@ -1,0 +1,219 @@
+<script id="pageData" type="text/javascript">
+    KN.thisPage.date = new Date('2011-09-12');
+    KN.thisPage.extraStyles = [{media: 'screen', href: 'kn-code/textGauge/jQuery.textGauge.css'}];
+</script>
+<div id="pageIntro">
+    <p>
+    We've all been there. Fill in enough forms online, and you'll eventually hit the textarea that has a character limit. We've seen all the usual treatments: "The Keystroke Countdown," "The Arbitrary Letter Target," and the worst UX sin of all: "The Hard-Limit Hammer."
+    </p>
+    <p>
+    When I was faced with solving this particular problem recently, I decided that there had to be a better solution. There are two major problems to solve with a length limited input field: 
+    </p>
+    <ol>
+        <li>How to indicate what the limit actually is</li>
+        <li>How to show the user how far into (or over) the limit they are</li>
+    </ol>
+    <p>
+    I believe that my textGauge plugin solves these problems.
+    </p>
+</div>
+<div id="pageContent">
+    <p>
+    First, the biggest problem with all of typical approaches is that nobody who isn't a professional editor (and probably only a few of those) has any innate sense of an association between their writing and a number of letters. We don't think in letters. We think in ideas. It can get even worse when the limit is imposed by a <code>VARCHAR</code> limit in a database configured such that you really have to count bytes, not characters. Do <em>you</em> know how many bytes long this paragraph is?
+    </p>
+    <p>
+    What we need is some abstraction layer between the character (or byte) limit and what we're typing—something visual, familiar, and dynamic. When we get near the limit, we need to know so we can wrap things up. When we go over the limit, we need to know that too, and not because we can't type anymore—when we go over the limit, we should be able to see how <em>far</em> over the limit we are, and we should be able to edit our writing down to fit the target.
+    </p>
+    <p>
+    Here is the jQuery plugin I wrote to solve this problem. Try it out:
+    </p>
+    <div class="demo">
+        <div style="position: relative;">
+            <div class="field-description">This textarea is limited to 50 characters.</div>
+            <textarea rows="4" cols="80" id="textGaugeDemo1" class="textGauge"></textarea><div class="textGauge-outer-bar" style="width: 572px; left: 0px;"><div class="textGauge-bar" style="width: 572px;"><div class="textGauge-length" style="width: 0px;"></div></div></div>
+            <div class="field-err">You have exceeded the limit.</div>
+        </div>
+    </div>
+    <style>
+    .demo .field-description {
+        font-size: small;
+        color: black;
+    }
+    .demo .field-err {
+        display: none;
+        font-size: medium; 
+        color: red; 
+    }
+    .demo textarea.err {
+        background-color: #fee;
+    }
+    </style>
+    <p>
+    The markup for the above demo is pretty straight-forward. We just have a <code>textarea</code> with appropriate styling, and a <code>div</code> containing our error message, with <code>display: none</code>.
+    </p>
+    <div class="code-example html">
+    <pre>   &lt;div&gt;
+        &lt;div class="field-description"&gt;
+            This textarea is limited to 50 characters.
+        &lt;/div&gt;
+        &lt;textarea rows="4" cols="80" id="textGaugeDemo1"&gt;&lt;/textarea&gt;
+        &lt;div class="field-err"&gt;
+            You have exceeded the limit.
+        &lt;/div&gt;
+    &lt;/div&gt;
+    </pre>
+    </div>
+    <div class="code-example css">
+    <pre>   .demo .field-err {
+        display: none;
+        font-size: medium; 
+        color: red; 
+    }
+    .demo textarea.err {
+        background-color: #fee;
+    }
+    </pre>
+    </div>
+
+    <p>
+        Next, we initialize the plugin on the element using standard jQuery plugin syntax. The code below also binds handlers to two available textGauge events, <code>textGauge_wentOverLimit</code> and <code>textGauge_fellUnderLimit</code>, to show and hide the error messaging.
+    </p>
+    <div class="code-example js">
+    <pre>   $('#textGaugeDemo1')
+        .textGauge({limit:50})
+        .bind('textGauge_wentOverLimit', function(e){
+            $(e.currentTarget).addClass('err')
+                .parent().find('.field-err')
+                    .fadeIn('fast');
+        })
+        .bind('textGauge_fellUnderLimit', function(e){
+            $(e.currentTarget).removeClass('err')
+                .parent().find('.field-err')
+                    .fadeOut('fast');
+        });
+    </pre></div>
+
+    <p>
+        The following options are available on initialization:
+    </p>
+
+    <table class="plugin-params even-rows">
+        <thead>
+            <tr>
+                <th class="l first">Option</th>
+                <th class="l">Value</th>
+                <th class="c">Default</th>
+                <th class="l last">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="code">limit</td>
+                <td class="code">integer</td>
+                <td class="code c">100</td>
+                <td>the limit to measure the input text against</td>
+            </tr>
+            <tr class="even">
+                <td class="code">limitUnits</td>
+                <td class="code">'bytes' or 'chars'</td>
+                <td class="code c">'chars'</td>
+                <td>what to count against the limit</td>
+            </tr>
+            <tr>
+                <td class="code">recalculateDelay</td>
+                <td class="code">0 or positive integer</td>
+                <td class="code c">100</td>
+                <td>number of milliseconds to wait between recounts while typing, or 0 to recalculate on every keypress</td>
+            </tr>
+            <tr class="even">
+                <td class="code">warningThreshold</td>
+                <td class="code">float value between 0 and 1</td>
+                <td class="code c">0.8</td>
+                <td>percentage of limit at which to trigger the near-limit warning</td>
+            </tr>
+            <tr>
+                <td class="code">animate</td>
+                <td class="code">boolean</td>
+                <td class="code c">true</td>
+                <td>animate the limit meter; recommended false for larger limited fields such as text areas, especially when recalculateDelay is set to 0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        TextGauge implements the following custom events, which you can bind to control behaviors linked to the character or byte count of the text field. All triggered events receive the <code>event</code> object as an argument.
+    </p>
+
+    <table class="plugin-params even-rows">
+        <thead>
+            <tr>
+                <th class="l first">Event</th>
+                <th class="l last">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="code">textGauge_fellUnderWarningThreshold</td>
+                <td>Triggered when field edits cause the count to fall below the warning threshold</td>
+            </tr>
+            <tr class="even">
+                <td class="code">textGauge_wentOverWarningThreshold</td>
+                <td>Triggered when field edits cause the count to go above the warning threshold</td>
+            </tr>
+            <tr>
+                <td class="code">textGauge_fellUnderLimit</td>
+                <td>Triggered when field edits cause the count to fall below the limit</td>
+            </tr>
+            <tr class="even">
+                <td class="code">textGauge_textAtLimit</td>
+                <td>Triggered when field edits cause the count to reach the limit</td>
+            </tr>
+            <tr>
+                <td class="code">textGauge_wentOverLimit</td>
+                <td>Triggered when field edits cause the count to go above the limit</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+    The following methods are also implemented:
+    </p>
+    <div class="code-example js">
+    <pre>
+    /**
+     * init - Initialize the textGauge.
+     *        this is the same as calling .textGauge([options]);
+     */
+    $('#textGaugeDemo1').textGauge('init' [, options ]);
+
+    /**
+     * destroy - Removes textGauge from the selected elements and undoes 
+     *           any alterations that were made during init
+    $('#textGaugeDemo1').textGauge('destroy');
+
+    /**
+     * recount - forces textGauge to update its count, 
+     *           typically after you have altered the text  programmatically
+     */
+    $('#textGaugeDemo1').textGauge('recount'); 
+
+    </pre>
+    </div>
+
+    <p>
+    So that's textGauge. Hope you like it. You can download the source-code for this plugin at <a href="http://www.github.com/knassar/textGauge" target="_blank">github.com/knassar/textGauge</a>. Enjoy!
+    </p>
+    <script src="{{root}}kn-code/textGauge/jQuery.textGauge.js" type="text/javascript" charset="utf-8"></script>
+</div>
+<script id="pageScripts">
+    $(function() {
+        $('#textGaugeDemo1')
+            .textGauge({limit:50})
+            .bind('textGauge_wentOverLimit', function(e){
+                $(e.currentTarget).addClass('err').parent().find('.field-err').fadeIn('fast');
+            })
+            .bind('textGauge_fellUnderLimit', function(e){
+                $(e.currentTarget).removeClass('err').parent().find('.field-err').fadeOut('fast');
+            });
+    });
+</script>
