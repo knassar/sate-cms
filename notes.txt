@@ -1,0 +1,330 @@
+
+====================================================================
+=== Sate: Just Enough CMS                                        ===
+====================================================================
+
+
+    Basic principles
+====================================================================
+
+The idea for Sate is that it is a minimum set of features built on top of an open, extensible lightweight framework providing a developer-friendly CMS to drive a website. By using Javascript & Node, code can be highly portable, and modules can be written that function equally well as server-side pre-process directives and client-side dynamic widgets.
+
+
+    Key Philosophies
+====================================================================
+
+I have the following underlying philosophies driving my decision-making:
+    
+    * Convention before Configuration - Unless something is genuinely unusual, there's no sense in making someone configure it... ship with intelligent defaults.
+    * Override instead of Declare - If a value at one level is the same as one level up, don't make me declare it again.
+    * Don't make me repeat myself - Default where possible, Template where necessary
+
+
+    Key features
+====================================================================
+
+    * Direct editing of content & script as if you were hand-coding a site
+    * Automatic modern CMS facilities such as:
+        * cascading page defaults
+        * automatic digest pages
+        * automatic image galleries
+    * content backing agnostic
+        * first version to use SCM as a content store (no database)
+        * potential for Document (no-SQL) DB backing in future if desired
+    * Developer-friendly workflow:
+        * Run server in "Dev" mode for rapid iteration of site content (edit & refresh)
+        * Run server in "Live" mode for dynamic page serving (enabled dynamic behaviors)
+        * "Deploy" functionality to generate entire site as static pages for high-performance
+
+
+
+    Using Sate
+====================================================================
+
+Sate is a Node.js command-line-application that is run with the following syntax:
+
+~~~~~~~~~~~
+
+    > node sate.js [directive] [flags]
+
+~~~~~~~~~~~
+
+Sate has four main directives:
+    
+    Directive       Explanation
+   --------------  -----------------------------------------------------------------
+    develop         Starts a stateless web-server which serves website page requests 
+                    by re-evaluating all website sources on each request. This is 
+                    useful when developing site content, as individual pages can be 
+                    tested by reloading the browser page with each tweak.
+                    If no directive is provided, 'develop' is assumed.
+
+    run             Starts a web-server which serves website page requests. This 
+                    differs from 'develop' in that the website sources are evaluated
+                    only once at server-start time. The server must be restarted for
+                    source changes to have any affect.
+    
+    deploy          Evaluates all website sources and generates the entire website as
+                    static pages, for serving from Apache, Nginx, or other web server
+                    Use this in production for highest performance.
+
+    analyze         Evaluate all website sources just as 'run' or 'deploy' without 
+                    producing any artifacts or server processes.
+                    Returns a report on any fatal or non-fatal issues found, such as 
+                    un-parseable config or missing page content.
+
+
+Sate has a series of optional flags which can be combined with the directive to provide finer control over the directive:
+    
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    -w [path]               Provide a path to the website.json file.
+    --website [path]        If not provided, looks for './website.json'
+                    
+    -c [path]               Provide a path to the website content.
+    --content [path]        If not provided, checks for 'siteConfig.content' in website.json, then assumes './content'
+                    
+    -p [port number]        The port to listen on when running 'develop' or 'run' directive.
+    --port [port number]    If not provided, checks for 'siteConfig.port' in website.json, then defaults to Sate.defaults.port
+                    
+    -b [path]               Path to output deploy artifacts when running 'deploy'.
+    --build-path [path]     If not provided, checks for 'siteConfig.buildPath' in website.json, then defaults to './build/.'
+
+    --clean                 When running 'deploy', use this flag to tell Sate that it is
+                            allowed to delete the contents of the build path
+
+    -l [path]               Path to output logging when running 'run'.
+    --log [path]            If not provided, checks for 'siteConfig.log' in website.json, then defaults to './log/.'
+
+    -v                      Turns on 'verbose' logging.
+    --verbose               If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
+
+    -q                      Turns on 'quiet' (minimal) logging.
+    --quiet                 If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
+
+    -h                      Display help on how to use Sate
+    --help                  
+                            
+                    
+
+
+    Anatomy of a Sate website
+====================================================================
+
+A website using Sate would is structured in two parts: 
+
+    1. A JSON file containing the site configuration and an object map of all the website's pages
+    2. A file structure in which each "page" in the site is represented by an HTML file
+
+
+    The Sate website.json
+    ----------------------------------------------------------------
+
+This file Contains two major areas, the site-level configuration, and the map of pages to be served. Here's an example of a Site website.json file:
+
+~~~~~~~~~~~
+
+{
+    "siteConfig": {
+        "title": "MySite.com"
+    },
+    "siteMap": {
+        "index": {
+            "type": Sate.PageType.Index,
+            "name": "MySite.com",
+            "menu": {
+                "name": "Home",
+                "sub": [
+                    {
+                        "path": "about/this-site", 
+                        "name": "About Us"
+                    },
+                    {
+                        "path": "about/resume"
+                    }
+                ]
+            }
+        }),
+        "about": {
+            "type": Sate.PageType.Index,
+            "name": "About",
+            "title": "About MySite.com",
+            "subPages": {
+                "resume": {
+                    "name": "My Resume"
+                },
+                "this-site": {
+                    "type": Sate.PageType.Article,
+                    "name": "About this Site"
+                })
+            },
+            "menu": {
+                "path": 'about',
+                "sub": [
+                    {
+                        "deep": true,
+                        "path": "about/resume",
+                    },
+                    {
+                        "deep": true,
+                        "path": "about/this-site",
+                    }
+                ]
+            }
+        })
+    }
+}
+
+~~~~~~~~~~~
+
+Note that even within the site specification, there are several layers of defaults & overrides. 
+
+Note for example:
+
+    * At 'siteMap.index', "title" is not defined, so it defaults up to the root title: "MySite.com"
+    * 'siteMap.about.title', overrides this for the 'about' page and its sub-pages
+    * 'siteMap.about' declares a menu, while it's child pages (ie: 'siteMap.about.resume', etc) don't. They inherit their parent's menu.
+    * 'siteMap.about.this-site' declares its page name to be "About this Site", which is also displayed in the menu for 'siteMap.about' however, the menu declared for the homepage ('siteMap.index.menu.sub[0]') which points at the same page lists the page name as "About Us".
+    * The second menu item on the index page ('siteMap.index.menu.sub[1]') lists a path ('about/resume'), but no name attribute. In this case, Sate will use the name attribute declared at that path in the sitemap ('about/resume' = 'about.resume' = "My Resume") for the sub-menu item on the home page.
+    * Note the "type" attribute on pages... Sate.PageType.Index will automatically create a "digest" page containing the intro sections of each page in its 'subPages' property, and will even sort them according to a 'sortType' if declared (defaults to "Date Descending")
+    * if the 'type' property of a page is omitted (as in 'about.resume'), it will be inferred by inspecting the page path: 
+        - if the page path resolves to an explicit file ('./site/about/resume.html') then Sate infers a type of Sate.PageType.Article
+        - if the page path resolves to an 'index.html' file then Sate infers a type of Sate.PageType.Index
+
+
+
+    The Sate site files
+    ----------------------------------------------------------------
+
+Given the website.json above, Sate will assume a file structure exists that looks like this:
+
+    ./content
+        index.html
+        /about
+            index.html
+            resume.html
+            this-site.html
+
+When serving pages, Sate maps the above structure to URLs like so:
+    
+    URL                        Content file path
+   -------------------------  -----------------------------
+    [domain]/                  ./site/index.html
+    [domain]/about             ./site/about/index.html
+    [domain]/about/resume      ./site/about/resume.html
+    [domain]/about/this-site   ./site/about/this-site.html
+
+This is to avoid the need for lots of '/index.html' noise.
+
+Each of these files is an HTML Fragment file which contains "Just Enough" content to render the page when combined with the data from website.json. Any of these blocks may be omitted, and Sate will generally do the right thing.
+
+There are currently 3 blocks that Sate will look for in a content file (all are optional):
+     
+    Block           Purpose
+   --------------  -----------------------------------------------------------------
+    pageData        a JSON object to override website.json properies for this page
+    intro           the Intro section markup for this page
+    content         the Content section markup for this page
+
+Blocks are represented by Mustache.js comment brackets surrounding HTML-style tag opens/closes:
+
+~~~~~~~~~~~
+
+{{!blockName}}
+    
+    block content
+    
+{{!/blockName}}
+
+~~~~~~~~~~~
+
+Here's an example of a content file using all 3 blocks:
+
+~~~~~~~~~~~
+
+{{!pageData}}
+    {
+        "date": '2013-06-13',
+        "title": "Some Good Title"
+    }
+{{!/pageData}}
+{{!intro}}
+    <p>Here's some arbitrary intro text, which appears at the top of the page, but is also extracted and displayed in Index pages.</p>
+    <p class="cool">Notice that there's no repetition of the page name in this content</p>
+{{!/intro}}
+{{!content}}
+    <p>
+        Here's where the meat of the page goes
+            ... 
+        this is just Plain-ole HTML
+    </p>
+    <script type="text/javascript">
+        $(function() {
+            // Here's where I can hook up a page-specific jQuery plugin or any other page-level scripts I want to run.
+        });
+    </script>
+{{!/content}}
+
+~~~~~~~~~~~
+
+
+    Sate Execution Pipeline
+====================================================================
+
+Sate's execution pipeline is designed to produce rich, complex pages with minimal developer effort. Sate uses the Mustache template language, and the compile and render pipeline is designed to produce predictable, accessible structures for template customization.
+
+There are two main phases of Sate execution which are applied slightly differently depending on the directive being executed.
+
+These phases are: 
+
+    1. Compile and Index the website
+    2. Per page:
+        a. Compile Page
+        b. Render Page
+
+When running the 'develop' directive, both phases are executed in series on each page request. This ensures that each reload results in a fresh rebuild of the website, allowing content and config tweaks to be represented immediately.
+
+When running the 'analyze' and 'deploy' directives, phase 1 is executed, and then Sate will traverse the siteMap and execute phase 2 (a & b) once for each page found in the site.
+
+When running the 'run' directive, Sate will execute phase 1 at startup, and then Sate will traverse the siteMap and execute sub-phase 2a for each page found in the site. This builds a memory-map of the website for fast execution. However, rendering of pages (phase 2b) is only done per page request. This allows for dynamic content rules to be applied per page.
+
+
+    Site Compile & Indexing
+    ----------------------------------------------------------------
+
+In this phase, the following steps occur:
+
+    1. Sate loads the website.json
+    2. merges its 'siteConfig' data onto the Sate.defaults values
+
+
+    Page Compile
+    ----------------------------------------------------------------
+
+Each time Sate compiles a page, the following steps occur:
+       
+    1. indexes the page data by path
+    2. loads the content file for the page path and parses its blocks
+    3. compile all content blocks except 'pageData' in the page content file as Mustache partials and merge into the Sate.Page.partials dictionary
+    4. constructs a Sate.Page object by merging data in this order (last one wins):
+        a. Sate.Page.defaults data
+        b. website.json siteConfig data
+        b. website.json siteMap[page] data
+        c. page content file {{!pageData}}{{!/pageData}} block
+
+
+    Page Render
+    ----------------------------------------------------------------
+
+Once Sate reads and compiles a page content file, that page is available for render. Since each block is treated as a partial, you can create your own page-specific partials to use within the page, and you can use Mustache templating language to reference any data available in the fully-merged Sate.Page object.
+
+Ultimately, page render falls directly to a Mustache.render() call on the 'Sate.Page.partials.rootTemplate' template, with the compiled Sate.Page object passed as the data, and the 'Sate.Page.partials' object passed as the partials argument.
+
+
+
+    Open Questions
+====================================================================
+
+    * Is there a Module/Plugin architecture?
+        * If so, what modifications/hooks to the Compile/Render pipeline are needed?
+    * 
