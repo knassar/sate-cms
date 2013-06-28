@@ -278,7 +278,7 @@ var KN = {
     },
     Site: function(props) {
         KN.website = $.extend({
-            root: '/site/',
+            root: '',
             rootPageName: "index",
             mode: KN.SiteMode.Test,
             temporaryAppender: '__temporaryAppend__',
