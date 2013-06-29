@@ -1,0 +1,50 @@
+{
+    "siteConfig": {
+        "title": "MySite.com"
+    },
+    "siteMap": {
+        "index": {
+            "type": "Sate.PageType.Index",
+            "name": "MySite.com",
+            "menu": {
+                "name": "Home",
+                "sub": [
+                    {
+                        "path": "about/this-site", 
+                        "name": "About Us"
+                    },
+                    {
+                        "path": "about/resume"
+                    }
+                ]
+            }
+        },
+        "about": {
+            "type": "Sate.PageType.Index",
+            "name": "About",
+            "title": "About MySite.com",
+            "subPages": {
+                "resume": {
+                    "name": "My Resume"
+                },
+                "this-site": {
+                    "type": "Sate.PageType.Article",
+                    "name": "About this Site"
+                }
+            },
+            "menu": {
+                "path": "about",
+                "sub": [
+                    {
+                        "deep": true,
+                        "path": "about/resume"
+                    },
+                    {
+                        "deep": true,
+                        "path": "about/this-site"
+                    }
+                ]
+            }
+        }
+    }
+}

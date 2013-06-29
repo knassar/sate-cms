@@ -1,0 +1,61 @@
+
+Call Sate like this:
+
+    node sate.js [directive] [flags]
+
+
+Sate has four main directives:
+    
+    Directive       Explanation
+   --------------  -----------------------------------------------------------------
+    develop         Starts a stateless web-server which serves website page requests 
+                    by re-evaluating all website sources on each request. This is 
+                    useful when developing site content, as individual pages can be 
+                    tested by reloading the browser page with each tweak.
+                    If no directive is provided, 'develop' is assumed.
+
+    run             Starts a web-server which serves website page requests. This 
+                    differs from 'develop' in that the website sources are evaluated
+                    only once at server-start time. The server must be restarted for
+                    source changes to have any affect.
+    
+    deploy          Evaluates all website sources and generates the entire website as
+                    static pages, for serving from Apache, Nginx, or other web server
+                    Use this in production for highest performance.
+
+    analyze         Evaluate all website sources just as 'run' or 'deploy' without 
+                    producing any artifacts or server processes.
+                    Returns a report on any fatal or non-fatal issues found, such as 
+                    un-parseable config or missing page content.
+
+
+Sate has a series of optional flags which can be combined with the directive to provide finer control over the directive:
+    
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    -w [path]               Provide a path to the website.json file.
+    --website [path]        If not provided, looks for './website.json'
+
+    -c [path]               Provide a path to the website content.
+    --content [path]        If not provided, checks for 'siteConfig.content' in website.json, then assumes './content'
+
+    -p [port number]        The port to listen on when running 'develop' or 'run' directive.
+    --port [port number]    If not provided, checks for 'siteConfig.port' in website.json, then defaults to Sate.defaults.port
+
+    -b [path]               Path to output deploy artifacts when running 'deploy'.
+    --build-path [path]     If not provided, checks for 'siteConfig.buildPath' in website.json, then defaults to './build/.'
+
+    --clean                 When running 'deploy', use this flag to tell Sate that it is
+                            allowed to delete the contents of the build path
+
+    -l [path]               Path to output logging when running 'run'.
+    --log [path]            If not provided, checks for 'siteConfig.log' in website.json, then defaults to './log/.'
+
+    -v                      Turns on 'verbose' logging.
+    --verbose               If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
+
+    -q                      Turns on 'quiet' (minimal) logging.
+    --quiet                 If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
+
+    -h                      Display help on how to use Sate
+    --help
