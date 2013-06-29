@@ -147,7 +147,7 @@
                 return new Sate.Website(websiteConfig, Sate);
             },
             reportAnalyze: function() {
-                // console.log( this.site );
+                console.log( sateApp.site );
                 console.log( "DONE ANALYZE" );
             },
             
