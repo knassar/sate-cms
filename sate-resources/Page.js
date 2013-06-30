@@ -155,9 +155,9 @@ function Page(props, website, Sate) {
             classNames: []
         },
         website.siteConfig,
-        // website,
         props, 
         {
+            siteMenu: website.globalMenu,
             compiled: false,
             typeOf: 'Sate.Page',
             compile: function(success, error) {

@@ -1,11 +1,12 @@
 {
     "siteConfig": {
-        "title": "MySite.com"
+        "title": "Sate",
+        "subtitle": "Just Enough CMS"
     },
     "siteMap": {
         "/": {
             "type": "Sate.PageType.Index",
-            "name": "MySite.com",
+            "name": "Sate",
             "menu": {
                 "name": "Home",
                 "sub": [
@@ -22,7 +23,7 @@
         "about": {
             "type": "Sate.PageType.Index",
             "name": "About",
-            "title": "About MySite.com",
+            "title": "About Sate",
             "subPages": {
                 "resume": {
                     "name": "My Resume"

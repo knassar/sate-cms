@@ -4,7 +4,7 @@
         <div>Just Enough CMS</div>
     </h1>
     <ul id="mainMenu">
-        {{# globalMenu}}
+        {{# siteMenu}}
         <li class="{{className}}"><a href="{{root}}{{path}}">{{name}}</a>
             <ul class="sub-menu">
             {{# sub}}
@@ -20,6 +20,6 @@
             {{/sub}}
             </ul>
             </li>
-        {{/globalMenu}}
+        {{/siteMenu}}
     </ul>
 </header>

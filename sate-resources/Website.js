@@ -20,7 +20,7 @@ function Website(jsonPath, flags, Sate) {
         }
     };
 
-    var flattenAndIndex = function(obj, config, prefix) {
+    var flattenAndIndex = function(obj, website, prefix) {
         for (var p in obj) {
             if (obj.hasOwnProperty(p)) {
                 var page = new Sate.Page(obj[p], website, Sate);
@@ -31,7 +31,7 @@ function Website(jsonPath, flags, Sate) {
                 }
                 urlParts.push(p);
                 var url = urlParts.join('/');
-                if (url == config.rootPage) {
+                if (url == website.siteConfig.rootPage) {
                     page.url = url;
                     page.contentPath = path.join(website.siteConfig.content, 'index.html');
                 } else {
@@ -48,7 +48,7 @@ function Website(jsonPath, flags, Sate) {
                 }
                 website.pageByPath[page.url] = page;
                 if (page.subPages) {
-                    flattenAndIndex(page.subPages, config, url);
+                    flattenAndIndex(page.subPages, website, url);
                 }
                 if (page.menu && !page.parent) {
                     if (!page.menu.name) {
@@ -62,6 +62,7 @@ function Website(jsonPath, flags, Sate) {
                     }
                     website.globalMenu.push(page.menu);
                     page.classNames.push(page.menu.className);
+                    page.siteMenu = website.globalMenu;
                 } else {
                     page.classNames.push(page.id);
                 }
@@ -72,8 +73,8 @@ function Website(jsonPath, flags, Sate) {
 
     var generateIndexes = function(website, success, error) {
         try {
-            flattenAndIndex(website.siteMap, website.siteConfig);
-            flattenAndIndex(website.errorPages, website.siteConfig);
+            flattenAndIndex(website.siteMap, website);
+            flattenAndIndex(website.errorPages, website);
             success();
         } catch (err) {
             error(err);
