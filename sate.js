@@ -10,8 +10,47 @@
         console.error("Missing dependencies.\n Please run the following:\n    npm install node.extend connect mustache\n");
         process.exit(1);
     }
-        
-        
+    
+    var xChars = function(char, len) {
+        var d = 0;
+        var line = [];
+        while(d < len) {
+            ++d;
+            line.push(char);
+        }
+        return line.join('');
+    };
+    var dash = "-";
+    var minLineLen = 60;
+    var logLineDashes = function(minLen) {
+        if (!minLen || minLen < minLineLen) {
+            minLen = minLineLen;
+        }
+        return xChars(dash, minLen);
+    }
+    var logSeparator = function() {
+        console.log( " +"+logLineDashes() );
+    };
+    var logBox = function(lines) {
+        var boxWidth = minLineLen;
+        for (var l=0; l < lines.length; l++) {
+            if (lines[l].length > boxWidth) {
+                boxWidth = lines[l].length;
+            }
+        }
+        console.log( " +"+logLineDashes(boxWidth)+"+" );
+        for (var l=0; l < lines.length; l++) {
+            console.log(" | "+lines[l] + xChars(" ", boxWidth-lines[l].length-2) +" |");
+        }
+        console.log( " +"+logLineDashes(boxWidth)+"+" );
+    };
+    
+    var startTime = new Date();
+    var executionTime = function() {
+        return (new Date()).getTime() - startTime.getTime();
+    };
+
+    
     var Sate = {
             Directive: {
                 Develop: 'develop',
@@ -147,8 +186,20 @@
                 return new Sate.Website(websiteConfig, Sate);
             },
             reportAnalyze: function() {
-                console.log( sateApp.site );
-                console.log( "DONE ANALYZE" );
+                var site = sateApp.site;
+                var runTime = executionTime();
+                console.log( " | compile complete." );
+                logSeparator();
+                console.log( " | Website Statistics:" );
+                
+                var numPages = 0;
+                site.eachPage(function() {
+                    numPages++;
+                }, true);
+                console.log( " |    " + numPages + " pages" );
+                logBox(["Done",
+                        "Time: "+ runTime + 'ms']);
+                console.log("\n");
             },
             
             /** directives */
@@ -161,7 +212,8 @@
                 //          > render & return Page
             },
             analyze: function() {
-                console.log( "ANALYZE" );
+                logBox( ["Starting Sate - Analyze"] );
+                console.log( " | > compiling website..." );
                 this.site = this.createWebsite(this.websiteConfig);
                 
                 // parse and create a Sate.Website
