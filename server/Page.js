@@ -6,61 +6,61 @@ function Page(props, website, Sate) {
         Compiler = require('./Compiler'),
         site = this;
 
-    var addArticleIntroToIndexPage = function(indexPage, subPageKey, articleContent) {
-        var $articleContent = $('<page>'+articleContent+'</page>');
-        var article = {
-            intro: $articleContent.find('#pageIntro').html(),
-            detailcrumbs: function() {
-                return site.breadcrumbs('span');
-            }
-        };
-        site.thisPage = {};
-        site.temporaryAppend($articleContent.find('#pageData'));
-        indexPage.articles.push(
-            extend(true, indexPage.subPages[subPageKey], article, site.thisPage)
-        );
-        site.thisPage = {};
-        site.cleanUpTemporaryAppend();
-        indexPage.unLoadedSubPages--;
-        indexPage.articleReturned();
-    };
-
-    var loadArticleIntrosForIndex = function(page, callback) {
-        if (page.subPages) {
-            page.unLoadedSubPages = 0;
-            page.articleReturned = function() {
-                if (this.unLoadedSubPages === 0) {
-                    this.articles.sort(this.indexSort);
-                    callback.apply(site);
-                }
-            };
-            var articleReturned = function(data, textStatus, jqXHR) {
-                site.addArticleIntroToIndexPage(jqXHR.page, jqXHR.p, data);
-            };
-            var articleFailedToLoad = function(jqXHR, textStatus, errorThrown) {
-                jqXHR.page.unLoadedSubPages--;
-                jqXHR.page.articleReturned();
-            };
-            var packXHR = function(jqXHR, settings) {
-                jqXHR.page = page;
-                jqXHR.p = settings.p;
-                return jqXHR;
-            };
-            for (var p in page.subPages) {
-                if (page.subPages.hasOwnProperty(p)) {
-                    page.unLoadedSubPages++;
-                    $.ajax({
-                        url: site.website.root + page.subPages[p].contentPath + '?fromSource',
-                        p: p,
-                        dataType: 'html',
-                        beforeSend: packXHR,
-                        success: articleReturned,
-                        error: articleFailedToLoad
-                    });
-                }
-            }
-        }
-    };
+    // var addArticleIntroToIndexPage = function(indexPage, subPageKey, articleContent) {
+    //     var $articleContent = $('<page>'+articleContent+'</page>');
+    //     var article = {
+    //         intro: $articleContent.find('#pageIntro').html(),
+    //         detailcrumbs: function() {
+    //             return site.breadcrumbs('span');
+    //         }
+    //     };
+    //     site.thisPage = {};
+    //     site.temporaryAppend($articleContent.find('#pageData'));
+    //     indexPage.articles.push(
+    //         extend(true, indexPage.subPages[subPageKey], article, site.thisPage)
+    //     );
+    //     site.thisPage = {};
+    //     site.cleanUpTemporaryAppend();
+    //     indexPage.unLoadedSubPages--;
+    //     indexPage.articleReturned();
+    // };
+    // 
+    // var loadArticleIntrosForIndex = function(page, callback) {
+    //     if (page.subPages) {
+    //         page.unLoadedSubPages = 0;
+    //         page.articleReturned = function() {
+    //             if (this.unLoadedSubPages === 0) {
+    //                 this.articles.sort(this.indexSort);
+    //                 callback.apply(site);
+    //             }
+    //         };
+    //         var articleReturned = function(data, textStatus, jqXHR) {
+    //             site.addArticleIntroToIndexPage(jqXHR.page, jqXHR.p, data);
+    //         };
+    //         var articleFailedToLoad = function(jqXHR, textStatus, errorThrown) {
+    //             jqXHR.page.unLoadedSubPages--;
+    //             jqXHR.page.articleReturned();
+    //         };
+    //         var packXHR = function(jqXHR, settings) {
+    //             jqXHR.page = page;
+    //             jqXHR.p = settings.p;
+    //             return jqXHR;
+    //         };
+    //         for (var p in page.subPages) {
+    //             if (page.subPages.hasOwnProperty(p)) {
+    //                 page.unLoadedSubPages++;
+    //                 $.ajax({
+    //                     url: site.website.root + page.subPages[p].contentPath + '?fromSource',
+    //                     p: p,
+    //                     dataType: 'html',
+    //                     beforeSend: packXHR,
+    //                     success: articleReturned,
+    //                     error: articleFailedToLoad
+    //                 });
+    //             }
+    //         }
+    //     }
+    // };
 
     var pageDataMatcher = /\{\{\!pageData\}\}([\s\S]*?)\{\{\!\//m;
     var partialMatcher = /\{\{\!(?!pageData)[^\/]+\}\}[\s\S]*?\{\{\!\/[\w\d]+\}\}/mg;
@@ -82,10 +82,11 @@ function Page(props, website, Sate) {
             for (var m = 0; m < partials.length; m++) {
                 var partialCaps = partials[m].match(partialCapturer);
                 if (partialCaps.length > 2) {
-                    pagePartials[partialCaps[1]] = Mustache.compile(partialCaps[2]);
+                    // @TODO: compile the templates for better performance
+                    pagePartials[partialCaps[1]] = partialCaps[2];
                 }
             }
-            page.partials = extend(true, page.partials, pagePartials);
+            page.partials = extend(true, website.compiledPartials, page.partials, pagePartials);
         }
         success();
     };
@@ -133,7 +134,11 @@ function Page(props, website, Sate) {
 
     var resolveType = function(page) {
         if (!page.type) {
-            page.type = Sate.PageType.Article;
+            if (typeof page.subPages == 'object') {
+                page.type = Sate.PageType.Index;
+            } else {
+                page.type = Sate.PageType.Article;
+            }
         } else if (typeof page.type == 'string') {
             var parts = page.type.split('.');
             if (parts.length == 3 && parts[0] == 'Sate' && parts[1] == 'PageType') {
@@ -141,7 +146,7 @@ function Page(props, website, Sate) {
             }
         }
     };
-    
+
     var page = extend(true, 
         {
             name: "untitled page",
@@ -149,12 +154,14 @@ function Page(props, website, Sate) {
             indexSort: Sate.IndexSort.DateDescending,
             type: Sate.PageType.Empty,
             subPages: null,
-            encoding: website.encoding
-        }, 
+            encoding: website.siteConfig.encoding,
+            classNames: []
+        },
+        website.siteConfig,
+        // website,
         props, 
         {
             compiled: false,
-            compiler: null,
             typeOf: 'Sate.Page',
             compile: function(success, error) {
                 var compiler = new Compiler(this, success, error);
@@ -178,17 +185,9 @@ function Page(props, website, Sate) {
                 }
             },
             render: function() {
-                throw new Error("Sate.Page.render not implemented yet!");
-                // $('head').empty().append($(Mustache.render(KN.website.partials.head, KN.page, KN.website.partials)));
-                // var $body = $('body');
-                // $body.empty().append($(Mustache.render(KN.website.partials.body, KN.page, KN.website.partials)));
-                // if (KN.page.menu) {
-                //     $body.addClass(KN.page.menu.className);
-                // } else {
-                //     $body.addClass(KN.page.id);
-                // }
-                // $body.attr('id', KN.page.id);
-                // $.holdReady(false);
+                this.classNames = this.classNames.join(' ');
+                var html = Mustache.render(this.partials.html, this, this.partials);
+                return html;
             }
         }
     );

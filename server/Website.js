@@ -1,4 +1,4 @@
-function Website(props, Sate) {
+function Website(jsonPath, flags, Sate) {
     var fs = require('fs'),
         path = require('path'),
         extend = require('node.extend'),
@@ -6,6 +6,19 @@ function Website(props, Sate) {
         Compiler = require('./Compiler');
 
     var website = {};
+    var defaults = {
+        siteConfig: {
+            content: './',
+            rootPage: "index",
+            encoding: 'utf-8'
+        },
+        partials: {
+            'html': 'main/html.tpl',
+            'masthead': 'main/masthead.tpl',
+            'indexPageContent': 'content/indexPageContent.tpl',
+            'longDate': 'date-time/longDate.tpl'
+        }
+    };
 
     var flattenAndIndex = function(obj, config, prefix) {
         for (var p in obj) {
@@ -37,40 +50,20 @@ function Website(props, Sate) {
                     if (!page.menu.name) {
                         page.menu.name = page.name;
                     }
-                    if (!page.menu.path && p != website.rootPageName) {
+                    if (!page.menu.path && p != website.rootPage) {
                         page.menu.path = page.url;
                     }
                     if (!page.menu.className) {
                         page.menu.className = p;
                     }
                     website.globalMenu.push(page.menu);
+                    page.classNames.push(page.menu.className);
+                } else {
+                    page.classNames.push(page.id);
                 }
                 obj[p] = page;
             }
         }
-    };
-
-    var menuByPath = function(path) {
-        var page = website.pageForPath(path);
-        return website.menuByPage(page);
-    };
-
-    var menuByPage = function(page) {
-        while (page.menu === null && page.parent !== null) {
-            page = page.parent;
-        }
-        return page.menu;
-    };
-
-    var pageForPath = function(path) {
-        if (!path || path.length === 0) {
-            path = website.rootPageName;
-        }
-        var page = website.pageByPath[path];
-        if (page) {
-            page.menu = website.menuByPage(page);
-        }
-        return page;
     };
 
     var generateIndexes = function(website, success, error) {
@@ -88,9 +81,10 @@ function Website(props, Sate) {
     };
 
     var loadTemplate = function(t, coll, success, error) {
-        fs.readFile(path.join('./templates/', coll[t]), {encoding: website.encoding}, function(err, data) {
+        fs.readFile(path.join('./templates/', coll[t]), {encoding: website.siteConfig.encoding}, function(err, data) {
             if (!err) {
-                coll[t] = Mustache.compile(data);
+                // @TODO: compile the templates for better performance
+                website.compiledPartials[t] = data;
                 success();
             } else {
                 error(err);
@@ -140,21 +134,38 @@ function Website(props, Sate) {
             compiler.stepError(step, err);
         });
     };
-
+    
+    var mergeConfig = function() {
+        website.siteConfig = extend(true, 
+            defaults.siteConfig, 
+            website.json.siteConfig,
+            website.cliFlags
+            );
+        website.siteMap = extend(true, 
+            defaults.siteMap, 
+            website.json.siteMap
+            );
+        website.partials = extend(true, 
+            defaults.partials, 
+            website.json.partials
+            );
+    };
+    
+    var loadWebsiteJSON = function(jsonPath, complete, error) {
+        websitePath = path.normalize(jsonPath);
+        fs.readFile(websitePath, {encoding: defaults.siteConfig.encoding}, function(err, data) {
+            if (err) {
+                error(err);
+            } else {
+                website.json = JSON.parse(data);
+                mergeConfig();
+                complete.apply(website);
+            }
+        });
+    };
+    
     website = extend(true,
         {
-            siteConfig: {
-                content: './',
-                rootPage: "index"
-            },
-            partials: {
-                'head': 'main/head.tpl',
-                'body': 'main/body.tpl',
-                'masthead': 'main/masthead.tpl',
-                'indexPageContent': 'content/indexPageContent.tpl',
-                'longDate': 'date-time/longDate.tpl'
-            },
-            globalMenu: [],
             // errorPages: {
             //     error404: new Sate.Page({
             //         name: "error 404:",
@@ -167,35 +178,73 @@ function Website(props, Sate) {
             //         subtitle: "Server Error"
             //     }, website, Sate)
             // }
-        },
-        props,
-        {
+            json: null,
+            jsonPath: jsonPath,
+            cliFlags: flags,
             compiled: false,
-            compiler: null,
+            compiledPartials: {},
             pageByPath: {},
+            globalMenu: [],
             breadcrumbs: require('./sate-modules/breadcrumbs'),
             compile: function(success, error) {
                 var compiler = new Compiler(this, success, error);
-                // in parallel
-                for (var t in website.partials) {
-                    if (website.partials.hasOwnProperty(t)) {
-                        compilePartial(compiler, t);
+                
+                // first:
+                loadWebsiteJSON(this.jsonPath, function() {                    
+                    // then in parallel
+                    for (var t in website.partials) {
+                        if (website.partials.hasOwnProperty(t)) {
+                            compilePartial(compiler, t);
+                        }
                     }
-                }
-                // also in parallel
-                compiler.stepStart('generateIndexes');
-                generateIndexes(this, function() {
-                    compiler.stepComplete('generateIndexes');
-                }, function(err) {
-                    compiler.stepError('generateIndexes', err);
-                });
+                    // console.log( this );
+
+                    // also in parallel
+                    compiler.stepStart('generateIndexes');
+                    generateIndexes(this, function() {
+                        compiler.stepComplete('generateIndexes');
+                    }, function(err) {
+                        compiler.stepError('generateIndexes', err);
+                    });
         
-                // then:
-                for (var path in this.pageByPath) {
-                    if (this.pageByPath.hasOwnProperty(path)) {
-                        compilePage(compiler, this.pageByPath[path]);
+                    // then:
+                    for (var path in this.pageByPath) {
+                        if (this.pageByPath.hasOwnProperty(path)) {
+                            compilePage(compiler, this.pageByPath[path]);
+                        }
                     }
+                }, function(err) {
+                    console.log( err );
+                });
+            },
+            recompile: function(success, error) {
+                // clear compiled data
+                this.compiledPartials = {};
+                this.pageByPath = {};
+                this.globalMenu = [];
+                this.json = null;
+                this.compiled = false;
+                
+                // compile again:
+                this.compile(success, error);
+
+            },
+            pageForPath: function(path) {
+                path = path.replace(/^\//, "");
+                if (!path || path.length === 0) {
+                    path = website.siteConfig.rootPage;
                 }
+                var page = website.pageByPath[path];
+                if (page) {
+                    page.menu = website.menuByPage(page);
+                }
+                return page;
+            },
+            menuByPage: function(page) {
+                while (page.menu === null && page.parent !== null) {
+                    page = page.parent;
+                }
+                return page.menu;
             },
             typeOf: 'Sate.Website',
             eachPage: function(method, recurseSubpages) {
@@ -212,6 +261,6 @@ function Website(props, Sate) {
         }
     );
     return website;
-};
+}
 
 module.exports = Website;

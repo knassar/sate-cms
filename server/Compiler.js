@@ -13,13 +13,13 @@ function Compiler(target, complete, failed) {
     };
     var checkCompileComplete = function(compiler) {
         if (compiler.compileSteps.length === 0) {
+            compiler.target.compiled = true;
             compiler.completeCallback.apply(compiler.target, [compiler.compileErrors]);
         }
     };
     var compileError = function(compiler, target, step, err) {
-        throw err;
         compiler.compileErrors.push({compileStep: step, error: err});
-        checkCompileSteps(step);
+        checkCompileComplete(compiler);
     };
 
     target.compiled = false;

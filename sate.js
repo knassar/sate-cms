@@ -62,6 +62,7 @@
             IndexSort: require('./server/IndexSort'),
             Website: require('./server/Website'),
             Page: require('./server/Page'),
+            Server: require('./server/Server'),
             LogLevel: {
                 Quiet: 'quiet',
                 Normal: 'normal',
@@ -78,7 +79,9 @@
                 logLevel: Sate.LogLevel.Normal
             },
             directive: null,
-            flags: {},
+            flags: {
+                siteConfig: {}
+            },
             modulePath: function(filePath) {
                 return path.join(__dirname, filePath);
             },
@@ -146,50 +149,22 @@
             },
             execute: function(process) {
                 this.init(process);
-                this.loadWebsiteJSON();
-            },
-            loadWebsiteJSON: function() {
-                var websitePath = this.defaults.website;
-                if (this.flags.website) {
-                    websitePath = this.flags.website;
-                }
-                websitePath = path.normalize(websitePath);
-                fs.readFile(websitePath, {encoding: this.defaults.encoding}, function(err, data) {
-                    sateApp.parseWebsiteJSON(err, data)
-                });
-            },
-            parseWebsiteJSON: function(err, data) {
-                if (err) {
-                    this.failWith(err);
-                } else {
-                    try {
-                        var siteData = JSON.parse(data);
-                        this.websiteConfig = extend(true,
-                            this.defaults, 
-                            siteData, 
-                            {
-                                siteConfig: this.flags
-                            }
-                        );
-                        this.executeDirective();
-                    } catch (err) {
-                        this.failWith(err);
-                    }
-                }
-            },
-            executeDirective: function() {
                 this[this.directive].apply(this);
             },
 
             /** directive flow actions */
-            createWebsite: function(websiteConfig) {
-                return new Sate.Website(websiteConfig, Sate);
+            createWebsite: function() {
+                var websitePath = this.defaults.website;
+                if (this.flags.website) {
+                    websitePath = this.flags.website;
+                }
+                return new Sate.Website(websitePath, this.flags, Sate);
             },
             reportAnalyze: function() {
                 var site = sateApp.site;
                 var runTime = executionTime();
                 console.log( " | compile complete." );
-                logSeparator();
+                console.log( " |");
                 console.log( " | Website Statistics:" );
                 
                 var numPages = 0;
@@ -204,18 +179,24 @@
             
             /** directives */
             develop: function() {
-                console.log( "DEVELOP" );
-                // flow: 
-                // initialize the server:
+                logBox( ["Starting Sate - Develop"] );
+                console.log( " +-> processing website config..." );
+                this.site = sateApp.createWebsite();
+                this.site.compile(function() {
+                    // flow: 
+                    // initialize the server:
+                    console.log( " +-> starting server..." );
+                    console.log( " +---> listening on port "+sateApp.site.siteConfig.port+"..." );
+                    var server = new Sate.Server.DevelopmentServer(sateApp.site, Sate);
+                }, this.failWith);
                 //      > parse and create a Sate.Website
                 //      > parse and compile requested Sate.Page
                 //          > render & return Page
             },
             analyze: function() {
                 logBox( ["Starting Sate - Analyze"] );
-                console.log( " | > compiling website..." );
+                console.log( " +-> compiling website..." );
                 this.site = this.createWebsite(this.websiteConfig);
-                
                 // parse and create a Sate.Website
                 //    > traverse each page:
                 //        > parse and compile Sate.Page
