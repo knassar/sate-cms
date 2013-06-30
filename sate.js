@@ -27,19 +27,20 @@
             minLen = minLineLen;
         }
         return xChars(dash, minLen);
-    }
+    };
     var logSeparator = function() {
         console.log( " +"+logLineDashes() );
     };
     var logBox = function(lines) {
-        var boxWidth = minLineLen;
-        for (var l=0; l < lines.length; l++) {
+        var boxWidth = minLineLen,
+			l = 0;
+        for (l=0; l < lines.length; l++) {
             if (lines[l].length > boxWidth) {
                 boxWidth = lines[l].length;
             }
         }
         console.log( " +"+logLineDashes(boxWidth)+"+" );
-        for (var l=0; l < lines.length; l++) {
+        for (l=0; l < lines.length; l++) {
             console.log(" | "+lines[l] + xChars(" ", boxWidth-lines[l].length-2) +" |");
         }
         console.log( " +"+logLineDashes(boxWidth)+"+" );
@@ -130,7 +131,9 @@
                                 this.flags.logLevel = Sate.LogLevel.Quiet;
                                 break;
                             case '-h':
-                            case '--help':
+                            case '--help': 
+								// annotation for jshint
+								/* falls through */
                             default:
                                 this.help();
                                 process.exit(0);
@@ -140,7 +143,7 @@
             },
             failWith: function(err) {
                 throw err;
-                console.error(err);
+                console.error(err); // Will these lines ever be reached after throwing?
                 process.exit(1);
             },
             init: function(process) {
