@@ -20,7 +20,7 @@
             {{/date}}
             {{>intro}}
             {{>content}}
-            <div id="copyright">Copyright <span class="copyright-symbol">&copy;</span>2013</div>
+            <div id="copyright">Copyright <span class="copyright-symbol">&copy;</span>2013 Karim Nassar. All rights reserved.</div>
         </div>
     </body>
 </html>

@@ -3,7 +3,7 @@
         "title": "MySite.com"
     },
     "siteMap": {
-        "index": {
+        "/": {
             "type": "Sate.PageType.Index",
             "name": "MySite.com",
             "menu": {

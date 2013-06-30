@@ -3,8 +3,7 @@ function Page(props, website, Sate) {
         path = require('path'),
         extend = require('node.extend'),
         Mustache = require('mustache'),
-        Compiler = require('./Compiler'),
-        site = this;
+        Compiler = require('./Compiler');
 
     // var addArticleIntroToIndexPage = function(indexPage, subPageKey, articleContent) {
     //     var $articleContent = $('<page>'+articleContent+'</page>');
@@ -69,24 +68,22 @@ function Page(props, website, Sate) {
         var pageData = null,
             intro = null,
             content = null;
-
         var matches = data.match(pageDataMatcher);
+        
         if (matches && matches.length > 1) {
             pageData = JSON.parse(matches[1].trim());
         }
         page = extend(true, page, pageData);
-
         var partials = data.match(partialMatcher);
+        page.partials = extend({}, website.compiledPartials, page.partials);
         if (partials && partials.length > 0) {
-            var pagePartials = {};
             for (var m = 0; m < partials.length; m++) {
                 var partialCaps = partials[m].match(partialCapturer);
                 if (partialCaps.length > 2) {
                     // @TODO: compile the templates for better performance
-                    pagePartials[partialCaps[1]] = partialCaps[2];
+                    page.partials[partialCaps[1]] = partialCaps[2];
                 }
             }
-            page.partials = extend(true, website.compiledPartials, page.partials, pagePartials);
         }
         success();
     };

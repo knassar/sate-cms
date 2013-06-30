@@ -9,7 +9,7 @@ function Website(jsonPath, flags, Sate) {
     var defaults = {
         siteConfig: {
             content: './',
-            rootPage: "index",
+            rootPage: '/',
             encoding: 'utf-8'
         },
         partials: {
@@ -30,21 +30,25 @@ function Website(jsonPath, flags, Sate) {
                     urlParts.push(prefix);
                 }
                 urlParts.push(p);
-                page.url = urlParts.join('/');
-                if (p == config.rootPage) {
+                var url = urlParts.join('/');
+                if (url == config.rootPage) {
+                    page.url = url;
                     page.contentPath = path.join(website.siteConfig.content, 'index.html');
-                } else if (page.type === Sate.PageType.Index) {
-                    page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
-                    page.articles = [];
                 } else {
-                    page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
+                    page.url = '/' + url;
+                    if (page.type === Sate.PageType.Index) {
+                        page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
+                        page.articles = [];
+                    } else {
+                        page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
+                    }
                 }
                 if (!page.subtitle && page.name) {
                     page.subtitle = page.name;
                 }
                 website.pageByPath[page.url] = page;
                 if (page.subPages) {
-                    flattenAndIndex(page.subPages, config, page.url);
+                    flattenAndIndex(page.subPages, config, url);
                 }
                 if (page.menu && !page.parent) {
                     if (!page.menu.name) {
@@ -230,19 +234,31 @@ function Website(jsonPath, flags, Sate) {
 
             },
             pageForPath: function(path) {
-                path = path.replace(/^\//, "");
+                if (path.length > 1) {
+                    // ignore trailing '/' in url
+                    path = path.replace(/\/$/, '');
+                }
                 if (!path || path.length === 0) {
+                    // if we somehow got here without a path, show the root page
                     path = website.siteConfig.rootPage;
                 }
                 var page = website.pageByPath[path];
                 if (page) {
+                    // if we have a page, make sure we have menu
                     page.menu = website.menuByPage(page);
+                } else {
+                    // @TODO: return the 404 page here
                 }
                 return page;
             },
             menuByPage: function(page) {
+                // walk up the page graph until we get to a page with a menu defined
                 while (page.menu === null && page.parent !== null) {
-                    page = page.parent;
+                    if (page.parent) {
+                        page = page.parent;
+                    } else {
+                        break;
+                    }
                 }
                 return page.menu;
             },

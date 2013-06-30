@@ -1,8 +1,5 @@
 <header id="masthead">
-    <h1>
-        Sate
-        <div>Just Enough CMS</div>
-    </h1>
+    <h1>KarimNassar.com</h1>
     <ul id="mainMenu">
         {{# globalMenu}}
         <li class="{{className}}"><a href="{{root}}{{path}}">{{name}}</a>

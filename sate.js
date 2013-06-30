@@ -59,11 +59,11 @@
                 Analyze: 'analyze',
                 Deploy: 'deploy'
             },
-            PageType: require('./server/PageType'),
-            IndexSort: require('./server/IndexSort'),
-            Website: require('./server/Website'),
-            Page: require('./server/Page'),
-            Server: require('./server/Server'),
+            PageType: require('./sate-resources/PageType'),
+            IndexSort: require('./sate-resources/IndexSort'),
+            Website: require('./sate-resources/Website'),
+            Page: require('./sate-resources/Page'),
+            Server: require('./sate-resources/Server'),
             LogLevel: {
                 Quiet: 'quiet',
                 Normal: 'normal',
@@ -142,8 +142,8 @@
                 }
             },
             failWith: function(err) {
-                throw err;
-                console.error(err); // Will these lines ever be reached after throwing?
+                // @TODO: Richer error handling
+                console.error(err);
                 process.exit(1);
             },
             init: function(process) {
@@ -226,31 +226,5 @@
         };
         
     sateApp.execute(process);
-
-    // Sate.context = context;
-    // var Website = require('./server/Website');
-    // // load and process site
-    // var Sate.context.site = new Website(Sate.context);
-    // 
-    // 
-    // switch (Sate.context.action) {
-    //     case Sate.Action.Run:
-    //         var Server = require('./server/Server');
-    //         // server to serve pages
-    //         context.server = new Server(Sate.context);
-    //         break;
-    //     case Sate.Action.Generate:
-    //         // generator to produce a static site
-    //         
-    //         break;
-    // }
-    // 
-    // 
-    // 
-    // 
-    // 
-    // 
-    // var server = require('./server/Server')(context);
-    // console.log('Server running at http://127.0.0.1:3000/');
 
 })();
