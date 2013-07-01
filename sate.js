@@ -33,7 +33,7 @@
     };
     var logBox = function(lines) {
         var boxWidth = minLineLen,
-			l = 0;
+            l = 0;
         for (l=0; l < lines.length; l++) {
             if (lines[l].length > boxWidth) {
                 boxWidth = lines[l].length;
@@ -132,8 +132,8 @@
                                 break;
                             case '-h':
                             case '--help': 
-								// annotation for jshint
-								/* falls through */
+                                // annotation for jshint
+                                /* falls through */
                             default:
                                 this.help();
                                 process.exit(0);
