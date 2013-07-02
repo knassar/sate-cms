@@ -36,14 +36,11 @@
 #mainMenu li > a {
     display: block;
     position: relative;
-    padding: 0.25em 0.5em;
+    padding: 0.25em 0.5em 0.25em 1em;
 }
 
-#mainMenu > li > a::before {
-    content: ":";
-    margin-right: 0.5em;
+#mainMenu > li.active > a {
     font-weight: bold;
-    line-height: 1em;
 }
 
 #mainMenu > li > ul {

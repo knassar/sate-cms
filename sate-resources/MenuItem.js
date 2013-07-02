@@ -19,7 +19,10 @@ function MenuItem(page, props, website, Sate) {
             props, 
             {
                 // page: page,
-                typeOf: 'Sate.MenuItem'
+                typeOf: 'Sate.MenuItem',
+                active: function() {
+                    return (this.isActive) ? 'active' : '';
+                }
             }
         );
         return menuItem;

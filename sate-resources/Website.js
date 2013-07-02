@@ -22,7 +22,6 @@ function Website(jsonPath, flags, Sate) {
     };
 
     var setupMenu = function(page, website) {
-        console.log( page.id );
         page.menu = new Sate.MenuItem(page, page.menu, website);
         if (page.isRoot || page.parent.isRoot) {
             website.siteMenu.push(page.menu);
@@ -255,7 +254,6 @@ function Website(jsonPath, flags, Sate) {
                         break;
                     }
                 }
-                page.classNames.push(menuPage.id);
                 return menuPage.menu;
             },
             typeOf: 'Sate.Website',

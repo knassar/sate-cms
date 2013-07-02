@@ -187,7 +187,6 @@ function Page(id, props, parent, website, Sate) {
             },
             classNamesString: function() {
                 if (this.classNames.filter) {
-                    console.log( this.classNames );
                     return this.classNames.filter(function (e, i, arr) {
                         return arr.lastIndexOf(e) === i;
                     }).join(' ');
@@ -195,10 +194,19 @@ function Page(id, props, parent, website, Sate) {
                     return this.classNames;
                 }
             },
+            resolveSiteMenu: function() {
+                var p = this;
+                while (!p.isRoot && p.parent && !p.parent.isRoot) {
+                    p = p.parent;
+                }
+                var rootUrl = p.url;
+                for (var i=0; i < this.siteMenu.length; i++) {
+                    this.siteMenu[i].isActive = (this.siteMenu[i].url == rootUrl);
+                };
+            },
             render: function() {
-                Sate.currentPageUrl = this.url;
+                this.resolveSiteMenu();
                 this.classNames = this.classNamesString();
-                console.log( 'render: ', page.siteMenu );
                 var html = Mustache.render(this.partials.html, this, this.partials);
                 return html;
             }
