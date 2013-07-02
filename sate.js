@@ -63,6 +63,7 @@
             IndexSort: require('./sate-resources/IndexSort'),
             Website: require('./sate-resources/Website'),
             Page: require('./sate-resources/Page'),
+            MenuItem: require('./sate-resources/MenuItem'),
             Server: require('./sate-resources/Server'),
             utils: require('./sate-resources/sate-utils'),
             LogLevel: {

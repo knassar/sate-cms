@@ -22,15 +22,15 @@
                         }
                     },
                     "menu": {
-                        "path": "about",
+                        "url": "/about",
                         "sub": [
                             {
                                 "deep": true,
-                                "path": "about/resume"
+                                "url": "/about/resume"
                             },
                             {
                                 "deep": true,
-                                "path": "about/this-site"
+                                "url": "/about/this-site"
                             }
                         ]
                     }
@@ -40,11 +40,11 @@
                 "name": "Home",
                 "sub": [
                     {
-                        "path": "about/this-site", 
+                        "url": "/about/this-site", 
                         "name": "About Us"
                     },
                     {
-                        "path": "about/resume"
+                        "url": "/about/resume"
                     }
                 ]
             }

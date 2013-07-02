@@ -182,8 +182,23 @@ function Page(id, props, parent, website, Sate) {
                     }
                 }
             },
+            hasSubpages: function() {
+                return this.subPages.length > 0;
+            },
+            classNamesString: function() {
+                if (this.classNames.filter) {
+                    console.log( this.classNames );
+                    return this.classNames.filter(function (e, i, arr) {
+                        return arr.lastIndexOf(e) === i;
+                    }).join(' ');
+                } else if (typeof this.classNames == 'string') {
+                    return this.classNames;
+                }
+            },
             render: function() {
-                this.classNames = this.classNames.join(' ');
+                Sate.currentPageUrl = this.url;
+                this.classNames = this.classNamesString();
+                console.log( 'render: ', page.siteMenu );
                 var html = Mustache.render(this.partials.html, this, this.partials);
                 return html;
             }

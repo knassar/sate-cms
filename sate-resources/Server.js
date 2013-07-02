@@ -55,7 +55,7 @@
                             exit(1);
                         });
                     } else {
-                        // @TODO: serve static file @ url
+                        res.end(website.resourceForPath(req.url));
                     }
                 }).listen(website.siteConfig.port);
             server.beforePageRequest = function(ready, err) {

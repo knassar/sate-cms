@@ -14,7 +14,9 @@ function Compiler(target, complete, failed) {
     var checkCompileComplete = function(compiler) {
         if (compiler.compileSteps.length === 0) {
             compiler.target.compiled = true;
-            compiler.completeCallback.apply(compiler.target, [compiler.compileErrors]);
+            process.nextTick(function() {
+                compiler.complete();
+            });
         }
     };
     var compileError = function(compiler, target, step, err) {
@@ -45,6 +47,9 @@ function Compiler(target, complete, failed) {
         stepFailed: function(stepName, err) {
             this.stepError(stepError, err);
             this.failedCallback.apply(this.target, [this.compileErrors, this.compileSteps]);
+        },
+        complete: function() {
+            this.completeCallback.apply(this.target, [this.compileErrors]);
         }
     };
     return compiler;

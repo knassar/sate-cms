@@ -1,0 +1,26 @@
+@import url('masthead.css');
+
+body {
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-weight: 200;
+    font-size: 14px;
+    line-height: 1.6em;
+    padding: 10px 20px;
+}
+
+a {
+    color: orange;
+    text-decoration: underline;
+}
+
+#pageBody {
+    padding: 0.5em 1em;
+}
+
+#copyright {
+    margin-top: 5rem;
+    padding: 0.5em 1em;
+    border-top: #999 1px solid;
+    font-size: 0.75rem;
+    color: #999;
+}

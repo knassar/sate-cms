@@ -1,0 +1,74 @@
+#sateLogo {
+    font-family: "Helvetica Neue", "Helvetica", "Arial Narrow", "Arial", sans-serif;
+    font-size: 144px;
+    font-weight: 100;
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+}
+
+#sateLogoNameplate {
+    position: relative;
+}
+
+#sateLogoA {
+    position: relative;
+    color: orange;
+}
+
+/* smiling eyes */
+#sateLogoA::before,
+#sateLogoA::after
+{
+    content: "";
+    font-size: 0.1em;
+    position: absolute;
+    bottom: 3.25em;
+    width: 0.75em;
+    height: 0.75em;
+    border-radius: 50%;
+    border-top: orange 3px solid;
+}
+#sateLogoA::before {
+    left: 1em;
+}
+#sateLogoA::after {
+    right: 1.5em;
+}
+
+/* licking-lips */
+#sateLogoNameplate::before {
+    content: "";
+    font-size: 0.1em;
+    position: absolute;
+    bottom: 2.5em;
+    left: 5.5em;
+    width: 2.5em;
+    height: 1.75em;
+    border-radius: 50%;
+    border-bottom: orange 3px solid;
+    z-index: 1;
+}
+#sateLogoNameplate::after {
+    content: "";
+    font-size: 0.1em;
+    position: absolute;
+    bottom: 2.75em;
+    left: 7.2em;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50% 50% 50% 0;
+    background-color: orange;
+    -webkit-transform: rotate(-30deg);
+    -moz-transform: rotate(-30deg);
+    -ms-transform: rotate(-30deg);
+    transform: rotate(-30deg);
+}
+
+#sateLogo .tagline {
+    font-size: 24px;
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+    text-align: center;
+}

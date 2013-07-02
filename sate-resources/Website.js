@@ -20,39 +20,25 @@ function Website(jsonPath, flags, Sate) {
             'longDate': 'date-time/longDate.tpl'
         }
     };
-    
+
     var setupMenu = function(page, website) {
+        console.log( page.id );
+        page.menu = new Sate.MenuItem(page, page.menu, website);
         if (page.isRoot || page.parent.isRoot) {
-            if (page.menu) {
-                if (!page.menu.name) {
-                    page.menu.name = page.name;
-                }
-                if (!page.menu.path) {
-                    page.menu.path = page.url;
-                }
-                if (!page.menu.className) {
-                    page.menu.className = page.id;
-                }
-            }
             website.siteMenu.push(page.menu);
-        } else if (page.menu) {
-            // @TODO: what to do here? Not sure
-            // if (!page.menu.name) {
-            //     page.menu.name = page.name;
-            // }
-            // if (!page.menu.path) {
-            //     page.menu.path = page.url;
-            // }
-            // if (!page.menu.className) {
-            //     page.menu.className = page.id;
-            // }
         }
+        page.eachSubpage(function(p) {
+            setupMenu(p, website);
+        });
         page.siteMenu = website.siteMenu;
+    };
+
+    var generateMenus = function(website) {
+        setupMenu(website.pageByPath[website.siteConfig.rootPageUrl], website);
     };
 
     var indexPage = function(id, pageData, website, parent) {
         var page = new Sate.Page(id, pageData, parent, website, Sate);
-        setupMenu(page, website);
         website.pageByPath[page.url] = page;
         if (page.subPages) {
             for (var p in page.subPages) {
@@ -70,6 +56,7 @@ function Website(jsonPath, flags, Sate) {
             // @TODO: 
             // for (var id in website.errorPages) {
             // website.errorPages[id] = indexPage(id, errorPage, website);
+            generateMenus(website);
             success();
         } catch (err) {
             error(err);
@@ -164,6 +151,14 @@ function Website(jsonPath, flags, Sate) {
         });
     };
     
+    var cleanObject = function(obj) {
+        for (var prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                delete obj[prop];
+            }
+        }
+    };
+    
     website = extend(true,
         {
             // errorPages: {
@@ -219,9 +214,9 @@ function Website(jsonPath, flags, Sate) {
             },
             recompile: function(success, error) {
                 // clear compiled data
-                this.compiledPartials = {};
-                this.pageByPath = {};
-                this.siteMenu = [];
+                cleanObject(this.compiledPartials);
+                cleanObject(this.pageByPath);
+                this.siteMenu.length = 0;
                 this.json = null;
                 this.compiled = false;
                 
@@ -229,16 +224,16 @@ function Website(jsonPath, flags, Sate) {
                 this.compile(success, error);
 
             },
-            pageForPath: function(path) {
-                if (path.length > 1) {
+            pageForPath: function(filePath) {
+                if (filePath.length > 1) {
                     // ignore trailing '/' in url
-                    path = path.replace(/\/$/, '');
+                    filePath = filePath.replace(/\/$/, '');
                 }
-                if (!path || path.length === 0) {
+                if (!filePath || filePath.length === 0) {
                     // if we somehow got here without a path, show the root page
-                    path = website.siteConfig.rootPage;
+                    filePath = website.siteConfig.rootPage;
                 }
-                var page = website.pageByPath[path];
+                var page = website.pageByPath[filePath];
                 if (page) {
                     // if we have a page, make sure we have menu
                     page.menu = website.menuByPage(page);
@@ -247,16 +242,21 @@ function Website(jsonPath, flags, Sate) {
                 }
                 return page;
             },
+            resourceForPath: function(filePath) {
+                return fs.readFileSync(path.join(this.siteConfig.content, filePath));
+            },
             menuByPage: function(page) {
                 // walk up the page graph until we get to a page with a menu defined
-                while (page.menu === null && page.parent !== null) {
-                    if (page.parent) {
-                        page = page.parent;
+                var menuPage = page;
+                while (menuPage.menu === null && menuPage.parent !== null) {
+                    if (menuPage.parent) {
+                        menuPage = menuPage.parent;
                     } else {
                         break;
                     }
                 }
-                return page.menu;
+                page.classNames.push(menuPage.id);
+                return menuPage.menu;
             },
             typeOf: 'Sate.Website',
             eachPage: function(method, recurseSubpages) {
