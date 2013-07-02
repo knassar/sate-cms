@@ -204,6 +204,7 @@ function Page(id, props, parent, website, Sate) {
                     this.siteMenu[i].isActive = (this.siteMenu[i].url == rootUrl);
                 };
             },
+            breadcrumbs: require('./sate-modules/breadcrumbs'),
             render: function() {
                 this.resolveSiteMenu();
                 this.classNames = this.classNamesString();

@@ -1,7 +1,8 @@
 {
     "siteConfig": {
         "title": "Sate",
-        "subtitle": "Just Enough CMS"
+        "subtitle": "Just Enough CMS",
+        "breadcrumbSeparator": ":"
     },
     "siteMap": {
         "home": {

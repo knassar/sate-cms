@@ -11,7 +11,8 @@ function Website(jsonPath, flags, Sate) {
             content: './',
             rootPage: 'home',
             rootPageUrl: '/',
-            encoding: 'utf-8'
+            encoding: 'utf-8',
+            breadcrumbSeparator: '&rsaquo;'
         },
         partials: {
             'html': 'main/html.tpl',

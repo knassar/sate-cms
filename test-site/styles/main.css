@@ -13,8 +13,37 @@ a {
     text-decoration: underline;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 200;
+    margin: 0;
+}
+
 #pageBody {
     padding: 0.5em 1em;
+}
+
+#pageBody #breadcrumbs {
+    margin-top: 1em;
+}
+
+#pageBody #breadcrumbs .seppa {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 0.5em;
+}
+
+#pageBody #breadcrumbs .this-page {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1em;
+}
+
+#pageBody #breadcrumbs a {
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1em;
 }
 
 #copyright {
