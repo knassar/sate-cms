@@ -4,9 +4,38 @@
         "subtitle": "Just Enough CMS"
     },
     "siteMap": {
-        "/": {
+        "home": {
             "type": "Sate.PageType.Index",
             "name": "Sate",
+            "subPages": {
+                "about": {
+                    "type": "Sate.PageType.Index",
+                    "name": "About",
+                    "title": "About Sate",
+                    "subPages": {
+                        "resume": {
+                            "name": "My Resume"
+                        },
+                        "this-site": {
+                            "type": "Sate.PageType.Article",
+                            "name": "About this Site"
+                        }
+                    },
+                    "menu": {
+                        "path": "about",
+                        "sub": [
+                            {
+                                "deep": true,
+                                "path": "about/resume"
+                            },
+                            {
+                                "deep": true,
+                                "path": "about/this-site"
+                            }
+                        ]
+                    }
+                }
+            },
             "menu": {
                 "name": "Home",
                 "sub": [
@@ -16,33 +45,6 @@
                     },
                     {
                         "path": "about/resume"
-                    }
-                ]
-            }
-        },
-        "about": {
-            "type": "Sate.PageType.Index",
-            "name": "About",
-            "title": "About Sate",
-            "subPages": {
-                "resume": {
-                    "name": "My Resume"
-                },
-                "this-site": {
-                    "type": "Sate.PageType.Article",
-                    "name": "About this Site"
-                }
-            },
-            "menu": {
-                "path": "about",
-                "sub": [
-                    {
-                        "deep": true,
-                        "path": "about/resume"
-                    },
-                    {
-                        "deep": true,
-                        "path": "about/this-site"
                     }
                 ]
             }

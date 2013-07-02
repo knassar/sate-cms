@@ -64,6 +64,7 @@
             Website: require('./sate-resources/Website'),
             Page: require('./sate-resources/Page'),
             Server: require('./sate-resources/Server'),
+            utils: require('./sate-resources/sate-utils'),
             LogLevel: {
                 Quiet: 'quiet',
                 Normal: 'normal',

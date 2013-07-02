@@ -1,4 +1,4 @@
-function Page(props, website, Sate) {
+function Page(id, props, parent, website, Sate) {
     var fs = require('fs'),
         path = require('path'),
         extend = require('node.extend'),
@@ -155,9 +155,12 @@ function Page(props, website, Sate) {
         website.siteConfig,
         props, 
         {
-            siteMenu: website.globalMenu,
+            id: id,
+            parent: parent,
+            siteMenu: website.siteMenu,
             compiled: false,
             typeOf: 'Sate.Page',
+            isRoot: (id == website.siteConfig.rootPage),
             compile: function(success, error) {
                 var compiler = new Compiler(this, success, error);
                 compiler.stepStart('load-content');
@@ -186,12 +189,27 @@ function Page(props, website, Sate) {
             }
         }
     );
-
+    
     resolveType(page);
-    page.eachSubpage(function(p) {
-        p.parent = page;
-        resolveType(p);
-    })
+
+    if (page.isRoot) {
+        page.url = website.siteConfig.rootPageUrl;
+        page.contentPath = path.join(website.siteConfig.content, 'index.html');
+    } else {
+        page.url = [page.parent.url, page.id].join('/').replace(/[\/]+/g, '/');
+        if (page.type === Sate.PageType.Index) {
+            page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
+            page.articles = [];
+        } else {
+            page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
+        }
+    }
+    if (!page.name) {
+        page.name = Sate.utils.toTitleCase(page.id);
+    }
+    if (!page.subtitle && page.name) {
+        page.subtitle = page.name;
+    }
 
     return page;
 }

@@ -9,7 +9,8 @@ function Website(jsonPath, flags, Sate) {
     var defaults = {
         siteConfig: {
             content: './',
-            rootPage: '/',
+            rootPage: 'home',
+            rootPageUrl: '/',
             encoding: 'utf-8'
         },
         partials: {
@@ -19,62 +20,56 @@ function Website(jsonPath, flags, Sate) {
             'longDate': 'date-time/longDate.tpl'
         }
     };
+    
+    var setupMenu = function(page, website) {
+        if (page.isRoot || page.parent.isRoot) {
+            if (page.menu) {
+                if (!page.menu.name) {
+                    page.menu.name = page.name;
+                }
+                if (!page.menu.path) {
+                    page.menu.path = page.url;
+                }
+                if (!page.menu.className) {
+                    page.menu.className = page.id;
+                }
+            }
+            website.siteMenu.push(page.menu);
+        } else if (page.menu) {
+            // @TODO: what to do here? Not sure
+            // if (!page.menu.name) {
+            //     page.menu.name = page.name;
+            // }
+            // if (!page.menu.path) {
+            //     page.menu.path = page.url;
+            // }
+            // if (!page.menu.className) {
+            //     page.menu.className = page.id;
+            // }
+        }
+        page.siteMenu = website.siteMenu;
+    };
 
-    var flattenAndIndex = function(obj, website, prefix) {
-        for (var p in obj) {
-            if (obj.hasOwnProperty(p)) {
-                var page = new Sate.Page(obj[p], website, Sate);
-                page.id = p;
-                var urlParts = [];
-                if (prefix) {
-                    urlParts.push(prefix);
+    var indexPage = function(id, pageData, website, parent) {
+        var page = new Sate.Page(id, pageData, parent, website, Sate);
+        setupMenu(page, website);
+        website.pageByPath[page.url] = page;
+        if (page.subPages) {
+            for (var p in page.subPages) {
+                if (page.subPages.hasOwnProperty(p)) {
+                    page.subPages[p] = indexPage(p, page.subPages[p], website, page);
                 }
-                urlParts.push(p);
-                var url = urlParts.join('/');
-                if (url == website.siteConfig.rootPage) {
-                    page.url = url;
-                    page.contentPath = path.join(website.siteConfig.content, 'index.html');
-                } else {
-                    page.url = '/' + url;
-                    if (page.type === Sate.PageType.Index) {
-                        page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
-                        page.articles = [];
-                    } else {
-                        page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
-                    }
-                }
-                if (!page.subtitle && page.name) {
-                    page.subtitle = page.name;
-                }
-                website.pageByPath[page.url] = page;
-                if (page.subPages) {
-                    flattenAndIndex(page.subPages, website, url);
-                }
-                if (page.menu && !page.parent) {
-                    if (!page.menu.name) {
-                        page.menu.name = page.name;
-                    }
-                    if (!page.menu.path && p != website.rootPage) {
-                        page.menu.path = page.url;
-                    }
-                    if (!page.menu.className) {
-                        page.menu.className = p;
-                    }
-                    website.globalMenu.push(page.menu);
-                    page.classNames.push(page.menu.className);
-                    page.siteMenu = website.globalMenu;
-                } else {
-                    page.classNames.push(page.id);
-                }
-                obj[p] = page;
             }
         }
+        return page;
     };
 
     var generateIndexes = function(website, success, error) {
         try {
-            flattenAndIndex(website.siteMap, website);
-            flattenAndIndex(website.errorPages, website);
+            website.siteMap[website.siteConfig.rootPage] = indexPage(website.siteConfig.rootPage, website.siteMap[website.siteConfig.rootPage], website);
+            // @TODO: 
+            // for (var id in website.errorPages) {
+            // website.errorPages[id] = indexPage(id, errorPage, website);
             success();
         } catch (err) {
             error(err);
@@ -189,7 +184,7 @@ function Website(jsonPath, flags, Sate) {
             compiled: false,
             compiledPartials: {},
             pageByPath: {},
-            globalMenu: [],
+            siteMenu: [],
             breadcrumbs: require('./sate-modules/breadcrumbs'),
             compile: function(success, error) {
                 var compiler = new Compiler(this, success, error);
@@ -226,7 +221,7 @@ function Website(jsonPath, flags, Sate) {
                 // clear compiled data
                 this.compiledPartials = {};
                 this.pageByPath = {};
-                this.globalMenu = [];
+                this.siteMenu = [];
                 this.json = null;
                 this.compiled = false;
                 
