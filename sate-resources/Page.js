@@ -3,7 +3,8 @@ function Page(props, website, Sate) {
         path = require('path'),
         extend = require('node.extend'),
         Mustache = require('mustache'),
-        Compiler = require('./Compiler');
+        Compiler = require('./Compiler'),
+        util = require("util");
 
     // var addArticleIntroToIndexPage = function(indexPage, subPageKey, articleContent) {
     //     var $articleContent = $('<page>'+articleContent+'</page>');
@@ -87,25 +88,22 @@ function Page(props, website, Sate) {
         }
         success();
     };
+    
     var loadIndexPage = function(page, success, error) {
+        // util.log("Rendering index page at " + page.url);
         success();
-        // $.ajax({
-        //     url: KN.website.root + KN.page.contentPath + '?fromSource',
-        //     dataType: 'html',
-        //     success: function(data) {
-        //         KN.processPageData(data);
-        //         if (!KN.page.pageContent) {
-        //     
-        //             KN.loadArticleIntrosForIndex(KN.page, KN.renderPage);
-        //         } else {
-        //             KN.renderPage();
-        //         }
-        //     },
-        //     error: function() {
-        //         KN.pageNotFound();
-        //     }
-        // });
+        /**
+         * Psuedo code
+         */
+        // Determine if there are subpages
+        // If subpages exist, loop through each subpage
+            // get just the intro
+            // if intro empty or maybe not defined, parse some of the content
+            // add resulting text block to a data structure (matching the layout of the indexPageContent.tpl)
+        // end loop
+        // render the resulting data structure
     };
+    
     var loadArticlePage = function(page, success, error) {
         fs.readFile(page.contentPath, page.encoding, function(err, data) {
             if (err) {
@@ -120,8 +118,8 @@ function Page(props, website, Sate) {
     var loadPageContent = function(page, success, error) {
         switch (page.type) {
             case Sate.PageType.Index:
-                // loadIndexPage(page, success, error);
-                // break;
+                loadIndexPage(page, success, error);
+                //break;
             case Sate.PageType.Article:
             default:
                 loadArticlePage(page, success, error);
@@ -198,3 +196,22 @@ function Page(props, website, Sate) {
     return page;
 }
 module.exports = Page;
+
+/* Old loadIndexPage method
+// $.ajax({
+//     url: KN.website.root + KN.page.contentPath + '?fromSource',
+//     dataType: 'html',
+//     success: function(data) {
+//         KN.processPageData(data);
+//         if (!KN.page.pageContent) {
+//     
+//             KN.loadArticleIntrosForIndex(KN.page, KN.renderPage);
+//         } else {
+//             KN.renderPage();
+//         }
+//     },
+//     error: function() {
+//         KN.pageNotFound();
+//     }
+// });
+*/
