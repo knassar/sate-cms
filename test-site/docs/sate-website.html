@@ -86,10 +86,13 @@ When serving pages, Sate maps the above structure to URLs like so:
 </table>
 
 <p>
-    Each of these files is an HTML Fragment file which contains "Just Enough" content to render the page when combined with the data from website.json. Any of these blocks may be omitted, and Sate will generally do the right thing.
+    Each of these files is an HTML Fragment file which contains "Just Enough" content to render the page when combined with the data from website.json.
 </p>
 <p>
-There are currently 3 blocks that Sate will look for in a content file (all are optional):
+    Sate is built on the concept of "template inversion", which means that in the file for each page, you write &amp; declare only the details that are different for that page. There's no need to include common headers, footers, includes, etc, unless those elements differ from the rest of the site. And when any element does differ on a given page, <a href="/docs/sate-chain">the chain</a> lets you override previously established properties at the individual page level.
+</p>
+<p>
+There are currently 3 blocks that Sate will look for in a content file. Any of these blocks may be omitted, and Sate will generally do the right thing:
 </p>
 <table>  
     <tr><th>Block           </th><th>Purpose</th></tr>
@@ -103,9 +106,7 @@ Blocks are represented by Mustache.js comment brackets surrounding HTML-style ta
 
 <pre>
 &#123&#123!blockName&#125&#125
-    
     block content
-    
 &#123&#123!/blockName&#125&#125
 </pre>
 
@@ -135,7 +136,7 @@ Blocks are represented by Mustache.js comment brackets surrounding HTML-style ta
         Here&#x27;s where the meat of the page goes
             ... 
         this is just Plain-ole HTML
-    &amp;lt;/p&gt;
+    &lt;/p&gt;
     &lt;script type="text/javascript"&gt;
         $(function() {
             // Here&#x27;s where I can hook up any page-level scripts I want to run.
@@ -143,4 +144,5 @@ Blocks are represented by Mustache.js comment brackets surrounding HTML-style ta
     &lt;/script&gt;
 &#123&#123!/content&#125&#125
 </pre>
+<div class="content-footer">next: <a href="/docs/sate-chain" class="next">The Chain</a></div>
 {{!/content}}

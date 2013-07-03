@@ -24,7 +24,7 @@
 }
 
 #mainMenu li a:hover {
-    color: orange;
+    color: #c90;
 }
 
 #mainMenu > li {
@@ -59,12 +59,21 @@
     display: block;
     position: absolute;
     background-color: white;
-    box-shadow: #999 0 2px 5px;
-    padding: 2.5em 1em 0.5em;
-    top: -0.25em;
+    box-shadow: #999 0px 4px 5px;
+    padding: 0.5em 1em 1em 0.5em;
+    top: 2em;
+    left: -0.25em;
     z-index: 1;
 }
 
+#mainMenu > li:hover > ul::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1em;
+    top: -0.5em;
+    left: 0;
+}
 
 #pageMenu {
     float: left;
@@ -87,7 +96,7 @@
 }
 
 #pageMenu li a:hover::before {
-    font-family: "Helvetica Neue", "Helvetica", "Arial Narrow", "Arial", serif;
+    font-family: "Helvetica Neue", "Arial Narrow", "Helvetica", "Arial", serif;
     content: "\203A";
     position: absolute;
     top: 0;
