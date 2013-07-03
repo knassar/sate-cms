@@ -16,6 +16,9 @@
                         "sate-website": {
                             "name": "Anatomy of a Sate website"
                         },
+                        "sate-chain": {
+                            "name": "The Chain"
+                        },
                         "using-sate": {
                             "name": "Using Sate"
                         }
@@ -24,6 +27,9 @@
                         "sub": [
                             {
                                 "url": "/docs/sate-website"
+                            },
+                            {
+                                "url": "/docs/sate-chain"
                             },
                             {
                                 "url": "/docs/using-sate"

@@ -28,3 +28,9 @@ td.r
 {
     text-align: right;
 }
+
+th.nowrap,
+td.nowrap 
+{
+    white-space: nowrap;
+}
