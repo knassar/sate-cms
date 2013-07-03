@@ -1,0 +1,163 @@
+{{!content}}
+    <p>
+        A website using Sate would is structured in two parts: 
+    </p>
+    <ol>
+        <li>A JSON file containing the site configuration and an object map of all the website's pages</li>
+        <li>A file structure in which each "page" in the site is represented by an HTML file</li>
+    </ol>
+
+    <h3>The Sate website.json</h3>
+    <p>
+        This file Contains two major areas, the site-level configuration, and the map of pages to be served. Here's an example of a Site website.json file:
+    </p>
+<pre class="json">
+{
+    "siteConfig": {
+        "title": "MySite.com"
+    },
+    "siteMap": {
+        "index": {
+            "type": Sate.PageType.Index,
+            "name": "MySite.com",
+            "menu": {
+                "name": "Home",
+                "sub": [
+                    {
+                        "path": "about/this-site", 
+                        "name": "About Us"
+                    },
+                    {
+                        "path": "about/resume"
+                    }
+                ]
+            }
+        }),
+        "about": {
+            "type": Sate.PageType.Index,
+            "name": "About",
+            "title": "About MySite.com",
+            "subPages": {
+                "resume": {
+                    "name": "My Resume"
+                },
+                "this-site": {
+                    "type": Sate.PageType.Article,
+                    "name": "About this Site"
+                })
+            },
+            "menu": {
+                "path": 'about',
+                "sub": [
+                    {
+                        "deep": true,
+                        "path": "about/resume",
+                    },
+                    {
+                        "deep": true,
+                        "path": "about/this-site",
+                    }
+                ]
+            }
+        })
+    }
+}
+</pre>
+
+<p>
+    Note that even within the site specification, there are several layers of defaults &amp; overrides. 
+</p>
+<ul>
+    <li>At 'siteMap.index', "title" is not defined, so it defaults up to the root title: "MySite.com"</li>
+    <li>'siteMap.about.title', overrides this for the 'about' page and its sub-pages</li>
+    <li>'siteMap.about' declares a menu, while it's child pages (ie: 'siteMap.about.resume', etc) don't. They inherit their parent's menu.</li>
+    <li>'siteMap.about.this-site' declares its page name to be "About this Site", which is also displayed in the menu for 'siteMap.about' however, the menu declared for the homepage ('siteMap.index.menu.sub[0]') which points at the same page lists the page name as "About Us".</li>
+    <li>The second menu item on the index page ('siteMap.index.menu.sub[1]') lists a path ('about/resume'), but no name attribute. In this case, Sate will use the name attribute declared at that path in the sitemap ('about/resume' = 'about.resume' = "My Resume") for the sub-menu item on the home page.</li>
+    <li>Note the "type" attribute on pages... Sate.PageType.Index will automatically create a "digest" page containing the intro sections of each page in its 'subPages' property, and will even sort them according to a 'sortType' if declared (defaults to "Date Descending")</li>
+    <li>if the 'type' property of a page is omitted (as in 'about.resume'), it will be inferred by inspecting the page path: 
+        <ul>
+            <li>if the page path resolves to an explicit file ('./site/about/resume.html') then Sate infers a type of Sate.PageType.Article</li>
+            <li>if the page path resolves to an 'index.html' file then Sate infers a type of Sate.PageType.Index</li>
+        </ul>
+    </li>
+</ul>
+
+
+    <h3>The Sate site files</h3>
+<p>
+Given the website.json above, Sate will assume a file structure exists that looks like this:
+</p>
+<pre>
+    ./content
+        index.html
+        /about
+            index.html
+            resume.html
+            this-site.html
+</pre>
+
+<p>
+When serving pages, Sate maps the above structure to URLs like so:
+</p>
+
+<table>
+    <tr><th>URL</th><th>Content file path</th></tr>
+    <tr><td>[domain]/</td><td>./site/index.html</td></tr>
+    <tr><td>[domain]/about</td><td>./site/about/index.html</td></tr>
+    <tr><td>[domain]/about/resume</td><td>./site/about/resume.html</td></tr>
+    <tr><td>[domain]/about/this-site</td><td>./site/about/this-site.html</td></tr>
+</table>
+
+<p>
+    Each of these files is an HTML Fragment file which contains "Just Enough" content to render the page when combined with the data from website.json. Any of these blocks may be omitted, and Sate will generally do the right thing.
+</p>
+<p>
+There are currently 3 blocks that Sate will look for in a content file (all are optional):
+</p>
+<table>  
+    <tr><th>Block           </th><th>Purpose</th></tr>
+    <tr><td>pageData        </td><td>a JSON object to override website.json properies for this page</td></tr>
+    <tr><td>intro           </td><td>the Intro section markup for this page</td></tr>
+    <tr><td>content         </td><td>the Content section markup for this page</td></tr>
+</table>
+<p>
+Blocks are represented by Mustache.js comment brackets surrounding HTML-style tag opens/closes:
+</p>
+
+<pre>
+&#123&#123!blockName&#125&#125
+    
+    block content
+    
+&#123&#123!/blockName&#125&#125
+</pre>
+
+<p>
+    Here's an example of a content file using all 3 blocks:
+</p>
+
+<pre>
+&#123&#123!pageData&#125&#125
+    {
+        "date": '2013-06-13',
+        "title": "Some Good Title"
+    }
+&#123&#123!/pageData&#125&#125
+&#123&#123!intro&#125&#125
+    &lt;p&gt;Here&#x27;s some arbitrary intro text, which appears at the top of the page, but is also extracted and displayed in Index pages.&lt;/p&gt;
+    &lt;p class=&quot;cool&quot;&gt;Notice that there&#x27;s no repetition of the page name in this content&lt;/p&gt;
+&#123&#123!/intro&#125&#125
+&#123&#123!content&#125&#125
+    &lt;p&gt;
+        Here&#x27;s where the meat of the page goes
+            ... 
+        this is just Plain-ole HTML
+    &amp;lt;/p&gt;
+    &lt;script type="text/javascript"&gt;
+        $(function() {
+            // Here&#x27;s where I can hook up a page-specific jQuery plugin or any other page-level scripts I want to run.
+        });
+    &lt;/script&gt;
+&#123&#123!/content&#125&#125
+</pre>
+{{!/content}}

@@ -1,7 +1,7 @@
 
 #mainMenu {
     padding: 0.5em 1em;
-    box-shadow: #999 0 2px 5px;
+    box-shadow: #bbb 0 2px 5px;
 }
 
 #mainMenu,
@@ -64,3 +64,37 @@
     top: -0.25em;
     z-index: 1;
 }
+
+
+#pageMenu {
+    float: left;
+    width: 12em;
+    margin: 2em 1em;
+    padding: 0;
+    width: ;
+}
+
+#pageMenu li {
+    list-style: none;
+}
+
+#pageMenu li a {
+    position: relative;
+    display: inline-block;
+    padding: 0.125em 0.5em;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+#pageMenu li a:hover::before {
+    font-family: "Helvetica Neue", "Helvetica", "Arial Narrow", "Arial", serif;
+    content: "\203A";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -0.5rem;
+    vertical-align: middle;
+    font-size: 2rem;
+    font-weight: 100;
+}
+

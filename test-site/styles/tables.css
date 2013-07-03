@@ -1,0 +1,30 @@
+table {
+    border-collapse: collapse;
+    margin-bottom: 2em;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.25em 1em;
+    vertical-align: top;
+}
+
+th {
+    border-bottom: #333 1px solid;
+}
+
+td {
+    border-top: #ddd 1px solid;
+}
+
+th.c,
+td.c 
+{
+    text-align: center;
+}
+
+th.r,
+td.r 
+{
+    text-align: right;
+}

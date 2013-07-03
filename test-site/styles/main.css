@@ -1,49 +1,18 @@
 @import url('masthead.css');
+@import url('breadcrumbs.css');
+@import url('typography.css');
+@import url('tables.css');
 
 body {
-    font-family: "Helvetica", "Arial", sans-serif;
-    font-weight: 200;
-    font-size: 14px;
-    line-height: 1.6em;
     padding: 10px 20px;
-}
-
-a {
-    color: orange;
-    text-decoration: underline;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-weight: 200;
-    margin: 0;
 }
 
 #pageBody {
     padding: 0.5em 1em;
 }
 
-#pageBody #breadcrumbs {
-    margin-top: 1em;
-}
-
-#pageBody #breadcrumbs .seppa {
-    display: inline-block;
-    vertical-align: top;
-    padding: 0 0.5em;
-}
-
-#pageBody #breadcrumbs .this-page {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0;
-    font-size: 1.5rem;
-    line-height: 1em;
-}
-
-#pageBody #breadcrumbs a {
-    display: inline-block;
-    font-size: 1rem;
-    line-height: 1em;
+.with-menu #pageBody {
+    margin-left: 16rem;
 }
 
 #copyright {
@@ -52,4 +21,19 @@ h1, h2, h3, h4, h5, h6 {
     border-top: #999 1px solid;
     font-size: 0.75rem;
     color: #999;
+}
+
+.todo {
+    background-color: #fd9;
+    color: black;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    border: orange 1px dashed;
+}
+
+.todo::before {
+    content: "@TODO:";
+    color: #c70;
+    font-weight: normal;
+    margin-right: 0.5em;
 }

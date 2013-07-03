@@ -1,0 +1,29 @@
+#breadcrumbs {
+    margin-top: 1em;
+    padding: 0 1em;
+}
+
+.with-menu #breadcrumbs {
+    margin-left: 16rem;
+}
+
+#breadcrumbs .seppa {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 0.5em;
+}
+
+#breadcrumbs .this-page {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1em;
+}
+
+#breadcrumbs a {
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1em;
+}
+

@@ -1,11 +1,40 @@
-{{!intro}}
-    <p>This is a Sate test page</p>
-{{!/intro}}
 {{!content}}
+    <h3>Basic principles</h3>
     <p>
-        Hello World!
+Sate is a minimum set of features built on top of a lightweight framework. Sate provides a developer-friendly CMS to drive a website. By using Javascript &amp; Node.js, it is highly portable, and modules can be written that function equally well as server-side pre-process directives and client-side dynamic widgets.
     </p>
-    <p>
-        In the future, this sample site will be the Sate documentation, but not until the API settles down enough to document.
-    </p>
+
+    <h3>Key Philosophies</h3>
+    <p>Design decisions in Sate have been driven by the following underlying philosophies:</p>
+    <div class="todo">Make this make more sense!</div>
+    <ul>
+        <li>Convention before Configuration - Unless something is genuinely unusual, there's no sense in making someone configure it... ship with intelligent defaults.</li>
+        <li>Override instead of Declare - If a value at one level is the same as one level up, don't make me declare it again.</li>
+        <li>Don't make me repeat myself - Default where possible, Template where necessary</li>
+    </ul>
+
+    <h3>Key features</h3>
+    <ul>
+        <li>Directly edit markup, styles, &amp; script as if you were hand-coding a site</li>
+        <li>Automatic modern CMS facilities such as:
+            <ul>
+                <li>breadcrumb navigation</li>
+                <li>digest pages</li>
+                <li>image galleries</li>
+            </ul>
+        </li>
+        <li>Content backing agnostic:
+            <ul>
+                <li>first version to use SCM as a content store (no database)</li>
+                <li>potential for Document (no-SQL) DB backing in future if desired</li>
+            </ul>
+        </li>
+        <li>Developer-friendly workflow:
+            <ul>
+                <li>run server in "Dev" mode for rapid iteration of site content (edit &amp; refresh)</li>
+                <li>run server in "Live" mode for dynamic page serving (enabled dynamic behaviors)</li>
+                <li>deploy entire site as static pages for high-performance</li>
+            </ul>
+        </li>
+    </ul>
 {{!/content}}

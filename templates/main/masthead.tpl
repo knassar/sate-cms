@@ -7,8 +7,9 @@
     <ul id="mainMenu">
         {{# siteMenu}}
         <li class="{{attr.classNames}} {{active}}"><a href="{{url}}">{{name}}</a>
+            {{#hasSubItems}}
             <ul class="sub-menu">
-            {{# sub}}
+                {{#sub}}
                 <li class="{{className}} {{#deep}}deep{{/deep}} {{#subtitle}}subtitle{{/subtitle}}">
                     {{# url}}
                     <a href="{{url}}">
@@ -18,8 +19,9 @@
                     </a>
                     {{/url}}
                 </li>
-            {{/sub}}
+                {{/sub}}
             </ul>
+            {{/hasSubItems}}
             </li>
         {{/siteMenu}}
     </ul>

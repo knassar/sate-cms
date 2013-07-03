@@ -18,10 +18,12 @@ function MenuItem(page, props, website, Sate) {
             }, 
             props, 
             {
-                // page: page,
                 typeOf: 'Sate.MenuItem',
                 active: function() {
                     return (this.isActive) ? 'active' : '';
+                },
+                hasSubItems: function() {
+                    return this.sub && this.sub.length > 0;
                 }
             }
         );
@@ -30,13 +32,13 @@ function MenuItem(page, props, website, Sate) {
 
     var menuItem = createMenuItem(page, props, website);
     
-    if (menuItem.sub.length > 0) {
+    if (menuItem.sub && menuItem.sub.length > 0) {
         for (var i=0; i < menuItem.sub.length; i++) {
             var target = website.pageForPath(menuItem.sub[i].url);
             menuItem.sub[i] = createMenuItem(target, menuItem.sub[i], website);
         }
     }
-
+    
     return menuItem;
 }
 module.exports = MenuItem;

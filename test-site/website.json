@@ -7,47 +7,37 @@
     "siteMap": {
         "home": {
             "type": "Sate.PageType.Index",
-            "name": "Sate",
+            "name": " ",
             "subPages": {
-                "about": {
+                "docs": {
                     "type": "Sate.PageType.Index",
-                    "name": "About",
-                    "title": "About Sate",
+                    "name": "Documentation",
                     "subPages": {
-                        "resume": {
-                            "name": "My Resume"
+                        "sate-website": {
+                            "name": "Anatomy of a Sate website"
                         },
-                        "this-site": {
-                            "type": "Sate.PageType.Article",
-                            "name": "About this Site"
+                        "using-sate": {
+                            "name": "Using Sate"
                         }
                     },
                     "menu": {
-                        "url": "/about",
                         "sub": [
                             {
-                                "deep": true,
-                                "url": "/about/resume"
+                                "url": "/docs/sate-website"
                             },
                             {
-                                "deep": true,
-                                "url": "/about/this-site"
+                                "url": "/docs/using-sate"
                             }
                         ]
                     }
+                },
+                "about": {
+                    "type": "Sate.PageType.Article",
+                    "name": "About Sate"
                 }
             },
             "menu": {
-                "name": "Home",
-                "sub": [
-                    {
-                        "url": "/about/this-site", 
-                        "name": "About Us"
-                    },
-                    {
-                        "url": "/about/resume"
-                    }
-                ]
+                "name": "Home"
             }
         }
     }

@@ -142,7 +142,30 @@ function Page(id, props, parent, website, Sate) {
         }
     };
 
-    var page = extend(true, 
+    var initialize = function(page, website, Sate) {
+        resolveType(page);
+
+        if (page.isRoot) {
+            page.url = website.siteConfig.rootPageUrl;
+            page.contentPath = path.join(website.siteConfig.content, 'index.html');
+        } else {
+            page.url = [page.parent.url, page.id].join('/').replace(/[\/]+/g, '/');
+            if (page.type === Sate.PageType.Index) {
+                page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
+                page.articles = [];
+            } else {
+                page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
+            }
+        }
+        if (!page.name) {
+            page.name = Sate.utils.toTitleCase(page.id);
+        }
+        if (!page.subtitle && page.name) {
+            page.subtitle = page.name;
+        }
+    }
+
+    var newPage = extend(true, 
         {
             name: "untitled page",
             menu: null,
@@ -205,37 +228,22 @@ function Page(id, props, parent, website, Sate) {
                 };
             },
             breadcrumbs: require('./sate-modules/breadcrumbs'),
+            hasBreadcrumbs: function() {
+                return !this.isRoot && !this.parent.isRoot;
+            },
             render: function() {
                 this.resolveSiteMenu();
                 this.classNames = this.classNamesString();
+                console.log( this.menu );
                 var html = Mustache.render(this.partials.html, this, this.partials);
                 return html;
             }
         }
     );
     
-    resolveType(page);
+    initialize(newPage, website, Sate);
 
-    if (page.isRoot) {
-        page.url = website.siteConfig.rootPageUrl;
-        page.contentPath = path.join(website.siteConfig.content, 'index.html');
-    } else {
-        page.url = [page.parent.url, page.id].join('/').replace(/[\/]+/g, '/');
-        if (page.type === Sate.PageType.Index) {
-            page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
-            page.articles = [];
-        } else {
-            page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
-        }
-    }
-    if (!page.name) {
-        page.name = Sate.utils.toTitleCase(page.id);
-    }
-    if (!page.subtitle && page.name) {
-        page.subtitle = page.name;
-    }
-
-    return page;
+    return newPage;
 }
 module.exports = Page;
 
