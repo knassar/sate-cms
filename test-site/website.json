@@ -7,7 +7,7 @@
     "siteMap": {
         "home": {
             "type": "Sate.PageType.Index",
-            "name": " ",
+            "name": false,
             "subPages": {
                 "docs": {
                     "type": "Sate.PageType.Index",

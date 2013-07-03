@@ -157,7 +157,9 @@ function Page(id, props, parent, website, Sate) {
                 page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
             }
         }
-        if (!page.name) {
+        if (page.name === false) {
+            page.name = '';
+        } else if (!page.name) {
             page.name = Sate.utils.toTitleCase(page.id);
         }
         if (!page.subtitle && page.name) {
@@ -229,7 +231,7 @@ function Page(id, props, parent, website, Sate) {
             },
             breadcrumbs: require('./sate-modules/breadcrumbs'),
             hasBreadcrumbs: function() {
-                return !this.isRoot && !this.parent.isRoot;
+                return this.name || (!this.isRoot && !this.parent.isRoot);
             },
             render: function() {
                 this.resolveSiteMenu();
