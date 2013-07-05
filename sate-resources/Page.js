@@ -230,6 +230,7 @@ function Page(id, props, parent, website, Sate) {
                 };
             },
             breadcrumbs: require('./sate-modules/breadcrumbs'),
+            sequenceNav: require('./sate-modules/sequenceNav'),
             hasBreadcrumbs: function() {
                 return this.name || (!this.isRoot && !this.parent.isRoot);
             },
@@ -243,7 +244,6 @@ function Page(id, props, parent, website, Sate) {
     );
     
     initialize(newPage, website, Sate);
-
     return newPage;
 }
 module.exports = Page;

@@ -116,11 +116,19 @@ function Website(jsonPath, flags, Sate) {
         var step = 'compile-page-'+page.url;
         compiler.stepStart(step);
         page.compile(function() {
+            console.log( 'compile - ',step );
             compiler.stepComplete(step);
         }, function(err) {
             compiler.stepError(step, err);
         });
     };
+    var compilePages = function(compiler, website) {
+        for (var path in website.pageByPath) {
+            if (website.pageByPath.hasOwnProperty(path)) {
+                compilePage(compiler, website.pageByPath[path]);
+            }
+        }
+    }
     
     var mergeConfig = function() {
         website.siteConfig = extend(true, 
@@ -192,22 +200,19 @@ function Website(jsonPath, flags, Sate) {
                             compilePartial(compiler, t);
                         }
                     }
-                    // console.log( this );
 
                     // also in parallel
                     compiler.stepStart('generateIndexes');
+                    var self = this;
                     generateIndexes(this, function() {
                         compiler.stepComplete('generateIndexes');
+
+                        // then:
+                        compilePages(compiler, self);
                     }, function(err) {
                         compiler.stepError('generateIndexes', err);
                     });
-        
-                    // then:
-                    for (var path in this.pageByPath) {
-                        if (this.pageByPath.hasOwnProperty(path)) {
-                            compilePage(compiler, this.pageByPath[path]);
-                        }
-                    }
+
                 }, function(err) {
                     console.log( err );
                 });

@@ -1,0 +1,21 @@
+.sequence-nav {
+    position: relative;
+    margin-top: 3em;
+}
+.sequence-nav::after {
+    content: "";
+    display: block;
+    clear: left;
+}
+
+.sequence-nav .previous {
+    float: left;
+}
+
+.sequence-nav .next {
+    text-align: right;
+}
+
+.sequence-nav .previous {
+    font-size: 0.75rem;
+}

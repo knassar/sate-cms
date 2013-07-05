@@ -36,8 +36,11 @@ function Compiler(target, complete, failed) {
             this.compileSteps.push(stepName);
         },
         stepComplete: function(stepName) {
-            unmarkCompileStep(this, stepName);
-            checkCompileComplete(this);
+            var compiler = this;
+            process.nextTick(function() {
+                unmarkCompileStep(compiler, stepName);
+                checkCompileComplete(compiler);
+            });
         },
         stepError: function(stepName, err) {
             unmarkCompileStep(this, stepName);
@@ -49,7 +52,10 @@ function Compiler(target, complete, failed) {
             this.failedCallback.apply(this.target, [this.compileErrors, this.compileSteps]);
         },
         complete: function() {
-            this.completeCallback.apply(this.target, [this.compileErrors]);
+            var compiler = this;
+            process.nextTick(function() {
+                compiler.completeCallback.apply(compiler.target, [compiler.compileErrors]);
+            });
         }
     };
     return compiler;

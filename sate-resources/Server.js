@@ -49,7 +49,9 @@
                     writeHeadersForType(res, type);
                     if (type == RequestTargetType.Page) {
                         website.recompile(function(errors) {
-                            res.end(website.pageForPath(req.url).render());
+                            process.nextTick(function() {
+                                res.end(website.pageForPath(req.url).render());
+                            });
                         }, function(err) {
                             console.error(err);
                             exit(1);
