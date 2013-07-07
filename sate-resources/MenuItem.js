@@ -1,6 +1,15 @@
 function MenuItem(page, props, website, Sate) {
     var extend = require('node.extend');
 
+    var closestMenu = function(page) {
+        var p = page;
+        while (!p.menu && p.parent) {
+            p = p.parent;
+        }
+        return p.menu;
+    };
+    
+
     var createMenuItem = function(page, props, website) {
         var menuItem = extend(true, 
             {
@@ -9,6 +18,7 @@ function MenuItem(page, props, website, Sate) {
                 attr: {},
                 sub: []
             },
+            closestMenu(page),
             { // derrived values
                 name: page.name,
                 url: page.url,

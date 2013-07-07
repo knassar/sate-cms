@@ -63,8 +63,6 @@
             return server;
         },
         ProductionServer: function(website, Sate) {
-            // @TODO: page-level menu compile not working quite right
-            console.log( "@TODO: ProductionServer isn't working quite right." );
             var server = baseServer(website, Sate);
             server.use(function(req, res) {
                     var type = determineRequestTargetType(req, res);

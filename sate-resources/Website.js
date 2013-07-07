@@ -116,7 +116,6 @@ function Website(jsonPath, flags, Sate) {
         var step = 'compile-page-'+page.url;
         compiler.stepStart(step);
         page.compile(function() {
-            console.log( 'compile - ',step );
             compiler.stepComplete(step);
         }, function(err) {
             compiler.stepError(step, err);
@@ -208,7 +207,9 @@ function Website(jsonPath, flags, Sate) {
                         compiler.stepComplete('generateIndexes');
 
                         // then:
-                        compilePages(compiler, self);
+                        process.nextTick(function() {
+                            compilePages(compiler, self);
+                        });
                     }, function(err) {
                         compiler.stepError('generateIndexes', err);
                     });
@@ -241,7 +242,7 @@ function Website(jsonPath, flags, Sate) {
                 var page = website.pageByPath[filePath];
                 if (page) {
                     // if we have a page, make sure we have menu
-                    page.menu = website.menuByPage(page);
+                    // page.menu = website.menuByPage(page);
                 } else {
                     // @TODO: return the 404 page here
                 }

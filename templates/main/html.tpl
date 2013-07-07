@@ -18,11 +18,11 @@
             <ul id="pageMenu">
                 {{#menu.sub}}
                 <li class="{{className}} {{#deep}}deep{{/deep}} {{#subtitle}}subtitle{{/subtitle}}">
-                    {{# url}}
+                    {{#url}}
                     <a href="{{url}}">
                     {{/url}}
                         {{name}}
-                    {{# url}}
+                    {{#url}}
                     </a>
                     {{/url}}
                 </li>

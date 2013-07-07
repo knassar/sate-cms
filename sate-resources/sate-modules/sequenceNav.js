@@ -7,7 +7,7 @@ var sequenceItemTpl = '<div class="{{nextPrev}}"><span class="prompt">{{nextPrev
 module.exports = function() {
     var seq = this.sequence;
     if (!seq && this.menu && this.menu.sub) {
-        var seq = this.menu.sub.splice(0, this.menu.sub.length);
+        var seq = this.menu.sub.slice(0, this.menu.sub.length);
     }
     nav = [];
     currPageIdx = -1;
