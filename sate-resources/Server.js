@@ -60,13 +60,22 @@
                         res.end(website.resourceForPath(req.url));
                     }
                 }).listen(website.siteConfig.port);
-            server.beforePageRequest = function(ready, err) {
-                success();
-            };
             return server;
         },
         ProductionServer: function(website, Sate) {
-            throw new Error("Production Server not yet implemented");
+            // @TODO: page-level menu compile not working quite right
+            console.log( "@TODO: ProductionServer isn't working quite right." );
+            var server = baseServer(website, Sate);
+            server.use(function(req, res) {
+                    var type = determineRequestTargetType(req, res);
+                    writeHeadersForType(res, type);
+                    if (type == RequestTargetType.Page) {
+                        res.end(website.pageForPath(req.url).render());
+                    } else {
+                        res.end(website.resourceForPath(req.url));
+                    }
+                }).listen(website.siteConfig.port);
+            return server;
         }
     };
 }());

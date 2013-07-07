@@ -209,13 +209,16 @@
                 // @TODO: Parse out errors from compile
             },
             run: function() {
-                console.log( "RUN" );
-                // flow: 
-                // parse and create a Sate.Website
-                //  > traverse each page:
-                //      > parse and compile Sate.Page
-                //  > initialize the server:
-                //      > render & return requested Page
+                logBox( ["Starting Sate - Run"] );
+                console.log( " +-> processing website config..." );
+                this.site = sateApp.createWebsite();
+                this.site.compile(function() {
+                    // flow: 
+                    // initialize the server:
+                    console.log( " +-> starting server..." );
+                    console.log( " +---> listening on port "+sateApp.site.siteConfig.port+"..." );
+                    var server = new Sate.Server.ProductionServer(sateApp.site, Sate);
+                }, this.failWith);
             },
             deploy: function() {
                 console.log( "DEPLOY" );
