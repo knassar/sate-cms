@@ -235,6 +235,7 @@ function Page(id, props, parent, website, Sate) {
                 return this.name || (!this.isRoot && !this.parent.isRoot);
             },
             render: function() {
+                this.resolveSiteMenu();
                 this.classNames = this.classNamesString();
                 var html = Mustache.render(this.partials.html, this, this.partials);
                 return html;
