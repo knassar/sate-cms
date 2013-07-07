@@ -67,9 +67,7 @@ function Page(id, props, parent, website, Sate) {
     var partialCapturer = /\{\{\!([\w\d]+)\}\}([\s\S]*?)\{\{\!\//m;
     var processPageContent = function(page, data, success) {
         var pageData = null,
-            intro = null,
-            content = null;
-        var matches = data.match(pageDataMatcher);
+            matches = data.match(pageDataMatcher);
         
         if (matches && matches.length > 1) {
             pageData = JSON.parse(matches[1].trim());
@@ -85,6 +83,12 @@ function Page(id, props, parent, website, Sate) {
                     page.partials[partialCaps[1]] = partialCaps[2];
                 }
             }
+        }
+        if (!page.partials.intro) {
+            page.partials.intro = "<!-- no intro -->";
+        }
+        if (!page.partials.content) {
+            page.partials.content = "<!-- no content -->";
         }
         success();
     };
