@@ -5,13 +5,32 @@
 {{!/intro}}
 {{!content}}
     <p>
-        Any properties defined at each link in the Chain gets overridden in sequence from left to right by subsequent links.
+        Any properties defined at each link in the Chain gets overridden in sequence from left to right by subsequent links. Below is a basic diagram of the Chain in a Sate website.
     </p>
     <ol class="the-chain-diagram">
         <li><span>Sate Defaults</span></li>
         <li><span>website.json</span></li>
         <li><span>page content file's pageData</span></li>
         <li><span>Sate command-line flags</span></li>
+    </ol>
+    <p>There are several variations on this basic Chain of inheritance which apply to specific properties.</p>
+    <h3>The Config Chain</h3>
+    <p>
+
+    </p>
+    <ol class="the-chain-diagram">
+        <li><span>Sate Defaults</span></li>
+        <li><span>siteConfig in website.json</span></li>
+        <li><span>siteConfig in pageData block</span></li>
+        <li><span>Sate command-line flags</span></li>
+    </ol>
+    <h3>The Menu Chain</h3>
+    <p>
+
+    </p>
+    <ol class="the-chain-diagram">
+        <li><span>website.json page menu</span></li>
+        <li><span>page content file's pageData</span></li>
     </ol>
 <!-- <div class="content-footer">next: <a href="/docs/using-sate" class="next">Using Sate</a></div> -->
     {{{sequenceNav}}}
