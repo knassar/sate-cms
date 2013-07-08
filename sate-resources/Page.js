@@ -4,6 +4,8 @@ function Page(id, props, parent, website, Sate) {
         extend = require('node.extend'),
         Mustache = require('mustache'),
         Compiler = require('./Compiler'),
+        PageDataResolver = require('./PageDataResolver'),
+        resolver = new PageDataResolver(Sate),
         util = require("util");
 
     // var addArticleIntroToIndexPage = function(indexPage, subPageKey, articleContent) {
@@ -73,6 +75,7 @@ function Page(id, props, parent, website, Sate) {
             pageData = JSON.parse(matches[1].trim());
         }
         page = extend(true, page, pageData);
+        resolvePage(page);
         var partials = data.match(partialMatcher);
         page.partials = extend({}, website.compiledPartials, page.partials);
         if (partials && partials.length > 0) {
@@ -131,24 +134,13 @@ function Page(id, props, parent, website, Sate) {
         }
     };
 
-    var resolveType = function(page) {
-        if (!page.type) {
-            if (typeof page.subPages == 'object') {
-                page.type = Sate.PageType.Index;
-            } else {
-                page.type = Sate.PageType.Article;
-            }
-        } else if (typeof page.type == 'string') {
-            var parts = page.type.split('.');
-            if (parts.length == 3 && parts[0] == 'Sate' && parts[1] == 'PageType') {
-                page.type = parts[2].toLowerCase(); 
-            }
-        }
-    };
+    var resolvePage = function(page) {
+        resolver.resolve(page);
+    }
 
     var initialize = function(page, website, Sate) {
-        resolveType(page);
-
+        resolvePage(page);
+        
         if (page.isRoot) {
             page.url = website.siteConfig.rootPageUrl;
             page.contentPath = path.join(website.siteConfig.content, 'index.html');

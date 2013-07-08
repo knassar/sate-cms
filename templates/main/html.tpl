@@ -34,11 +34,11 @@
         {{#hasBreadcrumbs}}
         <div id="breadcrumbs">{{{breadcrumbs}}}</div>
         {{/hasBreadcrumbs}}
-        {{# date}}
-            <div class="date">{{>longDate}}</div>
-        {{/date}}
         
         <div id="pageBody">
+            {{#date}}
+                <div class="date">{{>longDate}}</div>
+            {{/date}}
             {{>intro}}
             {{>content}}
         </div>
