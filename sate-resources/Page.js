@@ -182,8 +182,11 @@ function Page(id, props, parent, website, Sate) {
             compiled: false,
             typeOf: 'Sate.Page',
             isRoot: (id == website.siteConfig.rootPage),
-            compile: function(success, error) {
+            compile: function(success, error, withMetrics) {
                 var compiler = new Compiler(this, success, error);
+                if (withMetrics) {
+                    compiler.recordMetrics();
+                }
                 compiler.stepStart('load-content');
                 loadPageContent(this, function() {
                     compiler.stepComplete('load-content');

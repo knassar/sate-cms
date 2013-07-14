@@ -112,19 +112,19 @@ function Website(jsonPath, flags, Sate) {
             compiler.stepError(step, err);
         });
     };
-    var compilePage = function(compiler, page) {
+    var compilePage = function(compiler, page, withMetrics) {
         var step = 'compile-page-'+page.url;
         compiler.stepStart(step);
         page.compile(function() {
             compiler.stepComplete(step);
         }, function(err) {
             compiler.stepError(step, err);
-        });
+        }, withMetrics);
     };
-    var compilePages = function(compiler, website) {
+    var compilePages = function(compiler, website, withMetrics) {
         for (var path in website.pageByPath) {
             if (website.pageByPath.hasOwnProperty(path)) {
-                compilePage(compiler, website.pageByPath[path]);
+                compilePage(compiler, website.pageByPath[path], withMetrics);
             }
         }
     }
@@ -188,9 +188,11 @@ function Website(jsonPath, flags, Sate) {
             pageByPath: {},
             siteMenu: [],
             breadcrumbs: require('./sate-modules/breadcrumbs'),
-            compile: function(success, error) {
+            compile: function(success, error, withMetrics) {
                 var compiler = new Compiler(this, success, error);
-                
+                if (withMetrics) {
+                    compiler.recordMetrics();
+                }
                 // first:
                 loadWebsiteJSON(this.jsonPath, function() {                    
                     // then in parallel
@@ -208,7 +210,7 @@ function Website(jsonPath, flags, Sate) {
 
                         // then:
                         process.nextTick(function() {
-                            compilePages(compiler, self);
+                            compilePages(compiler, self, withMetrics);
                         });
                     }, function(err) {
                         compiler.stepError('generateIndexes', err);
