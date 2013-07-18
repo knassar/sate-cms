@@ -171,7 +171,11 @@ function Page(id, props, parent, website, Sate) {
             type: Sate.PageType.Empty,
             subPages: null,
             encoding: website.siteConfig.encoding,
-            classNames: []
+            classNames: [],
+            modules: [
+                {type: 'breadcrumbs'},
+                {type: 'sequenceNav'}
+            ]
         },
         website.siteConfig,
         props, 
@@ -228,8 +232,6 @@ function Page(id, props, parent, website, Sate) {
                     this.siteMenu[i].isActive = (this.siteMenu[i].url == rootUrl);
                 };
             },
-            breadcrumbs: require('./sate-modules/breadcrumbs'),
-            sequenceNav: require('./sate-modules/sequenceNav'),
             hasBreadcrumbs: function() {
                 return this.name || (!this.isRoot && !this.parent.isRoot);
             },

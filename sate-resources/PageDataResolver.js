@@ -23,8 +23,17 @@ var resolveModules = function(page) {
     for (var i=0; i < page.modules.length; i++) {
         if (page.modules[i].resolved) continue; // skip alread-resolved modules
         if (!page.modules[i].type) throw new Error("cannot resolve module declared without 'type' at index: "+i);
-        var ModuleClass = require(modulePath(page.modules[i].type));
-        var resolvedModule = new ModuleClass(page.modules[i], page);
+        var Module = require(modulePath(page.modules[i].type));
+        var resolvedModule;
+        if (Module.Constructor) {
+            resolvedModule = new Module.Constructor(page.modules[i], page);
+        } else {
+            resolvedModule = page.modules[i];
+        }
+        if (Module.renderer) {
+            // @TODO: Probably need to namespace modules somehow
+            page[page.modules[i].type] = Module.renderer;
+        }
         resolvedModule.resovled = true;
         resolvedModules.push(resolvedModule);
     };

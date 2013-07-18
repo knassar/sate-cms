@@ -64,7 +64,7 @@ function Gallery(props, page) {
                 // make sure ImageMagick binaries are installed
                 im.identify('im-test.jpg', function() {});
             } catch (err) {
-                // TODO: Handle this better, or ditch ImageMagick
+                // @TODO: Handle this better, or ditch ImageMagick
                 console.error("ImageMagick binaries not installed");
                 process.exit(1);
             }
@@ -75,5 +75,13 @@ function Gallery(props, page) {
     gallery.init();
     return gallery;
 }
-module.exports = Gallery;
+
+var renderGallery = function(galleryNameOrHeroesPath) {
+    return "FOOBAR: "+galleryNameOrHeroesPath;
+};
+
+module.exports = {
+    Constructor: Gallery,
+    renderer: renderGallery
+};
 
