@@ -64,7 +64,7 @@ function Page(id, props, parent, website, Sate) {
     //     }
     // };
 
-    var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\<\//m;
+    var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
     var partialMatcher = /\{\{\<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{\<\/[\w\d]+\}\}/mg;
     var partialCapturer = /\{\{\<([\w\d]+)\}\}([\s\S]*?)\{\{\<\//m;
     var processPageContent = function(page, data, success) {
