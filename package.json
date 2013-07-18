@@ -1,25 +1,48 @@
 {
-  "name": "satejs",
-  "version": "0.0.0",
-  "description": "Sate provides a developer-friendly CMS to drive a website. By using Javascript & Node.js, it is highly portable, and modules can be written that function equally well as server-side pre-process directives and client-side dynamic widgets.",
+  "name": "satecms",
+  "version": "0.0.1",
+  "description": "Sate provides a developer-friendly CMS to drive a website.",
   "main": "sate.js",
+  "preferGlobal": true,
+  "private": true,
+  
   "dependencies": {
-    "connect": "~2.8.1",
-    "mustache": "~0.7.2",
-    "node.extend": "~1.0.7"
+    "connect": "latest",
+    "mustache": "latest",
+    "node.extend": "latest"
   },
-  "devDependencies": {},
+  
+  "bin": {
+      "satecms": "./sate.js"
+  },
+  
+  "os": [
+    "!win32",
+    "!win64"
+  ],
+  
+  "devDependencies": {
+      
+  },
+  
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"TODO: Build a test suite\""
   },
+  
   "repository": {
     "type": "git",
     "url": "https://github.com/knassar/karimnassar.com.git"
   },
-  "author": "Karim Nassar, Patrick Ortiz",
-  "license": "BSD",
-  "gitHead": "5dd8b86492e6741d26b492be7215892de9b6efe8",
-  "bugs": {
-    "url": "https://github.com/knassar/karimnassar.com/issues"
-  }
+  
+  "contributors": [
+    {
+        "name": "Karim Nassar",
+        "email": "knassar@knassar.com",
+        "url": "http://www.knassar.com"
+    },
+    {
+        "name": "Patrick Ortiz",
+        "email": "pogithub@gmail.com"
+    }
+  ]
 }

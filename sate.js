@@ -1,3 +1,5 @@
+#!/usr/bin/env node // makes the script executable on it's own as a cli
+
 (function(){
     // @TODO: Real dependency management: make this into a node package!
     try {
