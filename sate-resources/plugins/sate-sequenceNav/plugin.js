@@ -44,11 +44,14 @@ module.exports = function(Sate) {
                     nav.push(Mustache.render(sequenceItemTpl, item));
                 }
                 if (currPageIdx === 0) {
-                    nav = nav.slice(1, 2);
+                    nav = nav.slice(0, 2);
                 } else if (currPageIdx == seq.length-1) {
-                    nav = nav.slice(currPageIdx-1, 2);
+                    nav = nav.slice(currPageIdx-1);
                 } else {
-                    nav = nav.slice(currPageIdx-1, 3);
+                    nav = nav.slice(currPageIdx-1);
+                    if (nav.length > 3) {
+                        nav.length = 3;
+                    }
                 }
                 return '<div class="sequence-nav">' + nav.join('') + '</div>';
             };
