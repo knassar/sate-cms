@@ -230,11 +230,11 @@ Blocks are represented by Mustache.js comment brackets surrounding HTML-style ta
 
 ~~~~~~~~~~~
 
-{{!blockName}}
+{{<blockName}}
     
     block content
     
-{{!/blockName}}
+{{</blockName}}
 
 ~~~~~~~~~~~
 
@@ -242,17 +242,17 @@ Here's an example of a content file using all 3 blocks:
 
 ~~~~~~~~~~~
 
-{{!pageData}}
+{{#pageData}}
     {
         "date": '2013-06-13',
         "title": "Some Good Title"
     }
-{{!/pageData}}
-{{!intro}}
+{{/pageData}}
+{{<intro}}
     <p>Here's some arbitrary intro text, which appears at the top of the page, but is also extracted and displayed in Index pages.</p>
     <p class="cool">Notice that there's no repetition of the page name in this content</p>
-{{!/intro}}
-{{!content}}
+{{</intro}}
+{{<content}}
     <p>
         Here's where the meat of the page goes
             ... 
@@ -263,7 +263,7 @@ Here's an example of a content file using all 3 blocks:
             // Here's where I can hook up a page-specific jQuery plugin or any other page-level scripts I want to run.
         });
     </script>
-{{!/content}}
+{{</content}}
 
 ~~~~~~~~~~~
 
@@ -310,7 +310,7 @@ Each time Sate compiles a page, the following steps occur:
         a. Sate.Page.defaults data
         b. website.json siteConfig data
         b. website.json siteMap[page] data
-        c. page content file {{!pageData}}{{!/pageData}} block
+        c. page content file {{#pageData}}{{/pageData}} block
 
 
     Page Render
