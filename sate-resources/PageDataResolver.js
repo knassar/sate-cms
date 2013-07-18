@@ -15,29 +15,32 @@ var resolvePageType = function(page, Sate) {
     }
 };
 
-var resolveModules = function(page) {
-    var resolvedModules = [];
-    var modulePath = function(type) {
-        return /\.js$/.test(type) ? type : './sate-modules/'+type+'.js';
+var resolvePlugins = function(page, Sate) {
+    var resolvedPlugins = [];
+    var pluginPath = function(type) {
+        return './plugins/'+type+'/plugin.js';
     };
-    for (var i=0; i < page.modules.length; i++) {
-        if (page.modules[i].resolved) continue; // skip alread-resolved modules
-        if (!page.modules[i].type) throw new Error("cannot resolve module declared without 'type' at index: "+i);
-        var Module = require(modulePath(page.modules[i].type));
-        var resolvedModule;
-        if (Module.Constructor) {
-            resolvedModule = new Module.Constructor(page.modules[i], page);
+    for (var i=0; i < page.plugins.length; i++) {
+        if (page.plugins[i].resolved) continue; // skip alread-resolved plugins
+        if (!page.plugins[i].type) throw new Error("cannot resolve plugin declared without 'type' at index: "+i);
+        var pluginLoader = require(pluginPath(page.plugins[i].type));
+        var PluginModule = pluginLoader(Sate);
+        var resolvedPlugin;
+        if (PluginModule.compiler) {
+            resolvedPlugin = new PluginModule.compiler(page.plugins[i], page, Sate);
         } else {
-            resolvedModule = page.modules[i];
+            resolvedPlugin = page.plugins[i];
         }
-        if (Module.renderer) {
-            // @TODO: Probably need to namespace modules somehow
-            page[page.modules[i].type] = Module.renderer;
+        if (PluginModule.renderer) {
+            page['plugin-'+page.plugins[i].type] = PluginModule.renderer;
         }
-        resolvedModule.resovled = true;
-        resolvedModules.push(resolvedModule);
-    };
-    return resolvedModules;
+        resolvedPlugin.resovled = true;
+        resolvedPlugins.push(resolvedPlugin);
+        if (resolvedPlugin.id) {
+            resolvedPlugins[resolvedPlugin.id] = resolvedPlugin;
+        }
+    }
+    return resolvedPlugins;
 };
 
 var dateProps = [
@@ -50,14 +53,13 @@ var resolveDate = function(dateProp, page) {
 };
 
 function PageDataResolver(Sate) {
-    var Sate = Sate;
     var resolver = this;
-    resolver.resolve = function(page, Sate) {
+    resolver.resolve = function(page) {
         // resolve PageType constant
         resolvePageType(page);
         for (var prop in page) {
-            if (prop == 'modules' && util.isArray(page[prop])) {
-                page.modules = resolveModules(page);
+            if (prop == 'plugins' && util.isArray(page[prop])) {
+                page.plugins = resolvePlugins(page, Sate);
             } else if (dateProps.indexOf(prop) > -1 && typeof page[prop] == 'string') {
                 resolveDate(prop, page);
                 

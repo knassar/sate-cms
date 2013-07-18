@@ -1,0 +1,57 @@
+{{!pageData}}
+{
+    "plugins": [
+        {
+            "type": "hello-world",
+            "id": "hello-world-spanish",
+            "language": "spanish"
+        },
+        {
+            "type": "hello-world",
+            "id": "hello-world-german",
+            "language": "german"
+        }
+    ]
+}
+{{!/pageData}}
+{{!content}}
+    
+    <dl>
+        <dt>English (run-time): </dt>
+        <dd>
+            {{#plugin-hello-world}}
+            {
+                "language": "english"
+            }
+            {{/plugin-hello-world}}
+        </dd>
+        <dt>Spanish (using first compile-time plugin config):</dt>
+        <dd>
+            {{{plugin-hello-world}}}
+        </dd>
+        <dt>German (referencing an explicit compile-time plugin config):</dt>
+        <dd>
+            {{#plugin-hello-world}}
+            {
+                "id": "hello-world-german"
+            }
+            {{/plugin-hello-world}}
+        </dd>
+        <dt>Latin (run-time):</dt>
+        <dd>
+            {{#plugin-hello-world}}
+            {
+                "language": "latin"
+            }
+            {{/plugin-hello-world}}
+        </dd>
+        <dt>French (run-time, unsupported, falling back to default):</dt>
+        <dd>
+            {{#plugin-hello-world}}
+            {
+                "language": "french"
+            }
+            {{/plugin-hello-world}}
+        </dd>
+    </dl>
+{{!/content}}

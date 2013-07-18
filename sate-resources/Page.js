@@ -172,9 +172,9 @@ function Page(id, props, parent, website, Sate) {
             subPages: null,
             encoding: website.siteConfig.encoding,
             classNames: [],
-            modules: [
-                {type: 'breadcrumbs'},
-                {type: 'sequenceNav'}
+            plugins: [
+                {type: 'sate-breadcrumbs'},
+                {type: 'sate-sequenceNav'}
             ]
         },
         website.siteConfig,

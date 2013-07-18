@@ -32,7 +32,7 @@
         {{/menu}}
 
         {{#hasBreadcrumbs}}
-        <div id="breadcrumbs">{{{breadcrumbs}}}</div>
+        <div id="breadcrumbs">{{{plugin-sate-breadcrumbs}}}</div>
         {{/hasBreadcrumbs}}
         
         <div id="pageBody">

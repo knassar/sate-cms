@@ -2,7 +2,6 @@ function Website(jsonPath, flags, Sate) {
     var fs = require('fs'),
         path = require('path'),
         extend = require('node.extend'),
-        Mustache = require('mustache'),
         Compiler = require('./Compiler');
 
     var website = {};
@@ -61,10 +60,6 @@ function Website(jsonPath, flags, Sate) {
         } catch (err) {
             error(err);
         }
-    };
-
-    var siteRelativePath = function() {
-        return window.location.pathname.replace(website.root, '').replace(/\/$/, '');
     };
 
     var loadTemplate = function(t, coll, success, error) {
@@ -127,7 +122,7 @@ function Website(jsonPath, flags, Sate) {
                 compilePage(compiler, website.pageByPath[path], withMetrics);
             }
         }
-    }
+    };
     
     var mergeConfig = function() {
         website.siteConfig = extend(true, 
@@ -187,7 +182,6 @@ function Website(jsonPath, flags, Sate) {
             compiledPartials: {},
             pageByPath: {},
             siteMenu: [],
-            breadcrumbs: require('./sate-modules/breadcrumbs'),
             compile: function(success, error, withMetrics) {
                 var compiler = new Compiler(this, success, error);
                 if (withMetrics) {

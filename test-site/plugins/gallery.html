@@ -1,0 +1,25 @@
+{{!pageData}}
+    {
+        "plugins": [
+            {
+                "type": "sate-gallery",
+                "imagesPath": "./images/gallery"
+            }
+        ]
+    }
+{{!/pageData}}
+{{!intro}}
+
+{{!/intro}}
+{{!content}}
+    {{#plugin-sate-gallery}}
+    {
+        "name": "Foobar"
+    }
+    {{/plugin-sate-gallery}}
+    {{#plugin-sate-gallery}}
+    {
+        "imagesPath": "foo/bar"
+    }
+    {{/plugin-sate-gallery}}
+{{!/content}}
