@@ -41,6 +41,34 @@
                         ]
                     }
                 },
+                "modules": {
+                    "type": "Sate.PageType.Index",
+                    "name": "Modules",
+                    "subPages": {
+                        "breadcrumb-nav": {
+                            "name": "Breadcrumbs"
+                        },
+                        "sequence-nav": {
+                            "name": "Sequence Navigation"
+                        },
+                        "gallery": {
+                            "name": "Gallery"
+                        }
+                    },
+                    "menu": {
+                        "sub": [
+                            {
+                                "url": "/modules/breadcrumb-nav"
+                            },
+                            {
+                                "url": "/modules/sequence-nav"
+                            },
+                            {
+                                "url": "/modules/gallery"
+                            }
+                        ]
+                    }
+                },
                 "about": {
                     "type": "Sate.PageType.Article",
                     "name": "About Sate"

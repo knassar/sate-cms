@@ -1,3 +1,5 @@
+var util = require('util');
+
 var resolvePageType = function(page, Sate) {
     if (!page.type) {
         if (typeof page.subPages == 'object') {
@@ -11,6 +13,22 @@ var resolvePageType = function(page, Sate) {
             page.type = parts[2].toLowerCase(); 
         }
     }
+};
+
+var resolveModules = function(page) {
+    var resolvedModules = [];
+    var modulePath = function(type) {
+        return /\.js$/.test(type) ? type : './sate-modules/'+type+'.js';
+    };
+    for (var i=0; i < page.modules.length; i++) {
+        if (page.modules[i].resolved) continue; // skip alread-resolved modules
+        if (!page.modules[i].type) throw new Error("cannot resolve module declared without 'type' at index: "+i);
+        var ModuleClass = require(modulePath(page.modules[i].type));
+        var resolvedModule = new ModuleClass(page.modules[i], page);
+        resolvedModule.resovled = true;
+        resolvedModules.push(resolvedModule);
+    };
+    return resolvedModules;
 };
 
 var dateProps = [
@@ -29,8 +47,11 @@ function PageDataResolver(Sate) {
         // resolve PageType constant
         resolvePageType(page);
         for (var prop in page) {
-            if (dateProps.indexOf(prop) > -1 && typeof page[prop] == 'string') {
+            if (prop == 'modules' && util.isArray(page[prop])) {
+                page.modules = resolveModules(page);
+            } else if (dateProps.indexOf(prop) > -1 && typeof page[prop] == 'string') {
                 resolveDate(prop, page);
+                
             }
         }
         
