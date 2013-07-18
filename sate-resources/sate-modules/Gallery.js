@@ -29,10 +29,6 @@ function Gallery(props, page) {
 
     var makeThumbnailImage = function(imagePath, gallery) {
         filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
-        console.log( path.join(page.content, gallery.imagesPath, imagePath), filenameBase );
-        // im.identify(path.join(page.content, gallery.imagesPath, imagePath), function(err, features) {
-        //     console.log( err, features );
-        // });
         im.resize({
             srcPath: path.join(page.content, gallery.imagesPath, imagePath),
             dstPath: path.join(page.content, gallery.thumbnailsPath, filenameBase+'.'+gallery.thumbnail.format),
@@ -40,11 +36,11 @@ function Gallery(props, page) {
             format: gallery.thumbnail.format,
             width: gallery.thumbnail.width,
             height: gallery.thumbnail.height,
-            strip: true,
-            filter: 'Lagrange',
-            sharpening: 0.2
+            strip: true
         }, function(err, stdout, stderr) {
-            console.log( err );
+            if (err) {
+                console.log( err );
+            }
         });
     };
 
@@ -64,6 +60,14 @@ function Gallery(props, page) {
     props,
     {
         init: function() {
+            try {
+                // make sure ImageMagick binaries are installed
+                im.identify('im-test.jpg', function() {});
+            } catch (err) {
+                // TODO: Handle this better, or ditch ImageMagick
+                console.error("ImageMagick binaries not installed");
+                process.exit(1);
+            }
             processGallery(this);
         }
     });
