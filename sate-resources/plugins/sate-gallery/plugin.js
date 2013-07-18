@@ -82,17 +82,28 @@ module.exports = function(Sate) {
             return gallery;
         },
         renderer: function() {
+            var resolveConfig = function(config, page) {
+                if (config.id && page.plugins[config.id]) {
+                    var plug = page.plugins[config.id];
+                    config.heroesPath = plug.imagesPath;
+                    config.thumbsPath = plug.thumbnailsPath;
+                }
+                return config;
+            };
             return function(config, render) {
                 try { 
                     config = JSON.parse(config);
                 } catch (err) {
                     config = {};
                 }
-                if (config.name) {
-                    return "gallery by name: "+config.name;
-                } else if (config.imagesPath) {
-                    return "gallery by filepath: "+config.imagesPath;
-                }
+                config = resolveConfig(config, this);
+                var gallery = [
+                    '<ul>',
+                    '<li>thumbsPath: ', config.thumbsPath, '</li>',
+                    '<li>heroesPath: ', config.heroesPath, '</li>',
+                    '</ul>'
+                ];
+                return gallery.join("");
             };
         }
     };
