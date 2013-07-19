@@ -45,13 +45,8 @@ module.exports = function(Sate) {
                 }
                 if (currPageIdx === 0) {
                     nav = nav.slice(0, 2);
-                } else if (currPageIdx == seq.length-1) {
-                    nav = nav.slice(currPageIdx-1);
                 } else {
-                    nav = nav.slice(currPageIdx-1);
-                    if (nav.length > 3) {
-                        nav.length = 3;
-                    }
+                    nav = nav.slice(currPageIdx-1, currPageIdx+2);
                 }
                 return '<div class="sequence-nav">' + nav.join('') + '</div>';
             };
