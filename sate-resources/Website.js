@@ -182,8 +182,26 @@ function Website(jsonPath, flags, Sate) {
             compiledPartials: {},
             pageByPath: {},
             siteMenu: [],
+            isCompiling: false,
+            pendingRequests: [],
+            performAfterCompile: function(action) {
+                if (this.isCompiling) {
+                    this.pendingRequests.push(action);
+                } else {
+                    process.nextTick(action);
+                }
+            },
             compile: function(success, error, withMetrics) {
-                var compiler = new Compiler(this, success, error);
+                this.isCompiling = true;
+                var self = this;
+                var complete = function() {
+                    self.isCompiling = false;
+                    success();
+                    for (var i=0; i < self.pendingRequests.length; i++) {
+                        process.nextTick(self.pendingRequests[i]);
+                    }
+                }
+                var compiler = new Compiler(this, complete, error);
                 if (withMetrics) {
                     compiler.recordMetrics();
                 }
@@ -221,7 +239,7 @@ function Website(jsonPath, flags, Sate) {
                 this.siteMenu.length = 0;
                 this.json = null;
                 this.compiled = false;
-                
+
                 // compile again:
                 this.compile(success, error);
 

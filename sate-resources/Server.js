@@ -47,15 +47,20 @@
             server.use(function(req, res) {
                     var type = determineRequestTargetType(req, res);
                     writeHeadersForType(res, type);
+                    var respondToReq = function() {
+                        res.end(website.pageForPath(req.url).render());
+                    };
                     if (type == RequestTargetType.Page) {
-                        website.recompile(function(errors) {
-                            process.nextTick(function() {
-                                res.end(website.pageForPath(req.url).render());
+                        if (!website.isCompiling) {
+                            website.recompile(function(errors) {
+                                process.nextTick(respondToReq);
+                            }, function(err) {
+                                console.error(err);
+                                exit(1);
                             });
-                        }, function(err) {
-                            console.error(err);
-                            exit(1);
-                        });
+                        } else {
+                            website.performAfterCompile(respondToReq);
+                        }
                     } else {
                         res.end(website.resourceForPath(req.url));
                     }
