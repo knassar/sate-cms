@@ -3,6 +3,10 @@
     padding: 0;
 }
 
+#pageBody.index .intro {
+    margin-bottom: 2rem;
+}
+
 #pageBody.index .articles li.article-intro {
     list-style: none;
     margin-bottom: 2rem;

@@ -41,8 +41,12 @@
             {{#date}}
                 <div class="date">{{>longDate}}</div>
             {{/date}}
+            <div class="intro">
             {{>intro}}
+            </div>
+            <div class="content">
             {{>content}}
+            </div>
         </div>
         <div id="copyright">Copyright <span class="copyright-symbol">&copy;</span>2013</div>
     </body>
