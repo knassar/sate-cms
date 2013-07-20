@@ -105,10 +105,14 @@ function Page(id, props, parent, website, Sate) {
         resolvePage(page);
         
         if (page.isRoot) {
-            page.url = website.siteConfig.rootPageUrl;
+            if (!page.url) {
+                page.url = website.siteConfig.rootPageUrl;
+            }
             page.contentPath = path.join(website.siteConfig.content, 'index.html');
         } else {
-            page.url = [page.parent.url, page.id].join('/').replace(/[\/]+/g, '/');
+            if (!page.url) {
+                page.url = [page.parent.url, page.id].join('/').replace(/[\/]+/g, '/');
+            }
             if (page.type === Sate.PageType.Index) {
                 page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
                 page.articles = [];

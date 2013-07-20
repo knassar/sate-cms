@@ -52,10 +52,13 @@ function Website(jsonPath, flags, Sate) {
     var generateIndexes = function(website, success, error) {
         try {
             website.siteMap[website.siteConfig.rootPage] = indexPage(website.siteConfig.rootPage, website.siteMap[website.siteConfig.rootPage], website);
-            // @TODO: 
-            // for (var id in website.errorPages) {
-            // website.errorPages[id] = indexPage(id, errorPage, website);
             generateMenus(website);
+            for (var id in website.errorPages) {
+                if (website.errorPages.hasOwnProperty(id)) {
+                    website.errorPages[id] = indexPage(id, website.errorPages[id], website);
+                    website.errorPages[id].siteMenu = website.siteMenu;
+                }
+            }
             success();
         } catch (err) {
             error(err);
@@ -73,30 +76,6 @@ function Website(jsonPath, flags, Sate) {
             }
         });
     };
-    
-    //     pageNotFound: function() {
-    //         KN.page = KN.pageByPath.error404;
-    //         $.ajax({
-    //             url: KN.website.root + 'errors/404.html?fromSource',
-    //             dataType: 'html',
-    //             success: function(data) {
-    //                 KN.processPageData(data);
-    //                 KN.renderPage();
-    //             }
-    //         });
-    //     },
-    //     abjectFailure: function() {
-    //         KN.page = KN.pageByPath.error500;
-    //         $.ajax({
-    //             url: KN.website.root + 'errors/500.html?fromSource',
-    //             dataType: 'html',
-    //             success: function(data) {
-    //                 KN.processPageData(data);
-    //                 KN.renderPage();
-    //             }
-    //         });
-    //     }
-    // };
 
     var compilePartial = function(compiler, partialName) {
         var step = 'partial-'+partialName;
@@ -163,18 +142,14 @@ function Website(jsonPath, flags, Sate) {
     
     website = extend(true,
         {
-            // errorPages: {
-            //     error404: new Sate.Page({
-            //         name: "error 404:",
-            //         type: Sate.PageType.Error,
-            //         subtitle: "Page Not Found"
-            //     }, website, Sate),
-            //     error500: new Sate.Page({
-            //         name: "error 500:",
-            //         type: Sate.PageType.Error,
-            //         subtitle: "Server Error"
-            //     }, website, Sate)
-            // }
+            errorPages: {
+                error404: {
+                    name: "error 404:",
+                    type: Sate.PageType.Error,
+                    url: 'error/404',
+                    subtitle: "Page Not Found"
+                }
+            },
             json: null,
             jsonPath: jsonPath,
             cliFlags: flags,
@@ -254,11 +229,8 @@ function Website(jsonPath, flags, Sate) {
                     filePath = website.siteConfig.rootPage;
                 }
                 var page = website.pageByPath[filePath];
-                if (page) {
-                    // if we have a page, make sure we have menu
-                    // page.menu = website.menuByPage(page);
-                } else {
-                    // @TODO: return the 404 page here
+                if (!page) {
+                    page = website.pageByPath['error/404'];
                 }
                 return page;
             },
