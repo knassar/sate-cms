@@ -31,11 +31,13 @@
             {{/hasSubItems}}
         {{/menu}}
 
-        {{#hasBreadcrumbs}}
-        <div id="breadcrumbs">{{{plugin-sate-breadcrumbs}}}</div>
-        {{/hasBreadcrumbs}}
+        {{#plugin-sate-breadcrumbs}}
+        {
+            "id": "breadcrumbs"
+        }
+        {{/plugin-sate-breadcrumbs}}
         
-        <div id="pageBody">
+        <div id="pageBody" class="{{type}}">
             {{#date}}
                 <div class="date">{{>longDate}}</div>
             {{/date}}

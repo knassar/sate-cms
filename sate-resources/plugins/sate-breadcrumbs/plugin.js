@@ -14,17 +14,29 @@ module.exports = function(Sate) {
                 if (!config.headingTag) {
                     config.headingTag = 'h2';
                 }
-                if (this.type != Sate.PageType.Error && (this.parent && !this.parent.isRoot)) {
-                    var crumbs = ['<'+config.headingTag+' class="this-page">' + this.name + '</'+config.headingTag+'>'];
-                    var p = this;
-                    while (p.parent && !p.parent.isRoot) {
-                        p = p.parent;
-                        crumbs.unshift('<a href="'+ p.url +'">' + p.name + '</a>');
-                    }
-                    var seppa = '<span class="seppa">'+this.breadcrumbSeparator+'</span>';
-                    return crumbs.join(seppa);
+                if (!config.minCrumbs) {
+                    config.minCrumbs = 1;
+                }
+                if (!config.classes) {
+                    config.classes = [];
+                }
+                config.classes.push('plugin-sate-breadcrumbs');
+                if (!config.id) {
+                    config.id = '';
                 } else {
-                    return '<'+config.headingTag+' class="this-page">' + this.name + '</'+config.headingTag+'>';
+                    config.id = ' id="'+config.id+'"';
+                }
+                var crumbs = ['<'+config.headingTag+' class="this-page">' + this.name + '</'+config.headingTag+'>'];
+                var p = this;
+                while (p.parent && !p.parent.isRoot) {
+                    p = p.parent;
+                    crumbs.unshift('<a href="'+ p.url +'">' + p.name + '</a>');
+                }
+                if (this.name && crumbs.length >= config.minCrumbs) {
+                    var seppa = '<span class="seppa">'+this.breadcrumbSeparator+'</span>';
+                    return '<div'+config.id+' class="'+config.classes.join(' ')+'">' + crumbs.join(seppa) + '</div>';
+                } else {
+                    return '';
                 }
             };
         }

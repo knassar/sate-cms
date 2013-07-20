@@ -8,62 +8,6 @@ function Page(id, props, parent, website, Sate) {
         resolver = new PageDataResolver(Sate),
         util = require("util");
 
-    // var addArticleIntroToIndexPage = function(indexPage, subPageKey, articleContent) {
-    //     var $articleContent = $('<page>'+articleContent+'</page>');
-    //     var article = {
-    //         intro: $articleContent.find('#pageIntro').html(),
-    //         detailcrumbs: function() {
-    //             return site.breadcrumbs('span');
-    //         }
-    //     };
-    //     site.thisPage = {};
-    //     site.temporaryAppend($articleContent.find('#pageData'));
-    //     indexPage.articles.push(
-    //         extend(true, indexPage.subPages[subPageKey], article, site.thisPage)
-    //     );
-    //     site.thisPage = {};
-    //     site.cleanUpTemporaryAppend();
-    //     indexPage.unLoadedSubPages--;
-    //     indexPage.articleReturned();
-    // };
-    // 
-    // var loadArticleIntrosForIndex = function(page, callback) {
-    //     if (page.subPages) {
-    //         page.unLoadedSubPages = 0;
-    //         page.articleReturned = function() {
-    //             if (this.unLoadedSubPages === 0) {
-    //                 this.articles.sort(this.indexSort);
-    //                 callback.apply(site);
-    //             }
-    //         };
-    //         var articleReturned = function(data, textStatus, jqXHR) {
-    //             site.addArticleIntroToIndexPage(jqXHR.page, jqXHR.p, data);
-    //         };
-    //         var articleFailedToLoad = function(jqXHR, textStatus, errorThrown) {
-    //             jqXHR.page.unLoadedSubPages--;
-    //             jqXHR.page.articleReturned();
-    //         };
-    //         var packXHR = function(jqXHR, settings) {
-    //             jqXHR.page = page;
-    //             jqXHR.p = settings.p;
-    //             return jqXHR;
-    //         };
-    //         for (var p in page.subPages) {
-    //             if (page.subPages.hasOwnProperty(p)) {
-    //                 page.unLoadedSubPages++;
-    //                 $.ajax({
-    //                     url: site.website.root + page.subPages[p].contentPath + '?fromSource',
-    //                     p: p,
-    //                     dataType: 'html',
-    //                     beforeSend: packXHR,
-    //                     success: articleReturned,
-    //                     error: articleFailedToLoad
-    //                 });
-    //             }
-    //         }
-    //     }
-    // };
-
     var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
     var partialMatcher = /\{\{\<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{\<\/[\w\d]+\}\}/mg;
     var partialCapturer = /\{\{\<([\w\d]+)\}\}([\s\S]*?)\{\{\<\//m;
@@ -88,27 +32,41 @@ function Page(id, props, parent, website, Sate) {
             }
         }
         if (!page.partials.intro) {
-            page.partials.intro = "<!-- no intro -->";
+            page.partials.intro = null;
         }
         if (!page.partials.content) {
-            page.partials.content = "<!-- no content -->";
+            page.partials.content = null;
         }
         success();
     };
     
+    var composeArticleIntroForIndexPage = function(page, subPage) {
+        var article = {
+                url: subPage.url,
+                name: subPage.name,
+                detailcrumbs: subPage.breadcrumbs,
+                date: subPage.date,
+                intro: Mustache.render(subPage.partials.intro, subPage, subPage.partials)
+        };
+        page.articles.push(article);
+    };
+    
     var loadIndexPage = function(page, success, error) {
-        // util.log("Rendering index page at " + page.url);
-        success();
-        /**
-         * Psuedo code
-         */
-        // Determine if there are subpages
-        // If subpages exist, loop through each subpage
-            // get just the intro
-            // if intro empty or maybe not defined, parse some of the content
-            // add resulting text block to a data structure (matching the layout of the indexPageContent.tpl)
-        // end loop
-        // render the resulting data structure
+        if (!page.partials.content && page.subPages) {
+            page.articles = [];
+            for (var p in page.subPages) {
+                if (page.subPages.hasOwnProperty(p)) {
+                    composeArticleIntroForIndexPage(page, page.subPages[p]);
+                }
+            }
+            if (page.articleSort) {
+                page.article.sort(page.articleSort);
+            }
+            page.partials.content = page.partials.indexPageContent;
+            success();
+        } else {
+            success();
+        }
     };
     
     var loadArticlePage = function(page, success, error) {
@@ -125,8 +83,13 @@ function Page(id, props, parent, website, Sate) {
     var loadPageContent = function(page, success, error) {
         switch (page.type) {
             case Sate.PageType.Index:
-                loadIndexPage(page, success, error);
-                //break;
+                var indexLoadCallback = function() {
+                    loadIndexPage(page, success, error);
+                };
+                process.nextTick(function() {
+                    loadArticlePage(page, indexLoadCallback, error);
+                });
+                break;
             case Sate.PageType.Article:
             default:
                 loadArticlePage(page, success, error);
@@ -248,22 +211,3 @@ function Page(id, props, parent, website, Sate) {
     return newPage;
 }
 module.exports = Page;
-
-/* Old loadIndexPage method
-// $.ajax({
-//     url: KN.website.root + KN.page.contentPath + '?fromSource',
-//     dataType: 'html',
-//     success: function(data) {
-//         KN.processPageData(data);
-//         if (!KN.page.pageContent) {
-//     
-//             KN.loadArticleIntrosForIndex(KN.page, KN.renderPage);
-//         } else {
-//             KN.renderPage();
-//         }
-//     },
-//     error: function() {
-//         KN.pageNotFound();
-//     }
-// });
-*/

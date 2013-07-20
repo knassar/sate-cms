@@ -1,5 +1,14 @@
 var util = require('util');
 
+var resolveArticleSort = function(page, Sate) {
+    if (typeof page.articleSort == 'string') {
+        var parts = page.articleSort.split('.');
+        if (parts.length == 3 && parts[0] == 'Sate' && parts[1] == 'IndexSort') {
+            page.articleSort = Sate.IndexSort[parts[2]]; 
+        }
+    }
+};
+
 var resolvePageType = function(page, Sate) {
     if (!page.type) {
         if (typeof page.subPages == 'object') {
@@ -12,6 +21,9 @@ var resolvePageType = function(page, Sate) {
         if (parts.length == 3 && parts[0] == 'Sate' && parts[1] == 'PageType') {
             page.type = parts[2].toLowerCase(); 
         }
+    }
+    if (page.type == Sate.PageType.Index) {
+       resolveArticleSort(page, Sate);
     }
 };
 
@@ -56,13 +68,12 @@ function PageDataResolver(Sate) {
     var resolver = this;
     resolver.resolve = function(page) {
         // resolve PageType constant
-        resolvePageType(page);
+        resolvePageType(page, Sate);
         for (var prop in page) {
             if (prop == 'plugins' && util.isArray(page[prop])) {
                 page.plugins = resolvePlugins(page, Sate);
             } else if (dateProps.indexOf(prop) > -1 && typeof page[prop] == 'string') {
                 resolveDate(prop, page);
-                
             }
         }
         
