@@ -4,11 +4,12 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <title>{{title}}{{#subtitle}} &rsaquo; {{/subtitle}}{{subtitle}}</title>
 
-        <link rel="stylesheet" href="/styles/main.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="/styles/main.css" type="text/css" media="screen" charset="utf-8">
 
-        {{#extraStyles}}
-        <link rel="stylesheet" href="{{root}}{{href}}" type="text/css" media="{{media}}" title="no title" charset="utf-8">
-        {{/extraStyles}}
+        {{#styles}}
+        <!-- {{id}} -->
+        <link rel="stylesheet" href="{{{href}}}" type="text/css" media="{{media}}" charset="utf-8">
+        {{/styles}}
     </head>
     <body id="{{id}}" class="{{classNames}} {{#menu}}{{#hasSubItems}}with-menu{{/hasSubItems}}{{/menu}}">
         {{>masthead}}
@@ -49,5 +50,10 @@
             </div>
         </div>
         <div id="copyright">Copyright <span class="copyright-symbol">&copy;</span>2013</div>
+        <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        {{#scripts}}
+        <!-- {{id}} -->
+        <script type="text/javascript" charset="utf-8" src="{{{src}}}"></script>
+        {{/scripts}}
     </body>
 </html>

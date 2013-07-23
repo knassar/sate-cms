@@ -1,12 +1,19 @@
 function Page(id, props, parent, website, Sate) {
     var fs = require('fs'),
         path = require('path'),
+        crypto = require('crypto'),
         extend = require('node.extend'),
         Mustache = require('mustache'),
         Compiler = require('./Compiler'),
         PageDataResolver = require('./PageDataResolver'),
         resolver = new PageDataResolver(Sate),
         util = require("util");
+        
+    var md5 = function(str) {
+        var md5sum = crypto.createHash('md5');
+        md5sum.update(str);
+        return md5sum.digest('hex');
+    };
 
     var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
     var partialMatcher = /\{\{\<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{\<\/[\w\d]+\}\}/mg;
@@ -139,6 +146,8 @@ function Page(id, props, parent, website, Sate) {
             subPages: null,
             encoding: website.siteConfig.encoding,
             classNames: [],
+            extraStyles: [],
+            extraScripts: [],
             plugins: [
                 {type: 'sate-breadcrumbs'},
                 {type: 'sate-sequenceNav'}
@@ -151,6 +160,10 @@ function Page(id, props, parent, website, Sate) {
             parent: (parent) ? website.pageForPath(parent.url) : null,
             siteMenu: website.siteMenu,
             compiled: false,
+            styles: [],
+            scripts: [],
+            styleIds: [],
+            scriptIds: [],
             typeOf: 'Sate.Page',
             isRoot: (id == website.siteConfig.rootPage),
             compile: function(success, error, withMetrics) {
@@ -199,11 +212,37 @@ function Page(id, props, parent, website, Sate) {
                     this.siteMenu[i].isActive = (this.siteMenu[i].url == rootUrl);
                 };
             },
-            hasBreadcrumbs: function() {
-                return this.name || (!this.isRoot && !this.parent.isRoot);
+            addStylesheet: function(href, options) {
+                var style = extend({
+                    href: href,
+                    id: md5(href),
+                    media: 'all'
+                }, options);
+                if (this.styles.indexOf(style.id) === -1) {
+                    this.styleIds.push(style.id);
+                    this.styles.push(style);
+                }
+            },
+            addScript: function(src, options) {
+                var script = extend({
+                    src: src,
+                    id: md5(src)
+                }, options);
+                if (this.scripts.indexOf(script.id) === -1) {
+                    this.scriptIds.push(script.id);
+                    this.scripts.push(script);
+                }
+            },
+            mergeStyles: function() {
+                this.styles = this.styles.concat(this.extraStyles);
+            },
+            mergeScripts: function() {
+                this.scripts = this.scripts.concat(this.extraScripts);
             },
             render: function() {
                 this.resolveSiteMenu();
+                this.mergeStyles();
+                this.mergeScripts();
                 this.classNames = this.classNamesString();
                 var html = Mustache.render(this.partials.html, this, this.partials);
                 return html;
