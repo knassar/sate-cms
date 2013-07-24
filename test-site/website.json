@@ -79,6 +79,10 @@
                 "about": {
                     "type": "Sate.PageType.Article",
                     "name": "About Sate"
+                },
+                "punchlist": {
+                    "type": "Sate.PageType.Article",
+                    "name": "Sate Punchlist"
                 }
             },
             "menu": {
