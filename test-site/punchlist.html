@@ -5,7 +5,61 @@
 {{<content}}
     <h3 id="development">Development</h3>
     <ol>
-        <li>List of development type tasks</li>
+        <li>Globally improve error handling</li>
+        <li>Encapsulate and improve logging</li>
+        <li>Collect timings from all compile operations to directive-level object</li>
+        <li>Collect errors from all compile operations to directive-level object</li>
+        <li>Default -w flag to {content}+'website.json' if not defined</li>
+        <li>Plugins
+            <ol>
+                <li>Condense common Plugin arch into a single Plugin prototype</li>
+                <li>Port breadcrumbs fully to new Plugin arch</li>
+                <li>Port sequenceNav fully to new Plugin arch</li>
+                <li class="question">Should menu be re-written as a plugin?</li>
+            </ol>
+        </li>
+        <li>"Analyze" directive
+            <ol>
+                <li>Format and output compile metrics</li>
+            </ol>
+        </li>
+        <li>"Develop" directive
+            <ol>
+                <li>Resolve known race-conditions</li>
+            </ol>
+        </li>
+        <li>"Bootstrap" directive
+            <ol>
+                <li>Generate a well-structured sate "boilerplate" website</li>
+            </ol>
+        </li>
+        <li>"Run" directive
+            <ol>
+                <li>
+                    Refine use of "connect" node module
+                    <ol>
+                        <li>Bring logging in-line with expectations</li>
+                        <li>There's got to be a better way to handle static resources (ie: images, css, js, etc.)</li>
+                    </ol>
+                </li>
+            </ol>
+        </li>
+        <li>"Deploy" directive
+            <ol>
+                <li>Format and output compile errors</li>
+                <li>Traverse each page in website page map and render/output all artifacts to build target</li>
+                <li>Copy all static resources (non-rendered) to build target</li>
+            </ol>
+        </li>
+    </ol>
+
+    <h3 id="documentation">Documentation &amp; Sate website</h3>
+    <ol>
+        <li>Refine language on homepage</li>
+        <li>Flesh out documentation on The Chain</li>
+        <li>Flesh out all Plugin docs</li>
+        <li>Move and organize ./test-site/ docs into a proper "Sate Documentation" site</li>
+        <li>Make a favicon</li>
     </ol>
 
     <h3 id="deployment">Deployment</h3>
@@ -13,9 +67,12 @@
         <li class="done">Get npm packaging started</li>
         <li class="done">Make npm a command line utility</li>
         <li>Allow satecms command line to work either within any directory or with options</li>
+        <li>Change package name to sate-cms</li>
         <li>...</li>
         <li>...</li>
         <li>...</li>
+        <li>Change package name to sate-cms</li>
+        <li class="question">Should we add a "documentation" directive or "sate-docs" package for deploying the Sate docs website locally? (currently "./test-site")</li>
         <li>Change package to make it deployable (remove private)</li>
         <li>Publish Sate</li>
     </ol>
