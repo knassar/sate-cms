@@ -1,28 +1,19 @@
-var im = require('imagemagick');
-try {
-    // make sure ImageMagick binaries are installed
-    im.identify('im-test.jpg', function() {});
-} catch (err) {
-    // @TODO: Handle this better, or ditch ImageMagick
-    console.error("ImageMagick binaries not installed");
-    process.exit(1);
-}
- 
 /**
 * Sate Images Gallery plugin
 * First initialize in page data, then
 * Use like: {{plugin-sate-gallery}}
 */
-
 module.exports = function(Sate) {
-    var template;
+    var template,
+        foundIM;
+
     return {
         compiler: function(props, page, Sate) {
             var fs = require('fs'),
                 path = require('path'),
                 extend = require('node.extend'),
-                im = require('imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
-
+                im;
+            
             var pluginPath = 'sate-resources/plugins/sate-gallery/';
             var loadTemplate = function() {
                 try {
@@ -83,25 +74,64 @@ module.exports = function(Sate) {
                 }
             };
 
-            var makeThumbnailImage = function(imagePath, gallery) {
-                filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
-                var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath));
-                ensurePath(thumbPath);
-                im.resize({
-                    srcPath: imagePath,
-                    dstPath: thumbPath,
-                    quality: 0.8,
-                    format: gallery.thumbnail.format,
-                    width: gallery.thumbnail.width,
-                    height: gallery.thumbnail.height,
-                    strip: true
-                }, function(err, stdout, stderr) {
-                    if (err) {
-                        console.log( err );
-                    } else {
-                        gallery.thumbnails.push(thumbPath);
+            var loadIM = function() {
+                if (foundIM) {
+                    im = require('imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
+                } else {
+                    // mock out im;
+                    im = {
+                        resize: function() {}
+                    };
+                }
+            };
+
+            var verifyImageMagick = function(verified) {
+                var exec = require('child_process').exec;
+                exec('convert -version', function(er, stdout, stderr) {
+                    if (stdout.toString().indexOf('ImageMagick') > -1) {
+                        var matches = /ImageMagick [\S]+/.exec(stdout.toString());
+                        if (matches) {
+                            if (!foundIM) {
+                                foundIM = matches[0];
+                                console.log( " +--> plugin-sate-gallery: found "+foundIM );
+                            }
+                            loadIM();
+                            verified();
+                            return;
+                        }
+                    } else if (foundIM !== false) {
+                        foundIM = false;
+                        console.log(" X--> plugin-sate-gallery: ImageMagick binaries not installed. IM calls will be skipped.");
                     }
                 });
+            };
+
+            var makeThumbnailImage = function(imagePath, gallery) {
+                if (foundIM === undefined) {
+                    verifyImageMagick(function() {
+                        makeThumbnailImage(imagePath, gallery);
+                    })
+                } else {
+                    loadIM();
+                    filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
+                    var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath));
+                    ensurePath(thumbPath);
+                    im.resize({
+                        srcPath: imagePath,
+                        dstPath: thumbPath,
+                        quality: 0.8,
+                        format: gallery.thumbnail.format,
+                        width: gallery.thumbnail.width,
+                        height: gallery.thumbnail.height,
+                        strip: true
+                    }, function(err, stdout, stderr) {
+                        if (err) {
+                            console.log( err );
+                        } else {
+                            gallery.thumbnails.push(thumbPath);
+                        }
+                    });
+                }
             };
 
             var gallery = extend(true, this, {
