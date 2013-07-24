@@ -14,7 +14,7 @@ module.exports = function(Sate) {
                 extend = require('node.extend'),
                 im;
             
-            var pluginPath = 'sate-resources/plugins/sate-gallery/';
+            var pluginPath = __dirname + "/";
             var loadTemplate = function() {
                 try {
                     template = fs.readFileSync(pluginPath+'gallery.tpl', {encoding: page.encoding});
