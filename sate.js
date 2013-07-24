@@ -59,7 +59,8 @@
                 Develop: 'develop',
                 Run: 'run',
                 Analyze: 'analyze',
-                Deploy: 'deploy'
+                Deploy: 'deploy',
+                Documentation: 'documentation'
             },
             PageType: require('./sate-resources/PageType'),
             IndexSort: require('./sate-resources/IndexSort'),
@@ -71,15 +72,15 @@
             LogLevel: {
                 Quiet: 'quiet',
                 Normal: 'normal',
-                Verbose: 'versose'
+                Verbose: 'verbose'
             }
         },
         sateApp = {
             defaults: {
                 directive: Sate.Directive.Develop,
+                content: './',
                 website: './website.json',
                 encoding: 'utf-8',
-                content: './',
                 port: 80,
                 logLevel: Sate.LogLevel.Normal
             },
@@ -113,11 +114,13 @@
                 if (args[0] == Sate.Directive.Develop ||
                     args[0] == Sate.Directive.Run ||
                     args[0] == Sate.Directive.Analyze ||
-                    args[0] == Sate.Directive.Deploy) {
+                    args[0] == Sate.Directive.Deploy || 
+                    args[0] == Sate.Directive.Documentation) {
 
                     this.directive = args[0];
                     args.shift();
                 }
+                
                 for (var i = 0; i < args.length; i++) {
                     if (this.argFlags.hasOwnProperty(args[i])) {
                         this.flags[this.argFlags[args[i]]] = args[++i];
@@ -143,6 +146,12 @@
                                 process.exit(0);
                         }
                     }
+                }
+                
+                if (this.directive == Sate.Directive.Documentation) {
+                    logBox(["Documentation Directive - Configuring for Documentation"]);
+                    this.flags["content"] = __dirname + '/docs/';
+                    this.flags["website"] = __dirname + '/docs/website.json';
                 }
             },
             failWith: function(err) {
@@ -199,6 +208,9 @@
                 //      > parse and create a Sate.Website
                 //      > parse and compile requested Sate.Page
                 //          > render & return Page
+            },
+            documentation: function() {
+                this["develop"].apply(this);
             },
             analyze: function() {
                 logBox( ["Starting Sate - Analyze"] );

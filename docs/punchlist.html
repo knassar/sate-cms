@@ -71,7 +71,21 @@
         <li>...</li>
         <li>...</li>
         <li>...</li>
-        <li class="question">Should we add a "documentation" directive or "sate-docs" package for deploying the Sate docs website locally? (currently "./test-site")</li>
+        <li class="question">
+            Should we add a "documentation" directive or "sate-docs" package for deploying the Sate docs website locally? (currently "./test-site")
+            <ol>
+                <li>
+                    PFO: I currently have this sorta working.  Right now the sate.js 
+                    file will use the docs folder to output the site if the documentation 
+                    is called from either the root of the project (where sate.js lives) 
+                    or if installed via npm. However, if installed, calling 
+                    "sate-cms documetation" will throw a fatal error because it doesn't 
+                    have permission to write to the directory without sudo access, so 
+                    to get it to work, you have to use "sudo sate-cms documentation".  
+                    This seems to be related to the gallery code.
+                </li>
+            </ol>
+        </li>
         <li>Change package to make it deployable (remove private)</li>
         <li>Publish Sate</li>
     </ol>
