@@ -2,12 +2,13 @@ $(function() {
     if (!Sate) var Sate = {};
     (function() {
         Sate.Gallery = (function() {
-            var $viewer = $('<div id="sateGalleryHeroViewer"><div class="bg"></div><div class="images"><img class="hero-a"/><img class="hero-b"/></div><a class="nav prev">&lsaquo; previous</a><a class="nav next">next &rsaquo;</a></div>').appendTo($('body')),
+            var $viewer = $('<div id="sateGalleryHeroViewer"><div class="bg"></div><div class="images"><img class="hero-a"/><img class="hero-b"/></div><a class="nav close">&times; close</a><a class="nav prev">&lsaquo; previous</a><a class="nav next">next &rsaquo;</a></div>').appendTo($('body')),
                 $galleries = $('ul.sate-gallery'),
                 $imgCarrier = $viewer.children('div.images'),
                 $imgs = $galleries.find('li.thumbnail > img'),
                 $prev = $viewer.find('a.prev'),
                 $next = $viewer.find('a.next'),
+                $close = $viewer.find('a.close'),
                 $imgA = $viewer.find('img.hero-a'),
                 $imgB = $viewer.find('img.hero-b'),
                 viewingIndex = -1;
@@ -135,6 +136,9 @@ $(function() {
             });
             $prev.on('click', function() {
                 setTimeout(prev, 10);
+            });
+            $close.on('click', function() {
+                setTimeout(hideViewer, 10);
             });
             $(window).on('click.sate-gallery', function(event) {
                 if ($(event.target).closest('#sateGalleryHeroViewer').length === 0) {

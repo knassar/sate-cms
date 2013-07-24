@@ -91,4 +91,10 @@ ul.sate-gallery > li.thumbnail:hover {
     right: 20px;
 }
 
+#sateGalleryHeroViewer a.nav.close {
+    bottom: auto;
+    top: 0;
+    left: 20px;
+}
+
 
