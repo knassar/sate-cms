@@ -1,7 +1,7 @@
 {
   "name": "sate-cms",
-  "version": "0.0.1",
-  "description": "Sate provides a developer-friendly CMS to drive a website.",
+  "version": "0.0.2",
+  "description": "Sate is a developer-friendly minimal CMS to drive a website.",
   "main": "sate.js",
   "preferGlobal": true,
   "private": true,
@@ -9,11 +9,12 @@
   "dependencies": {
     "connect": "latest",
     "mustache": "latest",
+    "imagemagick": "latest",
     "node.extend": "latest"
   },
   
   "bin": {
-      "sate-cms": "./sate.js"
+      "sate-cms": "./sate-cms.js"
   },
   
   "os": [
@@ -31,14 +32,14 @@
   
   "repository": {
     "type": "git",
-    "url": "https://github.com/knassar/karimnassar.com.git"
+    "url": "https://github.com/knassar/sate-cms.git"
   },
   
   "contributors": [
     {
         "name": "Karim Nassar",
-        "email": "knassar@knassar.com",
-        "url": "http://www.knassar.com"
+        "email": "knassar@karimnassar.com",
+        "url": "http://www.karimnassar.com"
     },
     {
         "name": "Patrick Ortiz",

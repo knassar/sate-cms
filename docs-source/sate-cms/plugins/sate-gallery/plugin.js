@@ -13,28 +13,18 @@ module.exports = function(Sate) {
                 path = require('path'),
                 extend = require('node.extend'),
                 im;
-            
-            var pluginPath = __dirname + "/";
+            var pluginPath = path.join(page.sateSources, 'plugins/sate-gallery');
             var loadTemplate = function() {
                 try {
-                    template = fs.readFileSync(pluginPath+'gallery.tpl', {encoding: page.encoding});
+                    template = fs.readFileSync(path.join(pluginPath, 'gallery.tpl'), {encoding: page.encoding});
                 } catch (err) {
                     console.log( err );
                 }
             };
 
             var installStylesAndScripts = function() {
-                var sourceStylesheet = path.join(pluginPath, 'sate-gallery.css');
-                var destStylesheet = path.join(gallery.contentPath, 'styles', 'sate-gallery.css');
-                ensurePath(destStylesheet);
-                fs.writeFileSync(destStylesheet, fs.readFileSync(sourceStylesheet));
-                page.addStylesheet(destStylesheet.replace(gallery.contentPath, ''));
-
-                var sourceScript = path.join(pluginPath, 'sate-gallery.js');
-                var destScript = path.join(gallery.contentPath, 'scripts', 'sate-gallery.js');
-                ensurePath(destScript);
-                fs.writeFileSync(destScript, fs.readFileSync(sourceScript));
-                page.addScript(destScript.replace(gallery.contentPath, ''));
+                page.addStylesheet('/sate-cms/plugins/sate-gallery/sate-gallery.css');
+                page.addScript('/sate-cms/plugins/sate-gallery/sate-gallery.js');
             };
 
             var websiteBasePath = function(filepath) {

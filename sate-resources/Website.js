@@ -1,13 +1,14 @@
-function Website(jsonPath, flags, Sate) {
+function Website(args, Sate) {
     var fs = require('fs'),
         path = require('path'),
         extend = require('node.extend'),
-        Compiler = require('./Compiler');
+        Compiler = require(__dirname+'/Compiler');
 
     var website = {};
     var defaults = {
         siteConfig: {
-            content: './',
+            content: args.sitePath,
+            sateSources: path.join(args.sitePath, 'sate-cms'),
             rootPage: 'home',
             rootPageUrl: '/',
             encoding: 'utf-8',
@@ -61,17 +62,19 @@ function Website(jsonPath, flags, Sate) {
             }
             success();
         } catch (err) {
+            console.log( err );
             error(err);
         }
     };
 
     var loadTemplate = function(t, coll, success, error) {
-        fs.readFile(path.join('./templates/', coll[t]), {encoding: website.siteConfig.encoding}, function(err, data) {
+        fs.readFile(path.join(website.siteConfig.sateSources, 'templates', coll[t]), {encoding: website.siteConfig.encoding}, function(err, data) {
             if (!err) {
                 // @TODO: compile the templates for better performance
                 website.compiledPartials[t] = data;
                 success();
             } else {
+                console.log( err );
                 error(err);
             }
         });
@@ -119,10 +122,11 @@ function Website(jsonPath, flags, Sate) {
             );
     };
     
-    var loadWebsiteJSON = function(jsonPath, complete, error) {
-        websitePath = path.normalize(jsonPath);
+    var loadWebsiteJSON = function(sitePath, complete, error) {
+        websitePath = path.normalize(path.join(sitePath, 'website.json'));
         fs.readFile(websitePath, {encoding: defaults.siteConfig.encoding}, function(err, data) {
             if (err) {
+                console.log( err );
                 error(err);
             } else {
                 website.json = JSON.parse(data);
@@ -146,13 +150,12 @@ function Website(jsonPath, flags, Sate) {
                 error404: {
                     name: "error 404:",
                     type: Sate.PageType.Error,
-                    url: 'error/404',
+                    url: 'sate-cms/error/404',
                     subtitle: "Page Not Found"
                 }
             },
             json: null,
-            jsonPath: jsonPath,
-            cliFlags: flags,
+            args: args,
             compiled: false,
             compiledPartials: {},
             pageByPath: {},
@@ -181,7 +184,7 @@ function Website(jsonPath, flags, Sate) {
                     compiler.recordMetrics();
                 }
                 // first:
-                loadWebsiteJSON(this.jsonPath, function() {                    
+                loadWebsiteJSON(this.args.sitePath, function() {
                     // then in parallel
                     for (var t in website.partials) {
                         if (website.partials.hasOwnProperty(t)) {
@@ -230,7 +233,7 @@ function Website(jsonPath, flags, Sate) {
                 }
                 var page = website.pageByPath[filePath];
                 if (!page) {
-                    page = website.pageByPath['error/404'];
+                    page = website.pageByPath['sate-cms/error/404'];
                 }
                 return page;
             },

@@ -85,7 +85,7 @@
                     } else {
                         res.end(website.resourceForPath(req.url));
                     }
-                }).listen(website.siteConfig.port);
+                }).listen(website.args.port);
             return server;
         },
         ProductionServer: function(website, Sate) {
@@ -98,7 +98,7 @@
                     } else {
                         res.end(website.resourceForPath(req.url));
                     }
-                }).listen(website.siteConfig.port);
+                }).listen(website.args.port);
             return server;
         }
     };

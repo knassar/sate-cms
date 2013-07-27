@@ -1,4 +1,5 @@
-var util = require('util');
+var fs = require('fs'),
+    util = require('util');
 
 var resolveArticleSort = function(page, Sate) {
     if (typeof page.articleSort == 'string') {
@@ -30,10 +31,10 @@ var resolvePageType = function(page, Sate) {
 var resolvePlugins = function(page, Sate) {
     var resolvedPlugins = [];
     var pluginPath = function(type) {
-        return './plugins/'+type+'/plugin.js';
+        return fs.realpathSync(path.join(page.sateSources, 'plugins', type, 'plugin.js'));
     };
     for (var i=0; i < page.plugins.length; i++) {
-        if (page.plugins[i].resolved) continue; // skip alread-resolved plugins
+        if (page.plugins[i].resolved) continue; // skip already-resolved plugins
         if (!page.plugins[i].type) throw new Error("cannot resolve plugin declared without 'type' at index: "+i);
         var pluginLoader = require(pluginPath(page.plugins[i].type));
         var PluginModule = pluginLoader(Sate);

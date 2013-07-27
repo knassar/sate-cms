@@ -71,6 +71,7 @@ function Compiler(target, complete, failed) {
             });
         },
         stepError: function(stepName, err) {
+            console.log( err );
             if (this.metrics) {
                 this.compileRecord[stepName].end();
                 this.compileRecord[stepName].errors.push(err);
@@ -80,6 +81,7 @@ function Compiler(target, complete, failed) {
             checkCompileComplete(this);
         },
         stepFailed: function(stepName, err) {
+            console.log( err );
             this.stepError(stepError, err);
             this.failedCallback.apply(this.target, [this.compileErrors, this.compileSteps]);
         },

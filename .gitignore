@@ -1,3 +1,5 @@
 node_modules
 test-site/.DS_Store
 npm-debug.log
+
+.DS_Store

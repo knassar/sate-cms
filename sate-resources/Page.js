@@ -4,8 +4,8 @@ function Page(id, props, parent, website, Sate) {
         crypto = require('crypto'),
         extend = require('node.extend'),
         Mustache = require('mustache'),
-        Compiler = require('./Compiler'),
-        PageDataResolver = require('./PageDataResolver'),
+        Compiler = require(__dirname+'/Compiler'),
+        PageDataResolver = require(__dirname+'/PageDataResolver'),
         resolver = new PageDataResolver(Sate),
         util = require("util");
         

@@ -7,33 +7,40 @@
     <ol>
         <li>Globally improve error handling</li>
         <li>Encapsulate and improve logging</li>
-        <li>Collect timings from all compile operations to directive-level object</li>
-        <li>Collect errors from all compile operations to directive-level object</li>
-        <li>Default -w flag to {content}+'website.json' if not defined</li>
+        <li>Collect timings from all compile operations to command-level object</li>
+        <li>Collect errors from all compile operations to command-level object</li>
+        <li><strong>Revisit/Rethink/Refactor all flags under new architecture</strong></li>
+        <li><strong>Refactor Website- and Page-level property inheritance to make it make more sense, and clarify var names.</strong></li>
         <li>Plugins
             <ol>
+                <li>Add "version" property to plugins for update tracking</li>
                 <li>Condense common Plugin arch into a single Plugin prototype</li>
                 <li>Port breadcrumbs fully to new Plugin arch</li>
                 <li>Port sequenceNav fully to new Plugin arch</li>
                 <li class="question">Should menu be re-written as a plugin?</li>
             </ol>
         </li>
-        <li>"Analyze" directive
-            <ol>
-                <li>Format and output compile metrics</li>
-            </ol>
-        </li>
-        <li>"Develop" directive
-            <ol>
-                <li>Resolve known race-conditions</li>
-            </ol>
-        </li>
-        <li>"Bootstrap" directive
+        <li>"Create" command
             <ol>
                 <li>Generate a well-structured sate "boilerplate" website</li>
             </ol>
         </li>
-        <li>"Run" directive
+        <li>"Develop" command
+            <ol>
+                <li>Resolve known race-conditions</li>
+            </ol>
+        </li>
+        <li>"Analyze" command
+            <ol>
+                <li>Format and output compile metrics</li>
+            </ol>
+        </li>
+        <li>"Update" command
+            <ol>
+                <li>Update plugins in a given site</li>
+            </ol>
+        </li>
+        <li>"Run" command
             <ol>
                 <li>
                     Refine use of "connect" node module
@@ -44,21 +51,27 @@
                 </li>
             </ol>
         </li>
-        <li>"Deploy" directive
+        <li>"Deploy" command
             <ol>
                 <li>Format and output compile errors</li>
                 <li>Traverse each page in website page map and render/output all artifacts to build target</li>
                 <li>Copy all static resources (non-rendered) to build target</li>
             </ol>
         </li>
+        <li>"Docs" command
+            <ol>
+                <li>Point Docs command to static ./docs site</li>
+            </ol>
+        </li>
     </ol>
 
     <h3 id="documentation">Documentation &amp; Sate website</h3>
     <ol>
+        <li><strong>Rewrite all docs to match new commands &amp; workflow</strong></li>
         <li>Refine language on homepage</li>
         <li>Flesh out documentation on The Chain</li>
         <li>Flesh out all Plugin docs</li>
-        <li>Move and organize ./test-site/ docs into a proper "Sate Documentation" site</li>
+        <li class="done">Move and organize ./test-site/ docs into a proper "Sate Documentation" site</li>
         <li>Make a favicon</li>
     </ol>
 
@@ -66,23 +79,12 @@
     <ol>
         <li class="done">Get npm packaging started</li>
         <li class="done">Make npm a command line utility</li>
-        <li>Allow satecms command line to work either within any directory or with options</li>
+        <li>Allow sate-cms command line to work either within any directory or with options</li>
         <li class="done">Change package name to sate-cms</li>
-        <li class="question">
-            Should we add a "documentation" directive or "sate-docs" package for deploying the Sate docs website locally? (currently "./test-site")
-            <ol>
-                <li>
-                    PFO: I currently have this sorta working.  Right now the sate.js 
-                    file will use the docs folder to output the site if the documentation 
-                    is called from either the root of the project (where sate.js lives) 
-                    or if installed via npm. However, if installed, calling 
-                    "sate-cms documetation" will throw a fatal error because it doesn't 
-                    have permission to write to the directory without sudo access, so 
-                    to get it to work, you have to use "sudo sate-cms documentation".  
-                    This seems to be related to the gallery code.
-                </li>
-            </ol>
+        <li class="done">
+            add a "documentation" command or "sate-docs" package for deploying the Sate docs website locally
         </li>
+        <li>Deploy docs sources to static docs directory</li>
         <li>Change package to make it deployable (remove private)</li>
         <li>Publish Sate</li>
     </ol>
