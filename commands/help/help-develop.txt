@@ -1,0 +1,26 @@
+
+develop help:
+
+    sate-cms develop [flags]
+
+Starts a stateless web-server which serves website page requests 
+by re-evaluating all website sources on each request. This is 
+useful when developing site content, as individual pages can be 
+tested by reloading the browser page with each tweak.
+If no directive is provided, 'develop' is assumed.
+
+Optional flags which can be combined with the develop command to provide finer control over the directive:
+    
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    -p [port number]        The port to listen on when running 'develop' or 'run' directive.
+    --port [port number]    If not provided, checks for 'siteConfig.port' in website.json, then defaults to Sate.defaults.port
+
+    -l [path]               Path to output logging when running 'run'.
+    --log [path]            If not provided, checks for 'siteConfig.log' in website.json, then defaults to './log/.'
+
+    -v                      Turns on 'verbose' logging.
+    --verbose               If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
+
+    -q                      Turns on 'quiet' (minimal) logging.
+    --quiet                 If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.

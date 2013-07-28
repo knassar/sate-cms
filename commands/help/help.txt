@@ -1,8 +1,15 @@
 
+@TODO: Rewrite:
+
+/****************************************************
+ * 
+ * THIS IS ALL WRONG NOW:
+ * 
+ ****************************************************/
+
 Call Sate like this:
 
     node sate.js [directive] [flags]
-
 
 Sate has four main directives:
     
@@ -56,6 +63,3 @@ Sate has a series of optional flags which can be combined with the directive to 
 
     -q                      Turns on 'quiet' (minimal) logging.
     --quiet                 If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
-
-    -h                      Display help on how to use Sate
-    --help

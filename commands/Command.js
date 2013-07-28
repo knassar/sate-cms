@@ -7,8 +7,16 @@ function Command(Sate) {
             encoding: 'utf-8',
             sitePath: './'
         },
-        help: function() {
-            console.log(fs.readFileSync(path.join(__dirname, 'help.txt'), {encoding: this.args.encoding}));
+        help: function(command) {
+            if (command) {
+                try {
+                    console.log(fs.readFileSync(path.join(__dirname, 'help/help-'+command+'.txt'), {encoding: this.args.encoding}));
+                } catch (err) {
+                    this.help();
+                }
+            } else {
+                console.log(fs.readFileSync(path.join(__dirname, 'help/help.txt'), {encoding: this.args.encoding}));
+            }
         },
         argFlags: {
             '-s': 'sitePath',

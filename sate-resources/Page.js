@@ -91,7 +91,9 @@ function Page(id, props, parent, website, Sate) {
         switch (page.type) {
             case Sate.PageType.Index:
                 var indexLoadCallback = function() {
-                    loadIndexPage(page, success, error);
+                    process.nextTick(function() {
+                        loadIndexPage(page, success, error);
+                    });
                 };
                 process.nextTick(function() {
                     loadArticlePage(page, indexLoadCallback, error);
