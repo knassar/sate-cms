@@ -178,7 +178,7 @@ function Website(args, Sate) {
                     for (var i=0; i < self.pendingRequests.length; i++) {
                         process.nextTick(self.pendingRequests[i]);
                     }
-                }
+                };
                 var compiler = new Compiler(this, complete, error);
                 if (withMetrics) {
                     compiler.recordMetrics();

@@ -38,7 +38,7 @@ function MenuItem(page, props, website, Sate) {
             }
         );
         return menuItem;
-    }
+    };
 
     var menuItem = createMenuItem(page, props, website);
     

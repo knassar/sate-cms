@@ -27,7 +27,7 @@ function Run(Sate) {
             }
         });
     return cmd;
-};
+}
 
 
 module.exports = function(args, Sate) {

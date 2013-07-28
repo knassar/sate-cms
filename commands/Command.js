@@ -1,5 +1,5 @@
 function Command(Sate) {
-    var fs = require('fs')
+    var fs = require('fs'),
         path = require('path');
         
     var cmd = {

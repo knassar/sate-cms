@@ -32,7 +32,7 @@ function Docs(Sate) {
             }
         });
     return cmd;
-};
+}
 
 module.exports = function(args, Sate) {
     var cmd = new Docs(Sate);

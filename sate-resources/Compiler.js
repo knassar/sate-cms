@@ -37,7 +37,7 @@ function Compiler(target, complete, failed) {
             }
         });
         return rec;
-    };
+    }
     
     target.compiled = false;
     var compiler = {
@@ -93,6 +93,6 @@ function Compiler(target, complete, failed) {
         }
     };
     return compiler;
-};
+}
 
 module.exports = Compiler;

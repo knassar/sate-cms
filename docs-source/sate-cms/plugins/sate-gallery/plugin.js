@@ -100,7 +100,7 @@ module.exports = function(Sate) {
                 if (foundIM === undefined) {
                     verifyImageMagick(function() {
                         makeThumbnailImage(imagePath, gallery);
-                    })
+                    });
                 } else {
                     loadIM();
                     filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');

@@ -16,8 +16,8 @@ function Page(id, props, parent, website, Sate) {
     };
 
     var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
-    var partialMatcher = /\{\{\<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{\<\/[\w\d]+\}\}/mg;
-    var partialCapturer = /\{\{\<([\w\d]+)\}\}([\s\S]*?)\{\{\<\//m;
+    var partialMatcher = /\{\{<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{<\/[\w\d]+\}\}/mg;
+    var partialCapturer = /\{\{<([\w\d]+)\}\}([\s\S]*?)\{\{<\//m;
     var processPageContent = function(page, data, success) {
         var pageData = null,
             matches = data.match(pageDataMatcher);
@@ -100,6 +100,7 @@ function Page(id, props, parent, website, Sate) {
                 });
                 break;
             case Sate.PageType.Article:
+                /* falls through */
             default:
                 loadArticlePage(page, success, error);
                 break;
@@ -108,7 +109,7 @@ function Page(id, props, parent, website, Sate) {
 
     var resolvePage = function(page) {
         resolver.resolve(page);
-    }
+    };
 
     var initialize = function(page, website, Sate) {
         resolvePage(page);
@@ -137,7 +138,7 @@ function Page(id, props, parent, website, Sate) {
         if (!page.subtitle && page.name) {
             page.subtitle = page.name;
         }
-    }
+    };
 
     var newPage = extend(true, 
         {
@@ -212,7 +213,7 @@ function Page(id, props, parent, website, Sate) {
                 var rootUrl = p.url;
                 for (var i=0; i < this.siteMenu.length; i++) {
                     this.siteMenu[i].isActive = (this.siteMenu[i].url == rootUrl);
-                };
+                }
             },
             addStylesheet: function(href, options) {
                 var style = extend({

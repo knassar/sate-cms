@@ -29,7 +29,7 @@
     var sateCMS = {
         command: Sate.Command.develop,
         processCommand: function(processArgv) {
-            var argp = processArgv.shift()
+            var argp = processArgv.shift(),
                 sateCheck = /sate\-cms/;
             while (!sateCheck.test(argp)) {
                 argp = processArgv.shift();
@@ -40,7 +40,7 @@
                     this.command = Sate.Command[args[0]];
                     processArgv.shift();
                 } else {
-                    Sate.Command.help()
+                    Sate.Command.help();
                     process.exit(0);
                 }
             }
