@@ -1,0 +1,39 @@
+@import url('masthead.css');
+@import url('index-articles.css');
+@import url('typography.css');
+
+body {
+    padding: 10px 20px;
+}
+
+#pageBody {
+    padding: 0.5em 1em;
+    min-height: 300px;
+}
+
+.with-menu #pageBody {
+    margin-left: 16rem;
+}
+
+#copyright {
+    margin-top: 5rem;
+    padding: 0.5em 1em;
+    border-top: #999 1px solid;
+    font-size: 0.75rem;
+    color: #999;
+}
+
+.todo {
+    background-color: #fd9;
+    color: black;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    border: orange 1px dashed;
+}
+
+.todo::before {
+    content: "@TODO:";
+    color: #c70;
+    font-weight: normal;
+    margin-right: 0.5em;
+}

@@ -1,0 +1,21 @@
+{
+    "siteConfig": {
+        "title": "A New Sate Site",
+        "subtitle": ""
+    },
+    "siteMap": {
+        "home": {
+            "type": "Sate.PageType.Index",
+            "name": false,
+            "subPages": {
+                "about": {
+                    "type": "Sate.PageType.Article",
+                    "name": "About"
+                }
+            },
+            "menu": {
+                "name": "Home"
+            }
+        }
+    }
+}
