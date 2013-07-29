@@ -61,12 +61,19 @@ function Create(Sate) {
                 }
             },
             copySitePrototype: function(complete) {
-                ncp(path.join(__dirname, '../sate-site-proto'), this.args.createTarget, {
+                var target = this.args.createTarget;
+                ncp(path.join(__dirname, '../sate-site-proto'), target, {
                     filter: function(filename) {
                         return (!/\.DS\_Store/.test(filename));
                     },
                     clobber: false
-                }, complete);
+                }, function(err) {
+                    if (!err) {
+                        ncp(path.join(__dirname, '../sate-plugins'), path.join(target, 'sate-cms/plugins'), complete);
+                    } else {
+                        console.log( " X-> ", err );
+                    }
+                });
             },
             execute: function() {
                 Sate.Log.logBox( ["Creating a Sate site"] );
