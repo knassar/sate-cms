@@ -10,6 +10,7 @@
     "connect": "latest",
     "mustache": "latest",
     "imagemagick": "latest",
+    "ncp": "latest",
     "node.extend": "latest"
   },
   
