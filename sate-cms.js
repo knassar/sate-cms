@@ -7,8 +7,8 @@
                 run:    require(__dirname+'/commands/Run'),
                 analyze:require(__dirname+'/commands/Analyze'),
                 deploy: require(__dirname+'/commands/Deploy'),
-                create: require(__dirname+'/commands/Deploy'),
-                update: require(__dirname+'/commands/Deploy'),
+                create: require(__dirname+'/commands/Create'),
+                update: require(__dirname+'/commands/Update'),
                 docs:   require(__dirname+'/commands/Docs')
             },
             Log: require(__dirname+'/sate-resources/Log'),
