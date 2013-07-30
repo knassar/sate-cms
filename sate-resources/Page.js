@@ -25,7 +25,21 @@ function Page(id, props, parent, website, Sate) {
         if (matches && matches.length > 1) {
             pageData = JSON.parse(matches[1].trim());
         }
-        page = extend(true, page, pageData);
+        for (var d in pageData) {
+            if (pageData.hasOwnProperty(d)) {
+                if (util.isArray(pageData[d])) {
+                    if (util.isArray(page[d])) {
+                        page[d] = page[d].concat(pageData[d]);
+                    } else {
+                        page[d] = pageData[d];
+                    }
+                } else if (typeof pageData[d] == 'object') {
+                    page[d] = extend(true, page[d], pageData[d]);
+                } else {
+                    page[d] = pageData[d];
+                }
+            }
+        }
         resolvePage(page);
         var partials = data.match(partialMatcher);
         page.partials = extend({}, website.compiledPartials, page.partials);
@@ -48,14 +62,8 @@ function Page(id, props, parent, website, Sate) {
     };
     
     var composeArticleIntroForIndexPage = function(page, subPage) {
-        var article = {
-                url: subPage.url,
-                name: subPage.name,
-                detailcrumbs: subPage.breadcrumbs,
-                date: subPage.date,
-                intro: Mustache.render(subPage.partials.intro, subPage, subPage.partials)
-        };
-        page.articles.push(article);
+        subPage.articleIntro = Mustache.render(subPage.partials.intro, subPage, subPage.partials);
+        page.articles.push(subPage);
     };
     
     var loadIndexPage = function(page, success, error) {
@@ -152,8 +160,17 @@ function Page(id, props, parent, website, Sate) {
             extraStyles: [],
             extraScripts: [],
             plugins: [
-                {type: 'sate-breadcrumbs'},
-                {type: 'sate-sequenceNav'}
+                {
+                    type: 'sate-breadcrumbs',
+                    id: 'mainBreadcrumbs'
+                },
+                {
+                    type: 'sate-breadcrumbs',
+                    classes: ['article-intro-breadcrumbs']
+                },
+                {
+                    type: 'sate-sequenceNav'
+                }
             ]
         },
         website.siteConfig,
@@ -241,6 +258,50 @@ function Page(id, props, parent, website, Sate) {
             },
             mergeScripts: function() {
                 this.scripts = this.scripts.concat(this.extraScripts);
+            },
+            pluginById: function(pluginId) {
+                return this.plugins[pluginId];
+            },
+            pluginFirstByType: function(pluginType) {
+                for (var i=0; i < this.plugins.length; i++) {
+                    if (this.plugins[i].type == pluginType) return this.plugins[i];
+                }
+                return null;
+            },
+            pluginsByType: function(pluginType) {
+                var plugs = [];
+                for (var i=0; i < this.plugins.length; i++) {
+                    if (this.plugins[i].type == pluginType) plugs.push(this.plugins[i]);
+                }
+                return plugs;
+            },
+            pluginByTypeAndClassName: function(type, className) {
+                var plgs = this.pluginsByType(type);
+                for (var i=0; i < plgs.length; i++) {
+                    if (plgs[i].classes && plgs[i].classes.indexOf(className)) {
+                        return plgs[i];
+                    }
+                }
+                return null;
+            },
+            pageAscent: function() {
+                var p = {
+                    isRoot: this.isRoot,
+                    url: this.url,
+                    name: this.name
+                };
+                var cur = p;
+                    par = this.parent;
+                while (par) {
+                    cur.parent = {
+                        isRoot: par.isRoot,
+                        url: par.url,
+                        name: par.name
+                    };
+                    par = par.parent;
+                    cur = cur.parent;
+                }
+                return p;
             },
             render: function() {
                 this.resolveSiteMenu();

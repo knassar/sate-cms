@@ -1,7 +1,5 @@
 @import url('masthead.css');
 @import url('index-articles.css');
-@import url('breadcrumbs.css');
-@import url('sequence-nav.css');
 @import url('typography.css');
 @import url('tables.css');
 
@@ -16,6 +14,10 @@ body {
 
 .with-menu #pageBody {
     margin-left: 16rem;
+}
+
+.content-footer {
+    text-align: right;
 }
 
 #copyright {
@@ -40,3 +42,4 @@ body {
     font-weight: normal;
     margin-right: 0.5em;
 }
+

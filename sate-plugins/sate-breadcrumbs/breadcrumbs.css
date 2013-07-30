@@ -1,19 +1,19 @@
-#breadcrumbs {
+.plugin-sate-breadcrumbs {
     margin-top: 2em;
     padding: 0 1em;
 }
 
-.with-menu #breadcrumbs {
+.with-menu .plugin-sate-breadcrumbs {
     margin-left: 16rem;
 }
 
-#breadcrumbs .seppa {
+.plugin-sate-breadcrumbs .seppa {
     display: inline-block;
     vertical-align: top;
     padding: 0 0.5em;
 }
 
-#breadcrumbs .this-page {
+.plugin-sate-breadcrumbs .this-page {
     display: inline-block;
     vertical-align: top;
     margin: 0;
@@ -21,12 +21,8 @@
     line-height: 1em;
 }
 
-#breadcrumbs a {
+.plugin-sate-breadcrumbs a {
     display: inline-block;
     font-size: 1rem;
     line-height: 1em;
-}
-
-.content-footer {
-    text-align: right;
 }

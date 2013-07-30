@@ -3,42 +3,59 @@
 * Use like: {{plugin-sate-breadcrumbs}}
 */
 module.exports = function(Sate) {
-    return {
-        renderer: function() {
-            return function(config, render) {
-                try { 
-                    config = JSON.parse(config);
-                } catch (err) {
-                    config = {};
-                }
-                if (!config.headingTag) {
-                    config.headingTag = 'h2';
-                }
-                if (!config.minCrumbs) {
-                    config.minCrumbs = 1;
-                }
-                if (!config.classes) {
-                    config.classes = [];
-                }
-                config.classes.push('plugin-sate-breadcrumbs');
-                if (!config.id) {
-                    config.id = '';
-                } else {
-                    config.id = ' id="'+config.id+'"';
-                }
-                var crumbs = ['<'+config.headingTag+' class="this-page">' + this.name + '</'+config.headingTag+'>'];
-                var p = this;
-                while (p.parent && !p.parent.isRoot) {
-                    p = p.parent;
-                    crumbs.unshift('<a href="'+ p.url +'">' + p.name + '</a>');
-                }
-                if (this.name && crumbs.length >= config.minCrumbs) {
-                    var seppa = '<span class="seppa">'+this.breadcrumbSeparator+'</span>';
-                    return '<div'+config.id+' class="'+config.classes.join(' ')+'">' + crumbs.join(seppa) + '</div>';
-                } else {
-                    return '';
-                }
-            };
+    var Plugin = require(__dirname+'/../Plugin'),
+        util = require('util');
+
+    var plg = new Plugin(Sate, {
+        type: 'sate-breadcrumbs',
+        version: '0.1.0',
+        headingTag: 'h2',
+        separator: ':',
+        minCrumbs: 1,
+        classes: [],
+        compile: function(props, page, Sate) {
+            this.page = page.pageAscent();
+            this.thisPageName = page.name;
+            this.extendWithProperties(props);
+        },
+        templates: {'main': __dirname+'/breadcrumbs.tpl'},
+        stylesheets: ['/sate-cms/plugins/sate-breadcrumbs/breadcrumbs.css'],
+        objectToRender: function(config, page) {
+            var obj;
+            if (config.id) {
+                obj = page.pluginById(config.id);
+            } else if (config.forClass) {
+                obj = page.pluginByTypeAndClassName(this.type, config.forClass);
+            }
+            if (!obj) {
+                obj = page.pluginFirstByType(this.type);
+            }
+            if (!obj) {
+                obj = {};
+            } else {
+                obj.extendWithProperties(config);
+            }
+            if (util.isArray(obj.classes)) {
+                obj.classes.push('plugin-sate-breadcrumbs');
+                obj.classes = obj.classes.join(' ');
+            }
+            if (!obj.id) {
+                obj.id = '';
+            } else {
+                obj.id = ' id="'+obj.id+'"';
+            }
+            obj.crumbs = [];
+            var p = this.page;
+            while (p.parent && !p.parent.isRoot) {
+                p = p.parent;
+                obj.crumbs.unshift({url: p.url, name: p.name});
+            }
+            if (this.page.name && obj.crumbs.length >= obj.minCrumbs) {
+                return obj;
+            } else {
+                return false;
+            }
         }
-    };
+    });
+    return plg;
 };

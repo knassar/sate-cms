@@ -1,0 +1,21 @@
+.plugin-sate-sequenceNav {
+    position: relative;
+    margin-top: 3em;
+}
+.plugin-sate-sequenceNav::after {
+    content: "";
+    display: block;
+    clear: left;
+}
+
+.plugin-sate-sequenceNav .previous {
+    float: left;
+}
+
+.plugin-sate-sequenceNav .next {
+    text-align: right;
+}
+
+.plugin-sate-sequenceNav .previous {
+    font-size: 0.75rem;
+}

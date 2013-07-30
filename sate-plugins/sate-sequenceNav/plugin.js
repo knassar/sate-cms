@@ -3,53 +3,69 @@
 * Use like: {{plugin-sate-sequenceNav}}
 */
 module.exports = function(Sate) {
-    var Mustache = require('mustache'),
-        extend = require('node.extend');
+    var Plugin = require(__dirname+'/../Plugin'),
+        util = require('util');
 
-    var sequenceItemTpl = '<div class="{{nextPrev}}"><span class="prompt">{{nextPrevPrompt}}</span><a href="{{url}}">{{name}}</a></div>';
+    var plg = new Plugin(Sate, {
+        type: 'sate-sequenceNav',
+        version: '0.1.0',
+        previousPrompt: "previous: ",
+        nextPrompt: "next: ",
+        classes: [],
+        compile: function(props, page, Sate) {
+            this.page = page.pageAscent();
+            this.thisPageName = page.name;
+            this.extendWithProperties(props);
+        },
+        templates: {'main': __dirname+'/sequenceNav.tpl'},
+        stylesheets: ['/sate-cms/plugins/sate-sequenceNav/sequence-nav.css'],
 
-    return {
-        renderer: function() {
-            return function(config, render) {
-                try { 
-                    config = JSON.parse(config);
-                } catch (err) {
-                    config = {};
+        objectToRender: function(config, page) {
+            var obj;
+            if (config.id) {
+                obj = page.pluginById(config.id);
+            } else if (config.forClass) {
+                obj = page.pluginByTypeAndClassName(this.type, config.forClass);
+            }
+            if (!obj) {
+                obj = page.pluginFirstByType(this.type);
+            }
+            if (!obj) {
+                obj = {};
+            } else {
+                obj.extendWithProperties(config);
+            }
+            if (util.isArray(obj.classes)) {
+                obj.classes.push('plugin-sate-sequenceNav');
+                obj.classes = obj.classes.join(' ');
+            }
+            var seq = obj.sequence;
+            if (!seq && page.menu && page.menu.sub) {
+                seq = page.menu.sub.slice(0, page.menu.sub.length);
+            }
+            currPageIdx = -1;
+            for (var i=0; i < seq.length; i++) {
+                if (page.url == seq[i].url) {
+                    currPageIdx = i;
+                    break;
                 }
-                var seq = this.sequence;
-                if (!seq && this.menu && this.menu.sub) {
-                    seq = this.menu.sub.slice(0, this.menu.sub.length);
-                }
-                nav = [];
-                currPageIdx = -1;
-                for (var i=0; i < seq.length; i++) {
-                    if (this.url == seq[i].url) {
-                        currPageIdx = i;
-                        nav.push('');
-                        continue;
-                    }
-                    var item;
-                    if (currPageIdx > -1 && currPageIdx < i) {
-                        item = {
-                            nextPrev: 'next',
-                            nextPrevPrompt: this.sequenceNavPrompt.next
-                        };
-                    } else {
-                        item = {
-                            nextPrev: 'previous',
-                            nextPrevPrompt: this.sequenceNavPrompt.previous
-                        };
-                    }
-                    item = extend(seq[i], item);
-                    nav.push(Mustache.render(sequenceItemTpl, item));
-                }
-                if (currPageIdx === 0) {
-                    nav = nav.slice(0, 2);
-                } else {
-                    nav = nav.slice(currPageIdx-1, currPageIdx+2);
-                }
-                return '<div class="sequence-nav">' + nav.join('') + '</div>';
-            };
+            }
+            if (currPageIdx > 0) {
+                obj.prev = {
+                    prompt: this.previousPrompt,
+                    name: seq[currPageIdx-1].name,
+                    url: seq[currPageIdx-1].url
+                };
+            }
+            if (currPageIdx < seq.length -1) {
+                obj.next = {
+                    prompt: this.nextPrompt,
+                    name: seq[currPageIdx+1].name,
+                    url: seq[currPageIdx+1].url
+                };
+            }
+            return obj;
         }
-    };
+    });
+    return plg;
 };

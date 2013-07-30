@@ -1,12 +1,7 @@
 {
     "siteConfig": {
         "title": "Sate",
-        "subtitle": "Just Enough CMS",
-        "breadcrumbSeparator": ":",
-        "sequenceNavPrompt": {
-            "previous": "previous: ",
-            "next": "next: "
-        }
+        "subtitle": "Just Enough CMS"
     },
     "siteMap": {
         "home": {

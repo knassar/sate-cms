@@ -34,24 +34,28 @@ var resolvePlugins = function(page, Sate) {
     var pluginPath = function(type) {
         return fs.realpathSync(path.join(page.sateSources, 'plugins', type, 'plugin.js'));
     };
-    for (var i=0; i < page.plugins.length; i++) {
-        if (page.plugins[i].resolved) continue; // skip already-resolved plugins
-        if (!page.plugins[i].type) throw new Error("cannot resolve plugin declared without 'type' at index: "+i);
-        var pluginLoader = require(pluginPath(page.plugins[i].type));
-        var PluginModule = pluginLoader(Sate);
-        var resolvedPlugin;
-        if (PluginModule.compiler) {
-            resolvedPlugin = new PluginModule.compiler(page.plugins[i], page, Sate);
-        } else {
-            resolvedPlugin = page.plugins[i];
-        }
-        if (PluginModule.renderer) {
-            page['plugin-'+page.plugins[i].type] = PluginModule.renderer;
-        }
-        resolvedPlugin.resovled = true;
-        resolvedPlugins.push(resolvedPlugin);
-        if (resolvedPlugin.id) {
-            resolvedPlugins[resolvedPlugin.id] = resolvedPlugin;
+    var i;
+    for (i=0; i < page.plugins.length; i++) {
+        if (!page.plugins[i].resolved) { // skip already-resolved plugins
+            if (!page.plugins[i].type) throw new Error("cannot resolve plugin declared without 'type' at index: "+i);
+            var PluginClass = require(pluginPath(page.plugins[i].type));
+            var plugin = new PluginClass(Sate);
+            plugin.loadTemplates(page.encoding);
+            plugin.compile(page.plugins[i], page, Sate);
+            if (!page['plugin-'+page.plugins[i].type]) {
+                page['plugin-'+page.plugins[i].type] = plugin.getRenderer();
+            }
+            plugin.resovled = true;
+            for (var s=0; s < plugin.stylesheets.length; s++) {
+                page.addStylesheet(plugin.stylesheets[s]);
+            }
+            for (var s=0; s < plugin.scripts.length; s++) {
+                page.addScript(plugin.scripts[s]);
+            }
+            resolvedPlugins.push(plugin);
+            if (plugin.id) {
+                resolvedPlugins[plugin.id] = plugin;
+            }
         }
     }
     return resolvedPlugins;

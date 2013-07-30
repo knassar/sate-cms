@@ -11,6 +11,7 @@
         <div class="details">
             {{#plugin-sate-breadcrumbs}}
             {
+                "forClass": "article-intro-breadcrumbs",
                 "headingTag": "h3",
                 "minCrumbs": 2
             }
@@ -20,7 +21,7 @@
             {{/date}}
         </div>
         <div class="intro">
-            {{{intro}}}
+            {{{articleIntro}}}
         </div>
         <a href="{{root}}{{url}}" class="read-more">read more...</a>
     </li>
