@@ -27,7 +27,11 @@ function Command(Sate) {
         captureFlags: function(args) {
             for (var i = 0; i < args.length; i++) {
                 if (this.argFlags.hasOwnProperty(args[i])) {
-                    this.args[this.argFlags[args[i]]] = args[++i];
+                    if (i == args.length -1 || args[i+1].substr(0,1) == '-') {
+                        this.args[this.argFlags[args[i]]] = true;
+                    } else {
+                        this.args[this.argFlags[args[i]]] = args[++i];
+                    }
                 } else {
                     switch (args[i]) {
                         case '-v':

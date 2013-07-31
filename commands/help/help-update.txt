@@ -1,1 +1,13 @@
-update help
+Sate Update:
+
+    sate-cms update [flags]
+
+Updates any Sate plugins installed in the target sate website. Add the -a flag to install any plugins missing or deleted plugins.
+
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    -s [path]               Provide a path to the Sate website
+    --site [path]           If not provided, assumes './'
+
+    -a                      Add any standard sate-cms plugins not found in your site.
+    --add-missing           
