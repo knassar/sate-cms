@@ -1,4 +1,4 @@
-{{!#pageData}}
+{{#pageData}}
 {
     "plugins": [
         {
@@ -13,46 +13,44 @@
         }
     ]
 }
-{{!/pageData}}
+{{/pageData}}
 {{<content}}
-
-    <div class="todo">This plugin has not been rewritten under the new arch. Decide whether to rewrite it or delete it.</div>
     <dl>
-        <dt>English (run-time): </dt>
+        <dt>English (run-time configured): </dt>
         <dd>
-            {{!#plugin-hello-world}}
+            {{#plugin-hello-world}}
             {
                 "language": "english"
             }
-            {{!/plugin-hello-world}}
+            {{/plugin-hello-world}}
         </dd>
         <dt>Spanish (using first compile-time plugin config):</dt>
         <dd>
-            {{{!plugin-hello-world}}}
+            {{{plugin-hello-world}}}
         </dd>
-        <dt>German (referencing an explicit compile-time plugin config):</dt>
+        <dt>German (referencing an explicit compile-time plugin config by id):</dt>
         <dd>
-            {{!#plugin-hello-world}}
+            {{#plugin-hello-world}}
             {
                 "id": "hello-world-german"
             }
-            {{!/plugin-hello-world}}
+            {{/plugin-hello-world}}
         </dd>
-        <dt>Latin (run-time):</dt>
+        <dt>Latin (run-time configured):</dt>
         <dd>
-            {{!#plugin-hello-world}}
+            {{#plugin-hello-world}}
             {
                 "language": "latin"
             }
-            {{!/plugin-hello-world}}
+            {{/plugin-hello-world}}
         </dd>
-        <dt>French (run-time, unsupported, falling back to default):</dt>
+        <dt>French (run-time configured, unsupported, falling back to default):</dt>
         <dd>
-            {{!#plugin-hello-world}}
+            {{#plugin-hello-world}}
             {
                 "language": "french"
             }
-            {{!/plugin-hello-world}}
+            {{/plugin-hello-world}}
         </dd>
     </dl>
     

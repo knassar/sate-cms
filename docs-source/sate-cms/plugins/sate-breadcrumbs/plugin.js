@@ -12,7 +12,6 @@ module.exports = function(Sate) {
         headingTag: 'h2',
         separator: ':',
         minCrumbs: 1,
-        classes: [],
         compile: function(props, page, Sate) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;

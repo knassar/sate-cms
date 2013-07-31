@@ -3,7 +3,8 @@ function Plugin(Sate, subobj) {
         extend = require('node.extend');
     var plg = {
         type: 'abstract-base-class',
-        version: '0.1.0',
+        version: '0.1.1',
+        classes: [],
         loadTemplates: function(encoding) {
             if (!this.templatesLoaded) {
                 try {

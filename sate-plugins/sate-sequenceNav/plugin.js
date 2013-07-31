@@ -11,7 +11,6 @@ module.exports = function(Sate) {
         version: '0.1.0',
         previousPrompt: "previous: ",
         nextPrompt: "next: ",
-        classes: [],
         compile: function(props, page, Sate) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;

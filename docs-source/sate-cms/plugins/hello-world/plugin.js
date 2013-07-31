@@ -3,86 +3,89 @@
 * A template for creating a plugin
 **/
 module.exports = function(Sate) {
-    
+    var Plugin = require(__dirname+'/../Plugin');
+
     // private properties and methods that should be accessible at both compile- and render-time:
     var supportedLangs = ['english', 'spanish', 'german', 'latin'];
     var languageSupported = function(lang) {
         return (supportedLangs.indexOf(lang) > -1);
     };
 
-    return {
-        // if your plugin needs to do build-time work, implement that here
-        // it will be passed configuration properties from the website.json or 
-        // pageData block, the current compiled page, and the Sate object.
-        // 
-        // It should return a compiled plugin object.
-        compiler: function(props, page, Sate) {
-            // private properties, methods, and requires go here
-            var extend = require('node.extend');
+    // create a plugin instance as a sub-class of Plugin
+    var plg = new Plugin(Sate, {
+        // the 'type' property must match the directory name
+        type: 'hello-world',
+        
+        // the version of the plugin code
+        version: '0.1.0',
+        
+        // default config properties go here
+        language: "english",
+        
+        // the compile method, 
+        compile: function(props, page, Sate) {
+            // do any configuration or defaulting here
+            if (!languageSupported(this.language)) {
+                this.language = supportedLangs[0];
+            }
             
-            var hello = extend(true, this, {
-                // default configs
-                language: "english"
-            },
-            page, // the page data will be merged on top of defaults
-            props, // the pageData config for this module merged next
-            { // put here public properties or methods that should not be overridden
-                init: function() {
-                    if (!languageSupported(this.language)) {
-                        this.language = supportedLangs[0];
-                    }
-                }
-            });
-    
-            hello.init();
-            return hello;
+            // extend this plugin instance with any pageData-level defines:
+            this.extendWithProperties(props);
         },
-        // any plugin that needs to output visible content must include a renderer
-        renderer: function() {
-            // a renderer is a function which returns a Mustache block function
-            // it is executed in the context of the Page, so the compiled plugin is accessible through 'this.plugins' array
-            // any plugin given an id property is accessible through: 'this.plugins[id]'
-            return function(config, render) {
-                // config is the data inside the Mustache function block.
-                // usually a JSON object passed into the renderer for you to parse
-                try {
-                    config = JSON.parse(config);
-                } catch (err) {
-                    config = {};
-                }
-                
-                // if no language provided, figure out which language to use
-                if (!config.language && this.plugins) {
-                    // we can access the compiled plugin directly via id if there is one:
-                    if (config.id && this.plugins[config.id]) {
-                        config.language = this.plugins[config.id].language;
-                    } else {
-                        // OR via the this.plugins array:
-                        for (var i=0; i < this.plugins.length; i++) {
-                            if (this.plugins[i].type == 'hello-world') {
-                                config.language = this.plugins[i].language;
-                                // NOTE: there may be more than one of a given type declared for the page!
-                                break; // we'll just use the first one we find
-                            }
-                        }
-                    }
-                } else {
-                    if (!languageSupported(config.language)) {
-                        config.language = supportedLangs[0];
-                    }
-                }
-                // output the appropriate content
-                switch (config.language) {
-                    case 'english':
-                        return "<strong>Hello World!</strong>";
-                    case 'spanish':
-                        return "<strong>Hola Mundo!</strong>";
-                    case 'german':
-                        return "<strong>Hallo Welt!</strong>";
-                    case 'latin':
-                        return "<strong>Salve Mundi!</strong>";
-                }
-            };
+        // your templates go here. They will be loaded automatically before compile is called
+        templates: {'main': __dirname+'/hello-world.tpl'},
+
+        // list any client-side stylesheet or script dependencies here... they will be added to the page
+        stylesheets: [],
+        scripts: [],
+
+        // generally, you won't implement the getRenderer method, 
+        // instead you provide an object to the render phase by implementing objectToRender:
+        // if you want to render nothing, return false
+        objectToRender: function(config, page) {
+            var obj;
+            
+            // decide which plugin is referenced by config
+            if (config.id) {
+                obj = page.pluginById(config.id);
+            } else if (config.forClass) {
+                obj = page.pluginByTypeAndClassName(this.type, config.forClass);
+            }
+            if (!obj) {
+                obj = page.pluginFirstByType(this.type);
+            }
+            if (!obj) {
+                obj = {};
+            }
+
+            // you can use extendWithProperties(config) to merge any config values in
+            // but keep in mind this will overwrite the plugin instance's values
+            // obj.extendWithProperties(config);
+            
+            var language = (config.language) ? config.language : obj.language;
+            // if you want to render using a template other than 'this.templates.main', then set 'this.template' here.
+            // set up any object data for the render pass here:
+            switch (language) {
+                case 'spanish':
+                    obj.hello = "Hola Mundo!";
+                    break;
+                case 'german':
+                    obj.hello = "Hallo Welt!";
+                    break;
+                case 'latin':
+                    obj.hello = "Salve Mundi!";
+                    break;
+                case 'english':
+                    // annotation for jshint
+                    /* falls through */
+                default:
+                    obj.hello = "Hello World!";
+            }
+            // return the object for the template render
+            return obj;
         }
-    };
+    });
+    
+    // return the plugin instance
+    return plg;
 };
