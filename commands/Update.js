@@ -6,7 +6,7 @@ function Update(Sate) {
         Command = require(__dirname+'/command');
 
     var isAbstractPluginClass = function(pluginName) {
-        return (/Plugin\.js$/).test(pluginName)
+        return (/Plugin\.js$/).test(pluginName);
     };
 
     var versionForPlugin = function(pluginPath) {
@@ -23,7 +23,9 @@ function Update(Sate) {
         var pluginFiles = fs.readdirSync(fs.realpathSync(pluginsPath));
         var plugins = {};
         for (var i=0; i < pluginFiles.length; i++) {
-            plugins[pluginFiles[i]] = versionForPlugin(path.join(pluginsPath, pluginFiles[i]));
+            if (!/\.DS\_Store/.test(pluginFiles[i])) {
+                plugins[pluginFiles[i]] = versionForPlugin(path.join(pluginsPath, pluginFiles[i]));
+            }
         }
         return plugins;
     };
@@ -45,16 +47,24 @@ function Update(Sate) {
         {
             _super: (new Command(Sate)),
             args: {
+                force: false,
                 addMissing: false
             },
             argFlags: {
                 '-a': 'addMissing',
-                '--add-missing': 'addMissing'
+                '--add-missing': 'addMissing',
+                '-f': 'force',
+                '--force': 'force'
             },
             copyPlugin: function(pluginName, onComplete) {
                 var s = path.join(__dirname, '../sate-plugins', pluginName),
                     d = path.join(this.args.sitePath, 'sate-cms/plugins', pluginName);
-                ncp(s, d, {clobber: true}, function() {
+                ncp(s, d, {
+                    filter: function(filename) {
+                        return (!/\.DS\_Store/.test(filename));
+                    },
+                    clobber: true
+                }, function() {
                     onComplete(pluginName);
                 });
 
@@ -85,23 +95,23 @@ function Update(Sate) {
                     done();
                 };
                 for (var p in sitePlugins) {
-                    if (sitePlugins.hasOwnProperty(p) && sourcePlugins.hasOwnProperty(p) && isABeforeB(sitePlugins[p], sourcePlugins[p])) {
+                    if (sitePlugins.hasOwnProperty(p) && sourcePlugins.hasOwnProperty(p) && (this.args.force || isABeforeB(sitePlugins[p], sourcePlugins[p]))) {
                         copyPlugins[p] = false;
                     }
                 }
                 if (this.args.addMissing) {
-                    for (var p in sourcePlugins) {
-                        if (sourcePlugins.hasOwnProperty(p) && !sitePlugins.hasOwnProperty(p)) {
-                            copyPlugins[p] = false;
+                    for (var sp in sourcePlugins) {
+                        if (sourcePlugins.hasOwnProperty(sp) && !sitePlugins.hasOwnProperty(sp)) {
+                            copyPlugins[sp] = false;
                         }
                     }
                 }
-                for (var p in copyPlugins) {
-                    if (copyPlugins.hasOwnProperty(p)) {
-                        if (sitePlugins.hasOwnProperty(p)) {
-                            this.updatePlugin(p, perComplete);
+                for (var cp in copyPlugins) {
+                    if (copyPlugins.hasOwnProperty(cp)) {
+                        if (sitePlugins.hasOwnProperty(cp)) {
+                            this.updatePlugin(cp, perComplete);
                         } else {
-                            this.installPlugin(p, perComplete);
+                            this.installPlugin(cp, perComplete);
                         }
                     }
                 }

@@ -11,3 +11,6 @@ Updates any Sate plugins installed in the target sate website. Add the -a flag t
 
     -a                      Add any standard sate-cms plugins not found in your site.
     --add-missing           
+
+    -f                      Force-update all built-in plugins, regardless of their version.
+    --force           
