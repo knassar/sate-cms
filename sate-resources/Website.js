@@ -109,8 +109,7 @@ function Website(args, Sate) {
     var mergeConfig = function() {
         website.siteConfig = extend(true, 
             defaults.siteConfig, 
-            website.json.siteConfig,
-            website.cliFlags
+            website.json.siteConfig
             );
         website.siteMap = extend(true, 
             defaults.siteMap, 
