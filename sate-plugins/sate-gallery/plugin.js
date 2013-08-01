@@ -83,7 +83,7 @@ module.exports = function(Sate) {
         } else {
             loadIM();
             filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
-            var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath));
+            var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath)+'/');
             ensurePath(thumbPath);
             im.resize({
                 srcPath: imagePath,
@@ -105,7 +105,7 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-gallery',
-        version: '0.1.0',
+        version: '0.1.1',
         thumbnail: {
             format: 'jpg',
             size: null, // use size for best fit
@@ -134,7 +134,7 @@ module.exports = function(Sate) {
             }
             var thumbPath = g.thumbnailsPath.replace(g.contentPath, '');
             g.images = g.heroes.map(function(item) {
-                var hero = item.replace(g.contentPath, '');
+                var hero = item.replace(g.contentPath, '/');
                 return {
                     heroSrc: hero,
                     thumbSrc: path.join(thumbPath, hero)
