@@ -1,5 +1,10 @@
 {
-    "siteConfig": {
+    "config": {
+        "rootPage": "home",
+        "rootPageUrl": "/",
+        "encoding": "utf-8"
+    },
+    "pageDefaults": {
         "title": "A New Sate Site",
         "subtitle": ""
     },

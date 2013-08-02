@@ -124,18 +124,18 @@ function Page(id, props, parent, website, Sate) {
         
         if (page.isRoot) {
             if (!page.url) {
-                page.url = website.siteConfig.rootPageUrl;
+                page.url = website.config.rootPageUrl;
             }
-            page.contentPath = path.join(website.siteConfig.content, 'index.html');
+            page.contentPath = path.join(website.sitePath, 'index.html');
         } else {
             if (!page.url) {
                 page.url = [page.parent.url, page.id].join('/').replace(/[\/]+/g, '/');
             }
             if (page.type === Sate.PageType.Index) {
-                page.contentPath = path.join(website.siteConfig.content, page.url + '/index.html');
+                page.contentPath = path.join(website.sitePath, page.url + '/index.html');
                 page.articles = [];
             } else {
-                page.contentPath = path.join(website.siteConfig.content, page.url + '.html');
+                page.contentPath = path.join(website.sitePath, page.url + '.html');
             }
         }
         if (page.name === false) {
@@ -155,7 +155,7 @@ function Page(id, props, parent, website, Sate) {
             indexSort: Sate.IndexSort.DateDescending,
             type: Sate.PageType.Empty,
             subPages: null,
-            encoding: website.siteConfig.encoding,
+            encoding: website.config.encoding,
             classNames: [],
             extraStyles: [],
             extraScripts: [],
@@ -173,10 +173,11 @@ function Page(id, props, parent, website, Sate) {
                 }
             ]
         },
-        website.siteConfig,
         props, 
         {
             id: id,
+            sitePath: website.sitePath,
+            sateSources: website.sateSources,
             parent: (parent) ? website.pageForPath(parent.url) : null,
             siteMenu: website.siteMenu,
             compiled: false,
@@ -185,7 +186,7 @@ function Page(id, props, parent, website, Sate) {
             styleIds: [],
             scriptIds: [],
             typeOf: 'Sate.Page',
-            isRoot: (id == website.siteConfig.rootPage),
+            isRoot: (id == website.config.rootPage),
             compile: function(success, error, withMetrics) {
                 var compiler = new Compiler(this, success, error);
                 if (withMetrics) {

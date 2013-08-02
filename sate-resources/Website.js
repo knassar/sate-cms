@@ -6,13 +6,51 @@ function Website(args, Sate) {
 
     var website = {};
     var defaults = {
-        siteConfig: {
-            content: args.sitePath,
-            sateSources: path.join(args.sitePath, 'sate-cms'),
+        config: {
             rootPage: 'home',
             rootPageUrl: '/',
-            encoding: 'utf-8',
-            breadcrumbSeparator: '&rsaquo;'
+            encoding: 'utf-8'
+        },
+        pageDefaults: {
+            title: "Sate",
+            subtitle: "Just Enough CMS",
+            name: "untitled page",
+            menu: null,
+            indexSort: "Sate.IndexSort.DateDescending",
+            type: "Sate.PageType.Article",
+            classNames: [],
+            extraStyles: [],
+            extraScripts: [],
+            plugins: [
+                {
+                    type: "sate-breadcrumbs",
+                    id: "mainBreadcrumbs"
+                },
+                {
+                    type: "sate-breadcrumbs",
+                    id: "article-intro-breadcrumbs"
+                },
+                {
+                    type: "sate-sequenceNav"
+                }
+            ],
+            templates: {
+                html: "main/html.tpl",
+                rss: "main/rss.tpl"
+            },
+            partials: {
+                masthead: "main/masthead.tpl",
+                indexPageContent: "content/indexPageContent.tpl",
+                longDate: "date-time/longDate.tpl"
+            }
+        },
+        errorPages: {
+            error404: {
+                name: "error 404:",
+                type: "Sate.PageType.Error",
+                contentPath: "./sate-cms/error/404.html",
+                subtitle: "Page Not Found"
+            }
         },
         partials: {
             'html': 'main/html.tpl',
@@ -34,7 +72,7 @@ function Website(args, Sate) {
     };
 
     var generateMenus = function(website) {
-        setupMenu(website.pageByPath[website.siteConfig.rootPageUrl], website);
+        setupMenu(website.pageByPath[website.config.rootPageUrl], website);
     };
 
     var indexPage = function(id, pageData, website, parent) {
@@ -52,7 +90,7 @@ function Website(args, Sate) {
 
     var generateIndexes = function(website, success, error) {
         try {
-            website.siteMap[website.siteConfig.rootPage] = indexPage(website.siteConfig.rootPage, website.siteMap[website.siteConfig.rootPage], website);
+            website.siteMap[website.config.rootPage] = indexPage(website.config.rootPage, website.siteMap[website.config.rootPage], website);
             generateMenus(website);
             for (var id in website.errorPages) {
                 if (website.errorPages.hasOwnProperty(id)) {
@@ -68,7 +106,7 @@ function Website(args, Sate) {
     };
 
     var loadTemplate = function(t, coll, success, error) {
-        fs.readFile(path.join(website.siteConfig.sateSources, 'templates', coll[t]), {encoding: website.siteConfig.encoding}, function(err, data) {
+        fs.readFile(path.join(website.sateSources, 'templates', coll[t]), {encoding: website.config.encoding}, function(err, data) {
             if (!err) {
                 // @TODO: compile the templates for better performance
                 website.compiledPartials[t] = data;
@@ -107,9 +145,9 @@ function Website(args, Sate) {
     };
     
     var mergeConfig = function() {
-        website.siteConfig = extend(true, 
-            defaults.siteConfig, 
-            website.json.siteConfig
+        website.config = extend(true, 
+            defaults.config, 
+            website.json.config
             );
         website.siteMap = extend(true, 
             defaults.siteMap, 
@@ -123,7 +161,7 @@ function Website(args, Sate) {
     
     var loadWebsiteJSON = function(sitePath, complete, error) {
         websitePath = path.normalize(path.join(sitePath, 'website.json'));
-        fs.readFile(websitePath, {encoding: defaults.siteConfig.encoding}, function(err, data) {
+        fs.readFile(websitePath, {encoding: defaults.config.encoding}, function(err, data) {
             if (err) {
                 console.log( err );
                 error(err);
@@ -155,6 +193,8 @@ function Website(args, Sate) {
             },
             json: null,
             args: args,
+            sitePath: args.sitePath,
+            sateSources: path.join(args.sitePath, 'sate-cms'),
             compiled: false,
             compiledPartials: {},
             pageByPath: {},
@@ -183,7 +223,7 @@ function Website(args, Sate) {
                     compiler.recordMetrics();
                 }
                 // first:
-                loadWebsiteJSON(this.args.sitePath, function() {
+                loadWebsiteJSON(this.sitePath, function() {
                     // then in parallel
                     for (var t in website.partials) {
                         if (website.partials.hasOwnProperty(t)) {
@@ -228,7 +268,7 @@ function Website(args, Sate) {
                 }
                 if (!filePath || filePath.length === 0) {
                     // if we somehow got here without a path, show the root page
-                    filePath = website.siteConfig.rootPage;
+                    filePath = website.config.rootPage;
                 }
                 var page = website.pageByPath[filePath];
                 if (!page) {
@@ -237,7 +277,7 @@ function Website(args, Sate) {
                 return page;
             },
             resourceForPath: function(filePath) {
-                return fs.readFileSync(path.join(this.siteConfig.content, filePath));
+                return fs.readFileSync(path.join(this.sitePath, filePath));
             },
             menuByPage: function(page) {
                 // walk up the page graph until we get to a page with a menu defined

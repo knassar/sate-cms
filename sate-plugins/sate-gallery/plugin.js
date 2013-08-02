@@ -118,7 +118,7 @@ module.exports = function(Sate) {
         thumbnails: [],
         heroes: [],
         compile: function(props, page, Sate) {
-            this.contentPath = page.content.replace(/^\.\//, '');
+            this.contentPath = page.sitePath.replace(/^\.\//, '');
             this.extendWithProperties(props);
             processGallery(this);
         },
