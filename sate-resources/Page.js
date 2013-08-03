@@ -85,9 +85,9 @@ function Page(id, props, parent, website, Sate) {
     };
     
     var loadArticlePage = function(page, success, error) {
-        fs.readFile(page.contentPath, page.encoding, function(err, data) {
+        fs.readFile(page.resolvedContentPath, page.encoding, function(err, data) {
             if (err) {
-                console.log( err );
+                console.log('HA', err );
                 error(err);
             } else {
                 processPageContent(page, data, success);
@@ -106,6 +106,9 @@ function Page(id, props, parent, website, Sate) {
                 process.nextTick(function() {
                     loadArticlePage(page, indexLoadCallback, error);
                 });
+                break;
+            case Sate.PageType.Error:
+                loadArticlePage(page, success, error);
                 break;
             case Sate.PageType.Article:
                 /* falls through */
@@ -126,16 +129,19 @@ function Page(id, props, parent, website, Sate) {
             if (!page.url) {
                 page.url = website.config.rootPageUrl;
             }
-            page.contentPath = path.join(website.sitePath, 'index.html');
+            page.resolvedContentPath = path.join(website.sitePath, 'index.html');
+        } else if (page.type == Sate.PageType.Error && page.contentPath) {
+            page.url = page.contentPath.replace(/^\.\//, '').replace(/\.html$/, '');
+            page.resolvedContentPath = path.join(website.sitePath, page.contentPath);
         } else {
             if (!page.url) {
                 page.url = [page.parent.url, page.id].join('/').replace(/[\/]+/g, '/');
             }
             if (page.type === Sate.PageType.Index) {
-                page.contentPath = path.join(website.sitePath, page.url + '/index.html');
+                page.resolvedContentPath = path.join(website.sitePath, page.url + '/index.html');
                 page.articles = [];
             } else {
-                page.contentPath = path.join(website.sitePath, page.url + '.html');
+                page.resolvedContentPath = path.join(website.sitePath, page.url + '.html');
             }
         }
         if (page.name === false) {

@@ -153,6 +153,10 @@ function Website(args, Sate) {
             defaults.siteMap, 
             website.json.siteMap
             );
+        website.errorPages = extend(true, 
+            defaults.errorPages, 
+            website.json.errorPages
+            );
         website.partials = extend(true, 
             defaults.partials, 
             website.json.partials
@@ -183,14 +187,6 @@ function Website(args, Sate) {
     
     website = extend(true,
         {
-            errorPages: {
-                error404: {
-                    name: "error 404:",
-                    type: Sate.PageType.Error,
-                    url: 'sate-cms/error/404',
-                    subtitle: "Page Not Found"
-                }
-            },
             json: null,
             args: args,
             sitePath: args.sitePath,
@@ -273,6 +269,7 @@ function Website(args, Sate) {
                 var page = website.pageByPath[filePath];
                 if (!page) {
                     page = website.pageByPath['sate-cms/error/404'];
+                    console.log( page );
                 }
                 return page;
             },
