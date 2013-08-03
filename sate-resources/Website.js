@@ -21,6 +21,7 @@ function Website(args, Sate) {
             classNames: [],
             extraStyles: [],
             extraScripts: [],
+            template: 'html',
             plugins: [
                 {
                     type: "sate-breadcrumbs",
@@ -33,16 +34,16 @@ function Website(args, Sate) {
                 {
                     type: "sate-sequenceNav"
                 }
-            ],
-            templates: {
-                html: "main/html.tpl",
-                rss: "main/rss.tpl"
-            },
-            partials: {
-                masthead: "main/masthead.tpl",
-                indexPageContent: "content/indexPageContent.tpl",
-                longDate: "date-time/longDate.tpl"
-            }
+            ]//,
+            // partials: {
+            //     masthead: "main/masthead.tpl",
+            //     indexPageContent: "content/indexPageContent.tpl",
+            //     longDate: "date-time/longDate.tpl"
+            // }
+        },
+        templates: {
+            // rss: "main/rss.tpl",
+            html: "main/html.tpl"
         },
         errorPages: {
             error404: {
@@ -104,8 +105,8 @@ function Website(args, Sate) {
             error(err);
         }
     };
-
-    var loadTemplate = function(t, coll, success, error) {
+    // @TODO: Move to Page.js
+    var loadPartial = function(website, t, coll, success, error) {
         fs.readFile(path.join(website.sateSources, 'templates', coll[t]), {encoding: website.config.encoding}, function(err, data) {
             if (!err) {
                 // @TODO: compile the templates for better performance
@@ -117,11 +118,33 @@ function Website(args, Sate) {
             }
         });
     };
-
-    var compilePartial = function(compiler, partialName) {
+    // @TODO: Move to Page.js
+    var compilePartial = function(website, partialName, compiler) {
         var step = 'partial-'+partialName;
         compiler.stepStart(step);
-        loadTemplate(partialName, website.partials, function() {
+        loadPartial(website, partialName, website.partials, function() {
+            compiler.stepComplete(step);
+        }, function(err) {
+            compiler.stepError(step, err);
+        });
+    };
+
+    var loadTemplate = function(website, t, coll, success, error) {
+        fs.readFile(path.join(website.sateSources, 'templates', coll[t]), {encoding: website.config.encoding}, function(err, data) {
+            if (!err) {
+                // @TODO: compile the templates for better performance
+                website.compiledTemplates[t] = data;
+                success();
+            } else {
+                console.log( err );
+                error(err);
+            }
+        });
+    };
+    var compileTemplate = function(website, templateName, compiler) {
+        var step = 'template-'+templateName;
+        compiler.stepStart(step);
+        loadTemplate(website, templateName, website.templates, function() {
             compiler.stepComplete(step);
         }, function(err) {
             compiler.stepError(step, err);
@@ -149,6 +172,10 @@ function Website(args, Sate) {
             defaults.config, 
             website.json.config
             );
+        website.pageDefaults = extend(true, 
+            defaults.pageDefaults, 
+            website.json.pageDefaults
+            );
         website.siteMap = extend(true, 
             defaults.siteMap, 
             website.json.siteMap
@@ -160,6 +187,10 @@ function Website(args, Sate) {
         website.partials = extend(true, 
             defaults.partials, 
             website.json.partials
+            );
+        website.templates = extend(true, 
+            defaults.templates, 
+            website.json.templates
             );
     };
     
@@ -193,6 +224,7 @@ function Website(args, Sate) {
             sateSources: path.join(args.sitePath, 'sate-cms'),
             compiled: false,
             compiledPartials: {},
+            compiledTemplates: {},
             pageByPath: {},
             siteMenu: [],
             isCompiling: false,
@@ -223,10 +255,15 @@ function Website(args, Sate) {
                     // then in parallel
                     for (var t in website.partials) {
                         if (website.partials.hasOwnProperty(t)) {
-                            compilePartial(compiler, t);
+                            compilePartial(this, t, compiler);
                         }
                     }
-
+                    for (var t in website.templates) {
+                        if (website.templates.hasOwnProperty(t)) {
+                            compileTemplate(this, t, compiler);
+                        }
+                    }
+                    
                     // also in parallel
                     compiler.stepStart('generateIndexes');
                     var self = this;

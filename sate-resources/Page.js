@@ -179,9 +179,11 @@ function Page(id, props, parent, website, Sate) {
                 }
             ]
         },
+        website.pageDefaults,
         props, 
         {
             id: id,
+            templates: website.compiledTemplates,
             sitePath: website.sitePath,
             sateSources: website.sateSources,
             parent: (parent) ? website.pageForPath(parent.url) : null,
@@ -315,7 +317,7 @@ function Page(id, props, parent, website, Sate) {
                 this.mergeStyles();
                 this.mergeScripts();
                 this.classNames = this.classNamesString();
-                var html = Mustache.render(this.partials.html, this, this.partials);
+                var html = Mustache.render(this.templates[this.template], this, this.partials);
                 return html;
             }
         }
