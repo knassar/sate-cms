@@ -29,38 +29,6 @@ var resolvePageType = function(page, Sate) {
     }
 };
 
-var resolvePlugins = function(page, Sate) {
-    var resolvedPlugins = [];
-    var pluginPath = function(type) {
-        return fs.realpathSync(path.join(page.sateSources, 'plugins', type, 'plugin.js'));
-    };
-    var i;
-    for (i=0; i < page.plugins.length; i++) {
-        if (!page.plugins[i].resolved) { // skip already-resolved plugins
-            if (!page.plugins[i].type) throw new Error("cannot resolve plugin declared without 'type' at index: "+i);
-            var PluginClass = require(pluginPath(page.plugins[i].type));
-            var plugin = new PluginClass(Sate);
-            plugin.loadTemplates(page.encoding);
-            plugin.compile(page.plugins[i], page, Sate);
-            if (!page['plugin-'+page.plugins[i].type]) {
-                page['plugin-'+page.plugins[i].type] = plugin.getRenderer();
-            }
-            plugin.resovled = true;
-            for (var s=0; s < plugin.stylesheets.length; s++) {
-                page.addStylesheet(plugin.stylesheets[s]);
-            }
-            for (var s=0; s < plugin.scripts.length; s++) {
-                page.addScript(plugin.scripts[s]);
-            }
-            resolvedPlugins.push(plugin);
-            if (plugin.id) {
-                resolvedPlugins[plugin.id] = plugin;
-            }
-        }
-    }
-    return resolvedPlugins;
-};
-
 var dateProps = [
     'date',
     'created',
@@ -76,9 +44,7 @@ function PageDataResolver(Sate) {
         // resolve PageType constant
         resolvePageType(page, Sate);
         for (var prop in page) {
-            if (prop == 'plugins' && util.isArray(page[prop])) {
-                page.plugins = resolvePlugins(page, Sate);
-            } else if (dateProps.indexOf(prop) > -1 && typeof page[prop] == 'string') {
+            if (dateProps.indexOf(prop) > -1 && typeof page[prop] == 'string') {
                 resolveDate(prop, page);
             }
         }

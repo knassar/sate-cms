@@ -17,13 +17,13 @@ module.exports = function(Sate) {
         type: 'hello-world',
         
         // the version of the plugin code
-        version: '0.1.0',
+        version: '0.2.0',
         
         // default config properties go here
         language: "english",
         
         // the compile method, 
-        compile: function(props, page, Sate) {
+        compile: function(props, page, Sate, complete) {
             // do any configuration or defaulting here
             if (!languageSupported(this.language)) {
                 this.language = supportedLangs[0];
@@ -31,6 +31,9 @@ module.exports = function(Sate) {
             
             // extend this plugin instance with any pageData-level defines:
             this.extendWithProperties(props);
+            
+            // completion callback
+            complete.apply();
         },
         // your templates go here. They will be loaded automatically before compile is called
         templates: {'main': __dirname+'/hello-world.tpl'},

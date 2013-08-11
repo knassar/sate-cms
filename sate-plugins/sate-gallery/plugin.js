@@ -6,31 +6,10 @@
 module.exports = function(Sate) {
     var fs = require('fs'),
         path = require('path'),
+        flow = require('flow'),
         im,
         Plugin = require('../Plugin'),
         foundIM;
-
-    var processGallery = function(gallery) {
-        if (gallery.heroes.length > 0) {
-            traverseImages(gallery.heroes, gallery);
-        } else if (gallery.imagesPath) {
-            try {
-                traverseImages(fs.readdirSync(path.join(__dirname, '../../../', gallery.imagesPath)), gallery);
-            } catch (err) {
-                console.log( err );
-            }
-        }
-    };
-
-    var traverseImages = function(imagesPaths, gallery) {
-        for (var i=0; i < imagesPaths.length; i++) {
-            if (/\.jpg|\.gif|\.png$/.test(imagesPaths[i])) {
-                var imagePath = path.join(gallery.contentPath, gallery.imagesPath, imagesPaths[i]);
-                gallery.heroes.push(imagePath);
-                makeThumbnailImage(imagePath, gallery);
-            }
-        }
-    };
 
     var ensurePath = function(filepath) {
         var pathParts = filepath.split('/');
@@ -75,10 +54,10 @@ module.exports = function(Sate) {
         });
     };
 
-    var makeThumbnailImage = function(imagePath, gallery) {
+    var makeThumbnailImage = function(imagePath, gallery, complete) {
         if (foundIM === undefined) {
             verifyImageMagick(function() {
-                makeThumbnailImage(imagePath, gallery);
+                makeThumbnailImage(imagePath, gallery, complete);
             });
         } else {
             loadIM();
@@ -99,13 +78,40 @@ module.exports = function(Sate) {
                 } else {
                     gallery.thumbnails.push(thumbPath);
                 }
+                complete.apply();
             });
         }
     };
 
+    var compileFlow = function(gallery, complete) {
+        var imgExtRegex = /\.jpg|\.gif|\.png$/;
+        flow.exec(
+            function() {
+                fs.readdir(path.join(__dirname, '../../../', gallery.imagesPath), this);
+            },
+            function(err, imagesPaths) {
+                var multiCount = 0;
+                for (var i=0; i < imagesPaths.length; i++) {
+                    if (imgExtRegex.test(imagesPaths[i])) {
+                        var imagePath = path.join(gallery.contentPath, gallery.imagesPath, imagesPaths[i]);
+                        gallery.heroes.push(imagePath);
+                        multiCount++;
+                        makeThumbnailImage(imagePath, gallery, this.MULTI(imagePath));
+                    }
+                }
+                if (multiCount === 0) {
+                    this.apply();
+                }
+            },
+            function() {
+                complete.apply();
+            }
+        );
+    };
+
     var plg = new Plugin(Sate, {
         type: 'sate-gallery',
-        version: '0.1.1',
+        version: '0.2.0',
         thumbnail: {
             format: 'jpg',
             size: null, // use size for best fit
@@ -117,10 +123,10 @@ module.exports = function(Sate) {
         imagesPath: "",
         thumbnails: [],
         heroes: [],
-        compile: function(props, page, Sate) {
+        compile: function(props, page, Sate, complete) {
             this.contentPath = page.sitePath.replace(/^\.\//, '');
             this.extendWithProperties(props);
-            processGallery(this);
+            compileFlow(this, complete);
         },
         templates: {'main': __dirname+'/gallery.tpl'},
         stylesheets: ['/sate-cms/plugins/sate-gallery/sate-gallery.css'],

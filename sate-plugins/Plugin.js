@@ -1,28 +1,14 @@
 function Plugin(Sate, subobj) {
-    var fs = require('fs');
+    var fs = require('fs'),
+        flow = require('flow'),
         extend = require('node.extend');
+        
     var plg = {
         type: 'abstract-base-class',
-        version: '0.1.1',
+        version: '0.2.0',
         classes: [],
-        loadTemplates: function(encoding) {
-            if (!this.templatesLoaded) {
-                try {
-                    var templates = {};
-                    for (var t in this.templates) {
-                        if (this.templates.hasOwnProperty(t)) {
-                            templates[t] = fs.readFileSync(this.templates[t], {encoding: encoding});
-                        }
-                    }
-                    this.templates = templates;
-                    this.templatesLoaded = true;
-                } catch (err) {
-                    console.log( err );
-                }
-            }
-        },
-        compile: function(props, page, Sate) {
-            return extend(true, this, props);
+        compile: function(props, page, Sate, complete) {
+            complete.apply();
         },
         extendWithProperties: function(props) {
             for (var p in props) {

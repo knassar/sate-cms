@@ -6,7 +6,9 @@ function Page(id, props, parent, website, Sate) {
         flow = require('flow'),
         Mustache = require('mustache'),
         PageDataResolver = require(__dirname+'/PageDataResolver'),
-        resolver = new PageDataResolver(Sate),
+        dataResolver = new PageDataResolver(Sate),
+        PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
+        pluginsResolver = new PagePluginsResolver(Sate),
         util = require("util");
         
     var md5 = function(str) {
@@ -81,7 +83,7 @@ function Page(id, props, parent, website, Sate) {
     };
 
     var resolvePage = function(page) {
-        resolver.resolve(page);
+        dataResolver.resolve(page);
     };
 
     var initialize = function(page, website, Sate) {
@@ -206,6 +208,9 @@ function Page(id, props, parent, website, Sate) {
                         this.apply();
                     },
                     function() {
+                        pluginsResolver.resolve(self, this);
+                    },
+                    function() {
                         self.isCompiling = false;
                         complete.apply();
                     }
@@ -291,7 +296,7 @@ function Page(id, props, parent, website, Sate) {
             pluginByTypeAndClassName: function(type, className) {
                 var plgs = this.pluginsByType(type);
                 for (var i=0; i < plgs.length; i++) {
-                    if (plgs[i].classes && plgs[i].classes.indexOf(className)) {
+                    if (plgs[i].classes && plgs[i].classes.indexOf(className) > -1) {
                         return plgs[i];
                     }
                 }

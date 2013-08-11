@@ -18,7 +18,6 @@ function Run(Sate) {
             site: null,
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Run"] );
-                console.log( " +-> processing website config..." );
                 this.site = new Sate.Website(this.args, Sate);
                 self = this;
                 flow.exec(

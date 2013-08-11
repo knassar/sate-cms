@@ -8,14 +8,15 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-breadcrumbs',
-        version: '0.1.0',
+        version: '0.2.0',
         headingTag: 'h2',
         separator: ':',
         minCrumbs: 1,
-        compile: function(props, page, Sate) {
+        compile: function(props, page, Sate, complete) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;
             this.extendWithProperties(props);
+            complete.apply();
         },
         templates: {'main': __dirname+'/breadcrumbs.tpl'},
         stylesheets: ['/sate-cms/plugins/sate-breadcrumbs/breadcrumbs.css'],
@@ -38,18 +39,13 @@ module.exports = function(Sate) {
                 obj.classes.push('plugin-sate-breadcrumbs');
                 obj.classes = obj.classes.join(' ');
             }
-            if (!obj.id) {
-                obj.id = '';
-            } else {
-                obj.id = ' id="'+obj.id+'"';
-            }
             obj.crumbs = [];
-            var p = this.page;
+            var p = page;
             while (p.parent && !p.parent.isRoot) {
                 p = p.parent;
                 obj.crumbs.unshift({url: p.url, name: p.name});
             }
-            if (this.page.name && obj.crumbs.length >= obj.minCrumbs) {
+            if (page.name && obj.crumbs.length >= obj.minCrumbs) {
                 return obj;
             } else {
                 return false;
