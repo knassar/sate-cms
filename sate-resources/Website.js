@@ -2,7 +2,7 @@ function Website(args, Sate) {
     var fs = require('fs'),
         path = require('path'),
         extend = require('node.extend'),
-        flow = require('flow'),
+        flow = require('flow');
 
     var website = {};
     var defaults = {
