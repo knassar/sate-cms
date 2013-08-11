@@ -11,6 +11,7 @@
     "mustache": "latest",
     "imagemagick": "latest",
     "ncp": "latest",
+    "flow": "latest",
     "node.extend": "latest"
   },
   

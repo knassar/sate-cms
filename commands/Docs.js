@@ -1,5 +1,6 @@
 function Docs(Sate) {
     var extend = require('node.extend'),
+        flow = require('flow'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
@@ -22,13 +23,18 @@ function Docs(Sate) {
             },
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Docs"] );
-                console.log( " +-> processing website config..." );
                 this.site = new Sate.Website(this.args, Sate);
-                this.site.compile(function() {
-                    console.log( " +-> starting server..." );
-                    var server = new Sate.Server.ProductionServer(cmd.site, Sate);
-                    console.log( " +---> Sate documentation available at http://localhost:"+cmd.site.args.port );
-                }, this.failWith);
+                self = this;
+                flow.exec(
+                    function() {
+                        self.site.compile(true, this);
+                    },
+                    function() {
+                        Sate.Log.logAction("starting server...", 0);
+                        var server = new Sate.Server.DevelopmentServer(self.site, Sate);
+                        Sate.Log.logAction("Sate documentation available at http://localhost:"+cmd.site.args.port, 1);
+                    }
+                );
             }
         });
     return cmd;

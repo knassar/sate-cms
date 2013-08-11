@@ -2,7 +2,7 @@ function Website(args, Sate) {
     var fs = require('fs'),
         path = require('path'),
         extend = require('node.extend'),
-        Compiler = require(__dirname+'/Compiler');
+        flow = require('flow'),
 
     var website = {};
     var defaults = {
@@ -106,50 +106,32 @@ function Website(args, Sate) {
         }
     };
     // @TODO: Move to Page.js
-    var loadPartial = function(website, t, coll, success, error) {
+    var loadPartial = function(website, t, coll, stepDone) {
         fs.readFile(path.join(website.sateSources, 'templates', coll[t]), {encoding: website.config.encoding}, function(err, data) {
             if (!err) {
                 // @TODO: compile the templates for better performance
                 website.compiledPartials[t] = data;
-                success();
+                stepDone(t);
             } else {
                 console.log( err );
-                error(err);
+                stepDone(t, err);
             }
         });
     };
-    // @TODO: Move to Page.js
-    var compilePartial = function(website, partialName, compiler) {
-        var step = 'partial-'+partialName;
-        compiler.stepStart(step);
-        loadPartial(website, partialName, website.partials, function() {
-            compiler.stepComplete(step);
-        }, function(err) {
-            compiler.stepError(step, err);
-        });
-    };
 
-    var loadTemplate = function(website, t, coll, success, error) {
+    var loadTemplate = function(website, t, coll, stepDone) {
         fs.readFile(path.join(website.sateSources, 'templates', coll[t]), {encoding: website.config.encoding}, function(err, data) {
             if (!err) {
                 // @TODO: compile the templates for better performance
                 website.compiledTemplates[t] = data;
-                success();
+                stepDone(t);
             } else {
                 console.log( err );
-                error(err);
+                stepDone(t, err);
             }
         });
     };
-    var compileTemplate = function(website, templateName, compiler) {
-        var step = 'template-'+templateName;
-        compiler.stepStart(step);
-        loadTemplate(website, templateName, website.templates, function() {
-            compiler.stepComplete(step);
-        }, function(err) {
-            compiler.stepError(step, err);
-        });
-    };
+
     var compilePage = function(compiler, page, withMetrics) {
         var step = 'compile-page-'+page.url;
         compiler.stepStart(step);
@@ -236,53 +218,61 @@ function Website(args, Sate) {
                     process.nextTick(action);
                 }
             },
-            compile: function(success, error, withMetrics) {
+            compile: function(withMetrics, complete) {
                 this.isCompiling = true;
                 var self = this;
-                var complete = function() {
-                    self.isCompiling = false;
-                    success();
-                    for (var i=0; i < self.pendingRequests.length; i++) {
-                        process.nextTick(self.pendingRequests[i]);
-                    }
-                };
-                var compiler = new Compiler(this, complete, error);
-                if (withMetrics) {
-                    compiler.recordMetrics();
-                }
-                // first:
-                loadWebsiteJSON(this.sitePath, function() {
-                    // then in parallel
-                    for (var t in website.partials) {
-                        if (website.partials.hasOwnProperty(t)) {
-                            compilePartial(this, t, compiler);
+                flow.exec(
+                    function() {
+                        Sate.Log.logAction("reading website.json", 0);
+                        loadWebsiteJSON(self.sitePath, this);
+                    },
+                    function() {
+                        Sate.Log.logAction("loading templates", 0);
+                        for (var t in self.templates) {
+                            if (self.templates.hasOwnProperty(t)) {
+                                Sate.Log.logAction(t, 1);
+                                loadTemplate(self, t, self.templates, this.MULTI(t));
+                            }
                         }
-                    }
-                    for (var t in website.templates) {
-                        if (website.templates.hasOwnProperty(t)) {
-                            compileTemplate(this, t, compiler);
+                    },
+                    function() {
+                        Sate.Log.logAction("loading partials", 0);
+                        for (var t in self.partials) {
+                            if (self.partials.hasOwnProperty(t)) {
+                                Sate.Log.logAction(t, 1);
+                                loadPartial(self, t, self.partials, this.MULTI(t));
+                            }
                         }
+                    },
+                    function() {
+                        Sate.Log.logAction("generating page data", 0);
+                        generateIndexes(self, this);
+                    },
+                    function() {
+                        Sate.Log.logAction("compiling pages", 0);
+                        for (var path in self.pageByPath) {
+                            if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type != Sate.PageType.Index) {
+                                Sate.Log.logAction(path, 1);
+                                self.pageByPath[path].compile(withMetrics, this.MULTI(path));
+                            }
+                        }
+                    },
+                    function() {
+                        Sate.Log.logAction("compiling index pages", 0);
+                        for (var path in self.pageByPath) {
+                            if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type == Sate.PageType.Index) {
+                                Sate.Log.logAction(path, 1);
+                                self.pageByPath[path].compile(withMetrics, this.MULTI(path));
+                            }
+                        }
+                    },
+                    function() {
+                        self.isCompiling = false;
+                        complete();
                     }
-                    
-                    // also in parallel
-                    compiler.stepStart('generateIndexes');
-                    var self = this;
-                    generateIndexes(this, function() {
-                        compiler.stepComplete('generateIndexes');
-
-                        // then:
-                        process.nextTick(function() {
-                            compilePages(compiler, self, withMetrics);
-                        });
-                    }, function(err) {
-                        compiler.stepError('generateIndexes', err);
-                    });
-
-                }, function(err) {
-                    console.log( err );
-                });
+                );
             },
-            recompile: function(success, error) {
+            recompile: function(withMetrics, complete) {
                 // clear compiled data
                 cleanObject(this.compiledPartials);
                 cleanObject(this.pageByPath);
@@ -291,7 +281,7 @@ function Website(args, Sate) {
                 this.compiled = false;
 
                 // compile again:
-                this.compile(success, error);
+                this.compile(withMetrics, complete);
 
             },
             pageForPath: function(filePath) {

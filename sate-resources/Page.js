@@ -3,8 +3,8 @@ function Page(id, props, parent, website, Sate) {
         path = require('path'),
         crypto = require('crypto'),
         extend = require('node.extend'),
+        flow = require('flow'),
         Mustache = require('mustache'),
-        Compiler = require(__dirname+'/Compiler'),
         PageDataResolver = require(__dirname+'/PageDataResolver'),
         resolver = new PageDataResolver(Sate),
         util = require("util");
@@ -58,64 +58,12 @@ function Page(id, props, parent, website, Sate) {
         if (!page.partials.content) {
             page.partials.content = null;
         }
-        success();
+        success.apply();
     };
     
     var composeArticleIntroForIndexPage = function(page, subPage) {
         subPage.articleIntro = Mustache.render(subPage.partials.intro, subPage, subPage.partials);
         page.articles.push(subPage);
-    };
-    
-    var loadIndexPage = function(page, success, error) {
-        if (!page.partials.content && page.subPages) {
-            page.articles = [];
-            for (var p in page.subPages) {
-                if (page.subPages.hasOwnProperty(p)) {
-                    composeArticleIntroForIndexPage(page, page.subPages[p]);
-                }
-            }
-            if (page.articleSort) {
-                page.article.sort(page.articleSort);
-            }
-            page.partials.content = page.partials.indexPageContent;
-            success();
-        } else {
-            success();
-        }
-    };
-    
-    var loadArticlePage = function(page, success, error) {
-        fs.readFile(page.resolvedContentPath, page.encoding, function(err, data) {
-            if (err) {
-                console.log('HA', err );
-                error(err);
-            } else {
-                processPageContent(page, data, success);
-            }
-        });
-    };
-
-    var loadPageContent = function(page, success, error) {
-        switch (page.type) {
-            case Sate.PageType.Index:
-                var indexLoadCallback = function() {
-                    process.nextTick(function() {
-                        loadIndexPage(page, success, error);
-                    });
-                };
-                process.nextTick(function() {
-                    loadArticlePage(page, indexLoadCallback, error);
-                });
-                break;
-            case Sate.PageType.Error:
-                loadArticlePage(page, success, error);
-                break;
-            case Sate.PageType.Article:
-                /* falls through */
-            default:
-                loadArticlePage(page, success, error);
-                break;
-        }
     };
 
     var resolvePage = function(page) {
@@ -195,17 +143,43 @@ function Page(id, props, parent, website, Sate) {
             scriptIds: [],
             typeOf: 'Sate.Page',
             isRoot: (id == website.config.rootPage),
-            compile: function(success, error, withMetrics) {
-                var compiler = new Compiler(this, success, error);
-                if (withMetrics) {
-                    compiler.recordMetrics();
-                }
-                compiler.stepStart('load-content');
-                loadPageContent(this, function() {
-                    compiler.stepComplete('load-content');
-                }, function(err) {
-                    compiler.stepError('load-content', err);
-                });
+            compile: function(withMetrics, complete) {
+                var self = this;
+                flow.exec(
+                    function() {
+                        fs.readFile(self.resolvedContentPath, self.encoding, this);
+                    },
+                    function(err, data) {
+                        if (err) {
+                            console.log( 'ERROR ' + err );
+                        }
+                        if (data) {
+                            processPageContent(self, data, this);
+                        } else {
+                            this.apply();
+                        }
+                    },
+                    function() {
+                        if (self.type == Sate.PageType.Index && !self.partials.content && self.subPages) {
+                            self.articles = [];
+                            for (var p in self.subPages) {
+                                if (self.subPages.hasOwnProperty(p)) {
+                                    composeArticleIntroForIndexPage(self, self.subPages[p]);
+                                }
+                            }
+                            if (self.articleSort) {
+                                self.articles.sort(self.articleSort);
+                            }
+                            self.partials.content = self.partials.indexPageContent;
+                        }
+                        // skip
+                        this.apply();
+                    },
+                    function() {
+                        self.isCompiling = false;
+                        complete.apply();
+                    }
+                );
             },
             eachSubpage: function(method, recurseSubpages) {
                 if (this.subPages) {

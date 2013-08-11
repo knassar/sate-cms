@@ -1,5 +1,6 @@
 function Run(Sate) {
     var extend = require('node.extend'),
+        flow = require('flow'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
@@ -19,11 +20,17 @@ function Run(Sate) {
                 Sate.Log.logBox( ["Starting Sate - Run"] );
                 console.log( " +-> processing website config..." );
                 this.site = new Sate.Website(this.args, Sate);
-                this.site.compile(function() {
-                    console.log( " +-> starting server..." );
-                    var server = new Sate.Server.ProductionServer(cmd.site, Sate);
-                    console.log( " +---> listening on port "+cmd.site.args.port+"..." );
-                }, this.failWith);
+                self = this;
+                flow.exec(
+                    function() {
+                        self.site.compile(true, this);
+                    },
+                    function() {
+                        Sate.Log.logAction("starting server...", 0);
+                        var server = new Sate.Server.ProductionServer(cmd.site, Sate);
+                        Sate.Log.logAction("listening on port "+cmd.site.args.port+"...", 1);
+                    }
+                );
             }
         });
     return cmd;

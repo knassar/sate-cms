@@ -1,5 +1,6 @@
 function Analyze(Sate) {
     var extend = require('node.extend'),
+        flow = require('flow'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
@@ -28,9 +29,15 @@ function Analyze(Sate) {
                 console.log( " +-> processing website config..." );
                 this.site = new Sate.Website(this.args, Sate);
                 // @TODO: Analyze This
-                this.site.compile(function() {
-                    console.log( " +---> This is where analysis would be if it was working" );
-                }, this.failWith);
+                self = this;
+                flow.exec(
+                    function() {
+                        self.site.compile(true, this);
+                    },
+                    function() {
+                        Sate.Log.logAction("This is where analysis would be if it was working", 1);
+                    }
+                );
             }
         });
     return cmd;

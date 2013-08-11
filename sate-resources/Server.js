@@ -73,11 +73,8 @@
                     };
                     if (type == RequestTargetType.Page) {
                         if (!website.isCompiling) {
-                            website.recompile(function(errors) {
+                            website.recompile(true, function(errors) {
                                 process.nextTick(respondToReq);
-                            }, function(err) {
-                                console.error(err);
-                                exit(1);
                             });
                         } else {
                             website.performAfterCompile(respondToReq);
