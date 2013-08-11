@@ -15,7 +15,6 @@ function Page(id, props, parent, website, Sate) {
         return md5sum.digest('hex');
     };
 
-    // @TODO: Move to Page.js
     var loadPartial = function(page, website, t, stepDone) {
         fs.readFile(path.join(website.sateSources, 'templates', page.partials[t]), {encoding: website.config.encoding}, function(err, data) {
             if (!err) {
