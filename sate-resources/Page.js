@@ -15,6 +15,21 @@ function Page(id, props, parent, website, Sate) {
         return md5sum.digest('hex');
     };
 
+    // @TODO: Move to Page.js
+    var loadPartial = function(page, website, t, stepDone) {
+        fs.readFile(path.join(website.sateSources, 'templates', page.partials[t]), {encoding: website.config.encoding}, function(err, data) {
+            if (!err) {
+                // @TODO: compile the templates for better performance
+                page.compiledPartials[t] = data;
+                website.compiledPartials[t] = data;
+                stepDone(t);
+            } else {
+                console.log( err );
+                stepDone(t, err);
+            }
+        });
+    };
+
     var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
     var partialMatcher = /\{\{<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{<\/[\w\d]+\}\}/mg;
     var partialCapturer = /\{\{<([\w\d]+)\}\}([\s\S]*?)\{\{<\//m;
@@ -42,27 +57,27 @@ function Page(id, props, parent, website, Sate) {
         }
         resolvePage(page);
         var partials = data.match(partialMatcher);
-        page.partials = extend({}, website.compiledPartials, page.partials);
+        // page.partials = extend({}, website.compiledPartials, page.partials);
         if (partials && partials.length > 0) {
             for (var m = 0; m < partials.length; m++) {
                 var partialCaps = partials[m].match(partialCapturer);
                 if (partialCaps.length > 2) {
                     // @TODO: compile the templates for better performance
-                    page.partials[partialCaps[1]] = partialCaps[2];
+                    page.compiledPartials[partialCaps[1]] = partialCaps[2];
                 }
             }
         }
-        if (!page.partials.intro) {
-            page.partials.intro = null;
+        if (!page.compiledPartials.intro) {
+            page.compiledPartials.intro = null;
         }
-        if (!page.partials.content) {
-            page.partials.content = null;
+        if (!page.compiledPartials.content) {
+            page.compiledPartials.content = null;
         }
         success.apply();
     };
     
     var composeArticleIntroForIndexPage = function(page, subPage) {
-        subPage.articleIntro = Mustache.render(subPage.partials.intro, subPage, subPage.partials);
+        subPage.articleIntro = Mustache.render(subPage.compiledPartials.intro, subPage, subPage.compiledPartials);
         page.articles.push(subPage);
     };
 
@@ -125,13 +140,15 @@ function Page(id, props, parent, website, Sate) {
                 {
                     type: 'sate-sequenceNav'
                 }
-            ]
+            ],
+            partials: {}
         },
         website.pageDefaults,
         props, 
         {
             id: id,
             templates: website.compiledTemplates,
+            compiledPartials: website.compiledPartials,
             sitePath: website.sitePath,
             sateSources: website.sateSources,
             parent: (parent) ? website.pageForPath(parent.url) : null,
@@ -147,6 +164,21 @@ function Page(id, props, parent, website, Sate) {
                 var self = this;
                 flow.exec(
                     function() {
+                        var multiCount = 0;
+                        for (var t in self.partials) {
+                            if (self.partials.hasOwnProperty(t) && !website.compiledPartials.hasOwnProperty(t)) {
+                                multiCount++;
+                                Sate.Log.logAction("loading partial "+t, 1);
+                                loadPartial(self, website, t, this.MULTI(t));
+                            } else {
+                                self.compiledPartials[t] = website.compiledPartials[t];
+                            }
+                        }
+                        if (multiCount === 0) {
+                            this.apply();
+                        }
+                    },
+                    function() {
                         fs.readFile(self.resolvedContentPath, self.encoding, this);
                     },
                     function(err, data) {
@@ -160,7 +192,8 @@ function Page(id, props, parent, website, Sate) {
                         }
                     },
                     function() {
-                        if (self.type == Sate.PageType.Index && !self.partials.content && self.subPages) {
+                        if (self.type == Sate.PageType.Index && !self.compiledPartials.content && self.subPages) {
+                            self.compiledPartials.content = self.compiledPartials.indexPageContent;
                             self.articles = [];
                             for (var p in self.subPages) {
                                 if (self.subPages.hasOwnProperty(p)) {
@@ -170,9 +203,7 @@ function Page(id, props, parent, website, Sate) {
                             if (self.articleSort) {
                                 self.articles.sort(self.articleSort);
                             }
-                            self.partials.content = self.partials.indexPageContent;
                         }
-                        // skip
                         this.apply();
                     },
                     function() {
@@ -291,7 +322,7 @@ function Page(id, props, parent, website, Sate) {
                 this.mergeStyles();
                 this.mergeScripts();
                 this.classNames = this.classNamesString();
-                var html = Mustache.render(this.templates[this.template], this, this.partials);
+                var html = Mustache.render(this.templates[this.template], this, this.compiledPartials);
                 return html;
             }
         }

@@ -34,12 +34,12 @@ function Website(args, Sate) {
                 {
                     type: "sate-sequenceNav"
                 }
-            ]//,
-            // partials: {
-            //     masthead: "main/masthead.tpl",
-            //     indexPageContent: "content/indexPageContent.tpl",
-            //     longDate: "date-time/longDate.tpl"
-            // }
+            ],
+            partials: {
+                masthead: "main/masthead.tpl",
+                indexPageContent: "content/indexPageContent.tpl",
+                longDate: "date-time/longDate.tpl"
+            }
         },
         templates: {
             // rss: "main/rss.tpl",
@@ -52,12 +52,6 @@ function Website(args, Sate) {
                 contentPath: "./sate-cms/error/404.html",
                 subtitle: "Page Not Found"
             }
-        },
-        partials: {
-            'html': 'main/html.tpl',
-            'masthead': 'main/masthead.tpl',
-            'indexPageContent': 'content/indexPageContent.tpl',
-            'longDate': 'date-time/longDate.tpl'
         }
     };
 
@@ -232,15 +226,6 @@ function Website(args, Sate) {
                             if (self.templates.hasOwnProperty(t)) {
                                 Sate.Log.logAction(t, 1);
                                 loadTemplate(self, t, self.templates, this.MULTI(t));
-                            }
-                        }
-                    },
-                    function() {
-                        Sate.Log.logAction("loading partials", 0);
-                        for (var t in self.partials) {
-                            if (self.partials.hasOwnProperty(t)) {
-                                Sate.Log.logAction(t, 1);
-                                loadPartial(self, t, self.partials, this.MULTI(t));
                             }
                         }
                     },
