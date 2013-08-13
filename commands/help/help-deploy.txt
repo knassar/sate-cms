@@ -1,1 +1,22 @@
-deploy help
+
+deploy help:
+
+    sate-cms deploy [flags]
+
+Compiles the source Sate website, generates all pages statically, and copies the static, generated website files to the target path, to be served out by a standard web server.
+
+Sate sources, templates, plugins, and supporting files are not copied to the deploy target.
+
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    -s [path]               Provide a path to the Sate website
+    --site [path]           If not provided, assumes './'
+
+    -t                      The target directory in which to output the generated site.
+    --target                If not provided, defaults to '../sate-build-[site path]'
+
+    -o                      Overwrites existing files in the target directory, but does 
+    --overwrite             not remove (clean) existing files from the directory
+
+    --clean                 Cleans the target directory before generating the site.
+                            This will remove ALL files and directories from the target.

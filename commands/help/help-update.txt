@@ -1,4 +1,5 @@
-Sate Update:
+
+update help:
 
     sate-cms update [flags]
 

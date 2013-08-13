@@ -1,30 +1,24 @@
-
-@TODO: Rewrite:
-
-/****************************************************
- * 
- * THIS IS ALL WRONG NOW:
- * 
- ****************************************************/
-
 Call Sate like this:
 
-    node sate.js [directive] [flags]
+    sate-cms [command] [flags]
 
-Sate has four main directives:
+Sate has the following commands:
     
-    Directive       Explanation
+    Command         Explanation
    --------------  -----------------------------------------------------------------
+    help [command]  Show help for any command.
+
+    create          Generate a prototype Sate website scaffold in the desired directory
+
+    update          Update Sate plugins and support files in the target directory
+
     develop         Starts a stateless web-server which serves website page requests 
                     by re-evaluating all website sources on each request. This is 
-                    useful when developing site content, as individual pages can be 
-                    tested by reloading the browser page with each tweak.
-                    If no directive is provided, 'develop' is assumed.
+                    useful when developing site content.
 
     run             Starts a web-server which serves website page requests. This 
                     differs from 'develop' in that the website sources are evaluated
-                    only once at server-start time. The server must be restarted for
-                    source changes to have any affect.
+                    only once at server-start time.
     
     deploy          Evaluates all website sources and generates the entire website as
                     static pages, for serving from Apache, Nginx, or other web server
@@ -35,25 +29,19 @@ Sate has four main directives:
                     Returns a report on any fatal or non-fatal issues found, such as 
                     un-parseable config or missing page content.
 
+    docs            Starts a web-server as with 'run' (on a different default port) which
+                    serves the Sate CMS documentation site.
 
-Sate has a series of optional flags which can be combined with the directive to provide finer control over the directive:
+
+Each command has its own optional flags, but some flags are used across all commands:
     
     Flag                    Explanation
    ----------------------  ---------------------------------------------------------
-    -w [path]               Provide a path to the website.json file.
-    --website [path]        If not provided, looks for './website.json'
-
-    -c [path]               Provide a path to the website content.
-    --content [path]        If not provided, checks for 'siteConfig.content' in website.json, then assumes './content'
-
-    -p [port number]        The port to listen on when running 'develop' or 'run' directive.
-    --port [port number]    If not provided, checks for 'siteConfig.port' in website.json, then defaults to Sate.defaults.port
-
-    -b [path]               Path to output deploy artifacts when running 'deploy'.
-    --build-path [path]     If not provided, checks for 'siteConfig.buildPath' in website.json, then defaults to './build/.'
-
-    --clean                 When running 'deploy', use this flag to tell Sate that it is
-                            allowed to delete the contents of the build path
+    -h                      Show help
+    --help
+    
+    -s [path]               Provide a path to the Sate website
+    --site [path]           If not provided, assumes './'
 
     -l [path]               Path to output logging when running 'run'.
     --log [path]            If not provided, checks for 'siteConfig.log' in website.json, then defaults to './log/.'

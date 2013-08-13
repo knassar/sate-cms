@@ -35,7 +35,10 @@
                 argp = processArgv.shift();
             }
             var args = processArgv.slice(0);
-            if (args[0].length > 0) {
+            if (!args[0]) {
+                Sate.Command.help();
+                process.exit(0);
+            } else if (args[0].length > 0) {
                 if (Sate.Command.hasOwnProperty(args[0])) {
                     this.command = Sate.Command[args[0]];
                     processArgv.shift();

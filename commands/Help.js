@@ -8,8 +8,10 @@ function Help(Sate) {
             _super: (new Command(Sate)),
             helpForCommand: null,
             helpForWhat: function(args) {
-                var cmdIdx = args.indexOf('help');
-                this.helpForCommand = args[cmdIdx+1];
+                if (args) {
+                    var cmdIdx = args.indexOf('help');
+                    this.helpForCommand = args[cmdIdx+1];
+                }
             },
             execute: function() {
                 if (this.helpForCommand) {

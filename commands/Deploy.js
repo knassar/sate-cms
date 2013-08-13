@@ -30,7 +30,7 @@ function Deploy(Sate) {
         {
             _super: (new Command(Sate)),
             args: {
-                targetPath: '../build',
+                targetPath: false,
                 overwrite: false,
                 clean: false
             },
@@ -47,6 +47,9 @@ function Deploy(Sate) {
                 Sate.Log.logBox( ["Starting Sate - Deploy"] );
                 this.site = new Sate.Website(this.args, Sate);
                 self = this;
+                if (this.args.targetPath === false) {
+                    this.args.targetPath = ['../sate-build',this.args.sitePath.split('/').pop()].join('-');
+                }
                 flow.exec(
                     function() {
                         fs.readdir(self.args.targetPath, this);
