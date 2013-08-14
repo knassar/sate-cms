@@ -4,33 +4,33 @@ Call Sate like this:
 
 Sate has the following commands:
     
-    Command         Explanation
-   --------------  -----------------------------------------------------------------
-    help [command]  Show help for any command.
-
-    create          Generate a prototype Sate website scaffold in the desired directory
-
-    update          Update Sate plugins and support files in the target directory
-
-    develop         Starts a stateless web-server which serves website page requests 
-                    by re-evaluating all website sources on each request. This is 
-                    useful when developing site content.
-
-    run             Starts a web-server which serves website page requests. This 
-                    differs from 'develop' in that the website sources are evaluated
-                    only once at server-start time.
-    
-    deploy          Evaluates all website sources and generates the entire website as
-                    static pages, for serving from Apache, Nginx, or other web server
-                    Use this in production for highest performance.
-
-    analyze         Evaluate all website sources just as 'run' or 'deploy' without 
-                    producing any artifacts or server processes.
-                    Returns a report on any fatal or non-fatal issues found, such as 
-                    un-parseable config or missing page content.
-
-    docs            Starts a web-server as with 'run' (on a different default port) which
-                    serves the Sate CMS documentation site.
+    Command                 Explanation
+   ----------------------  ---------------------------------------------------------
+    help [command]          Show help for any command.
+                            
+    create                  Generate a prototype Sate website scaffold in the desired directory
+                            
+    update                  Update Sate plugins and support files in the target directory
+                            
+    develop                 Starts a stateless web-server which serves website page requests 
+                            by re-evaluating all website sources on each request. This is 
+                            useful when developing site content.
+                            
+    run                     Starts a web-server which serves website page requests. This 
+                            differs from 'develop' in that the website sources are evaluated
+                            only once at server-start time.
+                            
+    deploy                  Evaluates all website sources and generates the entire website as
+                            static pages, for serving from Apache, Nginx, or other web server
+                            Use this in production for highest performance.
+                            
+    analyze                 Evaluate all website sources just as 'run' or 'deploy' without 
+                            producing any artifacts or server processes.
+                            Returns a report on any fatal or non-fatal issues found, such as 
+                            un-parseable config or missing page content.
+                            
+    docs                    Starts a web-server as with 'run' (on a different default port) which
+                            serves the Sate CMS documentation site.
 
 
 Each command has its own optional flags, but some flags are used across all commands:
@@ -44,10 +44,10 @@ Each command has its own optional flags, but some flags are used across all comm
     --site [path]           If not provided, assumes './'
 
     -l [path]               Path to output logging when running 'run'.
-    --log [path]            If not provided, checks for 'siteConfig.log' in website.json, then defaults to './log/.'
+    --log [path]            If not provided, checks for 'config.log' in website.json, then defaults to './log/.'
 
     -v                      Turns on 'verbose' logging.
-    --verbose               If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
+    --verbose               If not provided, logging level is defined by 'config.logLevel' in website.json, then assumes normal logging.
 
     -q                      Turns on 'quiet' (minimal) logging.
-    --quiet                 If not provided, logging level is defined by 'siteConfig.logLevel' in website.json, then assumes normal logging.
+    --quiet                 If not provided, logging level is defined by 'config.logLevel' in website.json, then assumes normal logging.

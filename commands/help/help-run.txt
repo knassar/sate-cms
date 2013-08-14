@@ -1,1 +1,16 @@
-run help
+
+run help:
+
+    sate-cms run [flags]
+
+Compiles the website and starts a web-server which serves website page requests. This is experimental, and not intended for running a critical production website.
+
+Optional flags which can be combined with the run command to provide finer control over the directive:
+
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    -s [path]               Provide a path to the Sate website
+    --site [path]           If not provided, assumes './'
+
+    -p [port number]        The port to listen on.
+    --port [port number]    If not provided, checks for 'config.port' in website.json, then defaults to 80

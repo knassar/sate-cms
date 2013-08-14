@@ -1,1 +1,13 @@
-docs help
+
+docs help:
+
+    sate-cms docs [flags]
+
+Starts a web-server which serves the Sate documentation website.
+
+Optional flags which can be combined with the run command to provide finer control over the directive:
+
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    -p [port number]        The port to listen on. Defaults to 4000.
+    --port [port number]    

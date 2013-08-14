@@ -1,1 +1,13 @@
-create help
+
+create help:
+
+    sate-cms create [targetPath] [flags]
+
+Bootstraps a Sate website at the location provided in targetPath, with a default website.json, and all default Sate plugins. Typically, you would follow up the create command with:
+
+    cd [targetPath]
+    sate-cms develop
+
+    Flag                    Explanation
+   ----------------------  ---------------------------------------------------------
+    --clean                 delete ALL files from [targetPath] before bootstrapping the site
