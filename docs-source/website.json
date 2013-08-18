@@ -56,6 +56,9 @@
                         },
                         "gallery": {
                             "name": "Gallery"
+                        },
+                        "sate-powered": {
+                            "name": "Sate-Powered"
                         }
                     },
                     "menu": {
@@ -72,6 +75,9 @@
                             },
                             {
                                 "url": "/plugins/gallery"
+                            },
+                            {
+                                "url": "/plugins/sate-powered"
                             }
                         ]
                     }

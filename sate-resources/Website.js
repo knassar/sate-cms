@@ -33,6 +33,9 @@ function Website(args, Sate) {
                 },
                 {
                     type: "sate-sequenceNav"
+                },
+                {
+                    type: "sate-powered"
                 }
             ],
             partials: {
