@@ -36,17 +36,6 @@
     padding: 0 0.5rem;
 }
 
-#pageBody.index .articles li.article-intro .details .plugin-sate-breadcrumbs {
-    display: inline-block;
-    width: 48%;
-    padding: 0 0.5rem;
-}
-
-#pageBody.index .articles li.article-intro .details .crumbs .seppa {
-    display: inline-block;
-    margin: 0 0.5em;
-}
-
 #pageBody.index .articles li.article-intro .details .date {
     display: inline-block;
     width: 48%;
@@ -61,3 +50,17 @@
     padding: 0 0.5rem;
 }
 
+#pageBody.index .plugin-sate-breadcrumbs.article-intro-breadcrumbs {
+    display: block;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    margin-top: 0.5em;
+}
+
+#pageBody.index .plugin-sate-breadcrumbs.article-intro-breadcrumbs a {
+    font-size: 0.8rem;
+}
+#pageBody.index .plugin-sate-breadcrumbs.article-intro-breadcrumbs .this-page {
+    display: none;
+}

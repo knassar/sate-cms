@@ -17,6 +17,19 @@
         {{#menu}}
             {{#hasSubItems}}
             <ul id="pageMenu">
+                {{#hasParent}}
+                <li class="parent-page">
+                {{#menu.parent}}
+                    {{#url}}
+                    <a href="{{url}}">
+                    {{/url}}
+                        {{name}}
+                    {{#url}}
+                    </a>
+                    {{/url}}
+                {{/menu.parent}}
+                </li>
+                {{/hasParent}}
                 {{#menu.sub}}
                 <li class="{{className}} {{#deep}}deep{{/deep}} {{#subtitle}}subtitle{{/subtitle}}">
                     {{#url}}

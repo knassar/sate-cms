@@ -107,3 +107,24 @@
     font-weight: 100;
 }
 
+
+#pageMenu .parent-page a {
+    font-size: 0.8rem;
+    padding-left: 0;
+}
+
+#pageMenu .parent-page a::before,
+#pageMenu .parent-page a:hover::before
+{
+    font-family: "Helvetica Neue", "Arial Narrow", "Helvetica", "Arial", serif;
+    content: "\2039";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -0.75rem;
+    vertical-align: middle;
+    font-size: 2em;
+    font-weight: 100;
+}
+
+

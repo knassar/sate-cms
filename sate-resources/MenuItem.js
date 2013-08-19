@@ -16,6 +16,7 @@ function MenuItem(page, props, website, Sate) {
                 name: "untitled menu item",
                 url: null,
                 attr: {},
+                parent: null,
                 sub: []
             },
             closestMenu(page),
@@ -34,6 +35,9 @@ function MenuItem(page, props, website, Sate) {
                 },
                 hasSubItems: function() {
                     return this.sub && this.sub.length > 0;
+                },
+                hasParent: function() {
+                    return !!this.parent;
                 }
             }
         );

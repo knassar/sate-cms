@@ -1,0 +1,35 @@
+code,
+pre.cli,
+pre.json,
+pre.ls
+{
+    font-family: "Menlo", "Courier New", monospace;
+}
+
+
+
+
+.cli {
+    background-color: #444;
+    color: white;
+    padding: 0.5em 1em;
+}
+
+.cli .line {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.cli .line::before {
+    content: "My Computer:";
+    color: #999;
+}
+
+.cli .line .dir-prompt {
+    color: #999;
+}
+
+.cli .line .dir-prompt::after {
+    content: " me$ ";
+}

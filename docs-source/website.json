@@ -17,6 +17,37 @@
                     "type": "Sate.PageType.Index",
                     "name": "Documentation",
                     "subPages": {
+                        "getting-started": {
+                            "type": "Sate.PageType.Index",
+                            "name": "Getting Started with Sate",
+                            "subPages": {
+                                "installing": {
+                                    "name": "Installing Sate"
+                                },
+                                "creating": {
+                                    "name": "Creating a Sate site"
+                                },
+                                "basics": {
+                                    "name": "Sate Basics"
+                                }
+                            },
+                            "menu": {
+                                "parent": {
+                                    "url": "/docs"
+                                },
+                                "sub": [
+                                    {
+                                        "url": "/docs/getting-started/installing"
+                                    },
+                                    {
+                                        "url": "/docs/getting-started/creating"
+                                    },
+                                    {
+                                        "url": "/docs/getting-started/basics"
+                                    }
+                                ]
+                            }                            
+                        },
                         "sate-website": {
                             "name": "Anatomy of a Sate website"
                         },
@@ -29,6 +60,10 @@
                     },
                     "menu": {
                         "sub": [
+                            {
+                                "url": "/docs/getting-started",
+                                "name": "Getting Started"
+                            },
                             {
                                 "url": "/docs/sate-website"
                             },
