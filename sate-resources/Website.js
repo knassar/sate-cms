@@ -74,6 +74,7 @@ function Website(args, Sate) {
     };
 
     var indexPage = function(id, pageData, website, parent) {
+        console.log(id);
         var page = new Sate.Page(id, pageData, parent, website, Sate);
         website.pageByPath[page.url] = page;
         if (page.subPages) {
@@ -86,9 +87,16 @@ function Website(args, Sate) {
         return page;
     };
 
+    var mapParentGraph = function(rootPage, website) {
+        rootPage.eachSubpage(function(page) {
+            page.parent = website.pageByPath[page.parentUrl];
+        }, true);
+    };
+
     var generateIndexes = function(website, success, error) {
         try {
             website.siteMap[website.config.rootPage] = indexPage(website.config.rootPage, website.siteMap[website.config.rootPage], website);
+            mapParentGraph(website.siteMap[website.config.rootPage], website);
             generateMenus(website);
             for (var id in website.errorPages) {
                 if (website.errorPages.hasOwnProperty(id)) {
@@ -101,19 +109,6 @@ function Website(args, Sate) {
             console.log( err );
             error(err);
         }
-    };
-    // @TODO: Move to Page.js
-    var loadPartial = function(website, t, coll, stepDone) {
-        fs.readFile(path.join(website.sateSources, 'templates', coll[t]), {encoding: website.config.encoding}, function(err, data) {
-            if (!err) {
-                // @TODO: compile the templates for better performance
-                website.compiledPartials[t] = data;
-                stepDone(t);
-            } else {
-                console.log( err );
-                stepDone(t, err);
-            }
-        });
     };
 
     var loadTemplate = function(website, t, coll, stepDone) {
@@ -138,6 +133,7 @@ function Website(args, Sate) {
             compiler.stepError(step, err);
         }, withMetrics);
     };
+    
     var compilePages = function(compiler, website, withMetrics) {
         for (var path in website.pageByPath) {
             if (website.pageByPath.hasOwnProperty(path)) {
