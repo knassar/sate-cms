@@ -1,3 +1,40 @@
+{{#pageData}}
+{
+    "plugins": [
+        {
+            "type": "sate-pageMenu",
+            "id": "siteMenu",
+            "inherited": true,
+            "items": [
+                {
+                    "name": "Home",
+                    "url": "/"
+                },
+                {
+                    "name": "Docs",
+                    "includeSublevel": true,
+                    "url": "/docs"
+                },
+                {
+                    "name": "Plugins",
+                    "includeSublevel": true,
+                    "url": "/plugins"
+                },
+                {
+                    "name": "About Sate",
+                    "includeSublevel": true,
+                    "url": "/about"
+                }
+            ]
+        },
+        {
+            "type": "sate-pageMenu",
+            "id": "pageMenu",
+            "items": false
+        }
+    ]
+}
+{{/pageData}}
 {{<content}}
     <h3>Basic principles</h3>
     <p>

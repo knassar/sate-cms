@@ -6,6 +6,7 @@
     },
     "pageDefaults": {
         "title": "Sate",
+        "classNames": "sate-docs",
         "subtitle": "Just Enough CMS"
     },
     "siteMap": {

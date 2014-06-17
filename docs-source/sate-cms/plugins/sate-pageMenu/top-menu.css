@@ -20,13 +20,13 @@
 }
 
 
-.plugin-sate-pageMenu.top-menu > li.active > a,
-.plugin-sate-pageMenu.top-menu > li.active-descendant > a
+.plugin-sate-pageMenu.top-menu > li.active a,
+.plugin-sate-pageMenu.top-menu > li.active-descendant a
 {
     font-weight: bold;
 }
 
-.plugin-sate-pageMenu.top-menu > li a
+.plugin-sate-pageMenu.top-menu > li.active-descendant li a
 {
     font-weight: normal;
 }

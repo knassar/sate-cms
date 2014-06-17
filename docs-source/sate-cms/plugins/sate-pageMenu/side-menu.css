@@ -1,0 +1,57 @@
+.plugin-sate-pageMenu.side-menu,
+.plugin-sate-pageMenu.side-menu ul
+{
+    margin: 1em 0;
+    font-size: 0.9em;
+}
+
+.plugin-sate-pageMenu.side-menu
+{
+    position: absolute;
+}
+
+.plugin-sate-pageMenu.side-menu li
+{
+    margin-left: 0.9em;
+}
+
+.plugin-sate-pageMenu.side-menu li.parent-page
+{
+    font-size: 0.9em;
+    margin-left: 0;
+}
+
+.plugin-sate-pageMenu.side-menu li a::after
+{
+    content: "›";
+}
+
+.plugin-sate-pageMenu.side-menu li.parent-page a::before
+{
+    content: "‹";
+}
+
+.plugin-sate-pageMenu.side-menu li a::after,
+.plugin-sate-pageMenu.side-menu li.parent-page a::before
+{
+    font-size: 1.6em;
+    font-family: "Garamond";
+}
+
+.plugin-sate-pageMenu.side-menu li.active::after a
+{
+    color: black;
+}
+
+.plugin-sate-pageMenu.side-menu li.parent-page a::after,
+.plugin-sate-pageMenu.side-menu li.subtitle a::after
+{
+    content: "";
+}
+
+.plugin-sate-pageMenu.side-menu li.subtitle
+{
+    color: #777;
+    font-size: 0.9em;
+    padding-top: 1em;
+}

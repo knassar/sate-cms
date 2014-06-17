@@ -11,12 +11,13 @@
         <link rel="stylesheet" href="{{{href}}}" type="text/css" media="{{media}}" charset="utf-8">
         {{/styles}}
     </head>
-    <body id="{{id}}" class="{{classNames}} {{#menu}}{{#hasSubItems}}with-menu{{/hasSubItems}}{{/menu}}">
+    <body id="{{id}}" class="{{classNames}}">
         {{>masthead}}
 
         {{#plugin-sate-pageMenu}}
         {
             "id": "siteMenu",
+            "inherited": true,
             "classes": ["top-menu"]
         }
         {{/plugin-sate-pageMenu}}
@@ -28,14 +29,13 @@
         }
         {{/plugin-sate-pageMenu}}
 
-
-        {{#plugin-sate-breadcrumbs}}
-        {
-            "id": "breadcrumbs"
-        }
-        {{/plugin-sate-breadcrumbs}}
-        
         <div id="pageBody" class="{{type}}">
+            {{#plugin-sate-breadcrumbs}}
+            {
+                "id": "breadcrumbs"
+            }
+            {{/plugin-sate-breadcrumbs}}
+        
             {{#date}}
                 <div class="date">{{>longDate}}</div>
             {{/date}}

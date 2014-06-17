@@ -1,72 +1,37 @@
-
-#mainMenu {
+.plugin-sate-pageMenu.top-menu,
+.plugin-sate-pageMenu.top-menu ul
+{
+    background-color: white;
     padding: 0.5em 1em;
     box-shadow: #bbb 0 2px 5px;
 }
 
-#mainMenu,
-#mainMenu ul
+.plugin-sate-pageMenu.top-menu li a 
 {
-    margin: 0;
-}
-
-#mainMenu li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-#mainMenu li a {
     color: black;
     text-decoration: none;
     line-height: 1em;
-    white-space: nowrap;
 }
 
-#mainMenu li a:hover {
+.plugin-sate-pageMenu.top-menu li a:hover 
+{
     color: #c90;
 }
 
-#mainMenu > li {
-    display: inline-block;
-    position: relative;
-    margin-right: 1em;
-}
-
-#mainMenu li > a {
-    display: block;
-    position: relative;
-    padding: 0.25em 0.5em 0.25em 1em;
-}
-
-#mainMenu > li.active > a {
+.plugin-sate-pageMenu.top-menu > li.active > a 
+{
     font-weight: bold;
+	color: #c90;
 }
 
-#mainMenu > li > ul {
-    display: none;
-}
-
-#mainMenu > li > ul {
-    display: none;
-}
-
-#mainMenu > li:hover a {
-    z-index: 2;
-}
-
-#mainMenu > li:hover > ul {
-    display: block;
-    position: absolute;
+.plugin-sate-pageMenu.top-menu > li:hover > ul 
+{
     background-color: white;
     box-shadow: #999 0px 4px 5px;
-    padding: 0.5em 1em 1em 0.5em;
-    top: 2em;
-    left: -0.25em;
-    z-index: 1;
 }
 
-#mainMenu > li:hover > ul::before {
+.plugin-sate-pageMenu.top-menu > li:hover > ul::before 
+{
     content: "";
     position: absolute;
     width: 100%;
@@ -75,27 +40,16 @@
     left: 0;
 }
 
-#pageMenu {
+.plugin-sate-pageMenu.side-menu 
+{
     float: left;
-    width: 12em;
+    min-width: 12em;
     margin: 2em 1em;
     padding: 0;
-    width: ;
 }
 
-#pageMenu li {
-    list-style: none;
-}
-
-#pageMenu li a {
-    position: relative;
-    display: inline-block;
-    padding: 0.125em 0.5em;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-#pageMenu li a:hover::before {
+.plugin-sate-pageMenu.side-menu li a:hover::before 
+{
     font-family: "Helvetica Neue", "Arial Narrow", "Helvetica", "Arial", serif;
     content: "\203A";
     position: absolute;
@@ -108,13 +62,8 @@
 }
 
 
-#pageMenu .parent-page a {
-    font-size: 0.8rem;
-    padding-left: 0;
-}
-
-#pageMenu .parent-page a::before,
-#pageMenu .parent-page a:hover::before
+.plugin-sate-pageMenu.side-menu .parent-page a::before,
+.plugin-sate-pageMenu.side-menu .parent-page a:hover::before
 {
     font-family: "Helvetica Neue", "Arial Narrow", "Helvetica", "Arial", serif;
     content: "\2039";
@@ -126,5 +75,4 @@
     font-size: 2em;
     font-weight: 100;
 }
-
 

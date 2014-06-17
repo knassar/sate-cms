@@ -1,4 +1,4 @@
-<li class="{{{itemClasses}}} {{#deep}}deep-link{{/deep}} {{#subtitle}}subtitle{{/subtitle}} {{#active}}active{{/active}}">
+<li class="{{{classes}}} {{#deep}}deep-link{{/deep}} {{#subtitle}}subtitle{{/subtitle}} {{#active}}active{{/active}} {{#activeDescendant}}active-descendant{{/activeDescendant}}">
     {{#url}}
     <a href="{{{url}}}">
     {{/url}}

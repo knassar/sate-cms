@@ -1,3 +1,30 @@
+{{#pageData}}
+{
+    "plugins": [
+        {
+            "type": "sate-pageMenu",
+            "id": "siteMenu",
+            "inherited": true,
+            "items": [
+                {
+                    "name": "Home",
+                    "url": "/"
+                },
+                {
+                    "name": "About",
+                    "includeSublevel": true,
+                    "url": "/about"
+                }
+            ]
+        },
+        {
+            "type": "sate-pageMenu",
+            "id": "pageMenu",
+            "items": false
+        }
+    ]
+}
+{{/pageData}}
 {{<content}}
     <p>
         Start building your website here.
