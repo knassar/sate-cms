@@ -11,20 +11,24 @@ var resolvePlugin = function(idx, page, Sate, complete) {
     var PluginClass = require(fs.realpathSync(path.join(page.sateSources, 'plugins', pluginType, 'plugin.js')));
     var plugin = new PluginClass(Sate);
     var templates = {};
+    
+    var loadPluginTemplate = function(plugin, t, page, complete) {
+        fs.readFile(plugin.templates[t], {encoding: page.encoding}, function(err, data) {
+            templates[t] = data;
+            complete.apply();
+        });  
+    };
+    
     flow.exec(
         function() {
             if (plugin.templatesLoaded) {
                 this.apply();
             }
             var multiCount = 0;
-            var thisFlow = this;
             for (var t in plugin.templates) {
                 if (plugin.templates.hasOwnProperty(t)) {
-                    fs.readFile(plugin.templates[t], {encoding: page.encoding}, function(err, data) {
-                        templates[t] = data;
-                        thisFlow.MULTI(t).apply();
-                    });
                     multiCount++;
+                    loadPluginTemplate(plugin, t, page, this.MULTI(t));
                 }
             }
             if (multiCount === 0) {

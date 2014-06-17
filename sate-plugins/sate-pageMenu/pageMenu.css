@@ -1,0 +1,28 @@
+.plugin-sate-breadcrumbs {
+    margin-top: 2em;
+    padding: 0 1em;
+}
+
+.with-menu .plugin-sate-breadcrumbs {
+    margin-left: 16rem;
+}
+
+.plugin-sate-breadcrumbs .seppa {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0 0.5em 0 0;
+}
+
+.plugin-sate-breadcrumbs .this-page {
+    display: block;
+    vertical-align: top;
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1em;
+}
+
+.plugin-sate-breadcrumbs a {
+    display: inline-block;
+    font-size: 0.9rem;
+    line-height: 1em;
+}

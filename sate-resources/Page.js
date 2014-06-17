@@ -1,6 +1,7 @@
 function Page(id, props, parent, website, Sate) {
     var fs = require('fs'),
         path = require('path'),
+        util = require('util'),
         crypto = require('crypto'),
         extend = require('node.extend'),
         flow = require('flow'),
@@ -319,6 +320,13 @@ function Page(id, props, parent, website, Sate) {
             };
             par = par.parent;
             cur = cur.parent;
+        }
+        return p;
+    };
+    newPage.rootPage = function() {
+        var p = this;
+        while (!p.isRoot && p.parent) {
+            p = p.parent;
         }
         return p;
     };

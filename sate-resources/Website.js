@@ -32,6 +32,9 @@ function Website(args, Sate) {
                     id: "article-intro-breadcrumbs"
                 },
                 {
+                    type: "sate-pageMenu"
+                },
+                {
                     type: "sate-sequenceNav"
                 },
                 {
@@ -74,7 +77,6 @@ function Website(args, Sate) {
     };
 
     var indexPage = function(id, pageData, website, parent) {
-        console.log(id);
         var page = new Sate.Page(id, pageData, parent, website, Sate);
         website.pageByPath[page.url] = page;
         if (page.subPages) {
@@ -97,6 +99,7 @@ function Website(args, Sate) {
         try {
             website.siteMap[website.config.rootPage] = indexPage(website.config.rootPage, website.siteMap[website.config.rootPage], website);
             mapParentGraph(website.siteMap[website.config.rootPage], website);
+            website.siteMap[website.config.rootPage].website = website;
             generateMenus(website);
             for (var id in website.errorPages) {
                 if (website.errorPages.hasOwnProperty(id)) {
