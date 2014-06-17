@@ -1,28 +1,25 @@
-.plugin-sate-breadcrumbs {
-    margin-top: 2em;
-    padding: 0 1em;
-}
-
-.with-menu .plugin-sate-breadcrumbs {
-    margin-left: 16rem;
-}
-
-.plugin-sate-breadcrumbs .seppa {
-    display: inline-block;
-    vertical-align: top;
-    padding: 0 0.5em 0 0;
-}
-
-.plugin-sate-breadcrumbs .this-page {
-    display: block;
-    vertical-align: top;
+.plugin-sate-pageMenu,
+.plugin-sate-pageMenu ul
+{
     margin: 0;
-    font-size: 1.5rem;
-    line-height: 1em;
+    padding: 0;
+    list-style: none;
 }
 
-.plugin-sate-breadcrumbs a {
-    display: inline-block;
-    font-size: 0.9rem;
-    line-height: 1em;
+.plugin-sate-pageMenu li.active a
+{
+    font-weight: bold;
+    color: black;
 }
+
+.plugin-sate-pageMenu li a 
+{
+    text-decoration: none;
+}
+
+.plugin-sate-pageMenu li
+{
+    margin: 0;
+    padding: 0;
+}
+

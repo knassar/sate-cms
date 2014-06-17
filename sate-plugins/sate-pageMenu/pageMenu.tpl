@@ -4,7 +4,7 @@
         {{#parent.url}}
         <a href="{{url}}">
         {{/parent.url}}
-            {{parent.name}}
+           {{parent.name}}
         {{#parent.url}}
         </a>
         {{/parent.url}}

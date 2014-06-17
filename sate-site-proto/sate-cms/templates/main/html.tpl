@@ -14,36 +14,20 @@
     <body id="{{id}}" class="{{classNames}} {{#menu}}{{#hasSubItems}}with-menu{{/hasSubItems}}{{/menu}}">
         {{>masthead}}
 
-        {{#menu}}
-            {{#hasSubItems}}
-            <ul id="pageMenu">
-                {{#hasParent}}
-                <li class="parent-page">
-                {{#menu.parent}}
-                    {{#url}}
-                    <a href="{{url}}">
-                    {{/url}}
-                        {{name}}
-                    {{#url}}
-                    </a>
-                    {{/url}}
-                {{/menu.parent}}
-                </li>
-                {{/hasParent}}
-                {{#menu.sub}}
-                <li class="{{className}} {{#deep}}deep{{/deep}} {{#subtitle}}subtitle{{/subtitle}}">
-                    {{#url}}
-                    <a href="{{url}}">
-                    {{/url}}
-                        {{name}}
-                    {{#url}}
-                    </a>
-                    {{/url}}
-                </li>
-                {{/menu.sub}}
-            </ul>
-            {{/hasSubItems}}
-        {{/menu}}
+        {{#plugin-sate-pageMenu}}
+        {
+            "id": "siteMenu",
+            "classes": ["top-menu"]
+        }
+        {{/plugin-sate-pageMenu}}
+
+        {{#plugin-sate-pageMenu}}
+        {
+            "id": "pageMenu",
+            "classes": ["side-menu"]
+        }
+        {{/plugin-sate-pageMenu}}
+
 
         {{#plugin-sate-breadcrumbs}}
         {
