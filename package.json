@@ -1,6 +1,6 @@
 {
   "name": "sate-cms",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "Sate is a developer-friendly minimal CMS to drive a website.",
   "main": "sate.js",
   "preferGlobal": true,
@@ -8,7 +8,7 @@
   
   "dependencies": {
     "connect": "latest",
-    "mustache": "latest",
+    "mustache": "0.7.2",
     "markdown": "latest",
     "imagemagick": "latest",
     "ncp": "latest",
