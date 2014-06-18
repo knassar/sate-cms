@@ -16,7 +16,6 @@
             IndexSort: require(__dirname+'/sate-resources/IndexSort'),
             Website: require(__dirname+'/sate-resources/Website'),
             Page: require(__dirname+'/sate-resources/Page'),
-            MenuItem: require(__dirname+'/sate-resources/MenuItem'),
             Server: require(__dirname+'/sate-resources/Server'),
             utils: require(__dirname+'/sate-resources/sate-utils'),
             LogLevel: {

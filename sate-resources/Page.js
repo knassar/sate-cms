@@ -96,7 +96,7 @@ function Page(id, props, parent, website, Sate) {
             page.resolvedContentPath = path.join(website.contentPath, 'index.html');
         } else if (page.type == Sate.PageType.Error && page.contentPath) {
             page.url = page.contentPath.replace(/^\.\//, '').replace(/\.html$/, '');
-            page.resolvedContentPath = path.join(website.contentPath, page.contentPath);
+            page.resolvedContentPath = page.contentPath;
         } else {
             if (!page.url) {
                 page.url = [page.parentUrl, page.id].join('/').replace(/[\/]+/g, '/');
@@ -126,6 +126,7 @@ function Page(id, props, parent, website, Sate) {
             type: Sate.PageType.Empty,
             subPages: null,
             encoding: website.config.encoding,
+            contentPath: website.contentPath,
             classNames: [],
             extraStyles: [],
             extraScripts: [],
@@ -151,7 +152,6 @@ function Page(id, props, parent, website, Sate) {
             templates: website.compiledTemplates,
             compiledPartials: website.compiledPartials,
             sitePath: website.sitePath,
-            contentPath: website.contentPath,
             sateSources: website.sateSources,
             parentUrl: (parent) ? parent.url : null,
             siteMenu: website.siteMenu,
@@ -243,23 +243,13 @@ function Page(id, props, parent, website, Sate) {
             return this.classNames;
         }
     };
-    newPage.resolveSiteMenu = function() {
-        var p = this;
-        while (!p.isRoot && p.parent && !p.parent.isRoot) {
-            p = p.parent;
-        }
-        var rootUrl = p.url;
-        for (var i=0; i < this.siteMenu.length; i++) {
-            this.siteMenu[i].isActive = (this.siteMenu[i].url == rootUrl);
-        }
-    };
     newPage.addStylesheet = function(href, options) {
         var style = extend({
             href: href,
             id: md5(href),
             media: 'all'
         }, options);
-        if (this.styles.indexOf(style.id) === -1) {
+        if (this.styleIds.indexOf(style.id) === -1) {
             this.styleIds.push(style.id);
             this.styles.push(style);
         }
@@ -269,7 +259,7 @@ function Page(id, props, parent, website, Sate) {
             src: src,
             id: md5(src)
         }, options);
-        if (this.scripts.indexOf(script.id) === -1) {
+        if (this.scriptIds.indexOf(script.id) === -1) {
             this.scriptIds.push(script.id);
             this.scripts.push(script);
         }
@@ -332,7 +322,6 @@ function Page(id, props, parent, website, Sate) {
         return p;
     };
     newPage.render = function() {
-        this.resolveSiteMenu();
         this.mergeStyles();
         this.mergeScripts();
         this.classNames = this.classNamesString();

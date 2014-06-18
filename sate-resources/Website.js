@@ -55,26 +55,18 @@ function Website(args, Sate) {
         errorPages: {
             error404: {
                 name: "error 404:",
-                type: "Sate.PageType.Error",
+                type: Sate.PageType.Error,
                 contentPath: "./sate-cms/error/404.html",
                 subtitle: "Page Not Found"
             }
         }
     };
 
-    var setupMenu = function(page, website) {
-        page.menu = new Sate.MenuItem(page, page.menu, website);
-        if (page.isRoot || page.parent.isRoot) {
-            website.siteMenu.push(page.menu);
-        }
-        page.eachSubpage(function(p) {
-            setupMenu(p, website);
-        });
-        page.siteMenu = website.siteMenu;
-    };
-
     var indexPage = function(id, pageData, website, parent) {
         var page = new Sate.Page(id, pageData, parent, website, Sate);
+        if (!page) {
+            console.log(id);
+        }
         website.pageByPath[page.url] = page;
         if (page.subPages) {
             for (var p in page.subPages) {
@@ -98,9 +90,11 @@ function Website(args, Sate) {
             mapParentGraph(website.siteMap[website.config.rootPage], website);
             website.siteMap[website.config.rootPage].website = website;
             for (var id in website.errorPages) {
-                if (website.errorPages.hasOwnProperty(id)) {
-                    website.errorPages[id] = indexPage(id, website.errorPages[id], website);
-                    website.errorPages[id].siteMenu = website.siteMenu;
+                if (website.errorPages.hasOwnProperty(id) && !website.errorPages[id].compile) {
+                    var errPage = indexPage(id, website.errorPages[id], website);
+                    errPage.website = website;
+                    errPage.parent = website.siteMap[website.config.rootPage];
+                    website.errorPages[id] = errPage;
                 }
             }
             success();
@@ -131,14 +125,6 @@ function Website(args, Sate) {
         }, function(err) {
             compiler.stepError(step, err);
         }, withMetrics);
-    };
-    
-    var compilePages = function(compiler, website, withMetrics) {
-        for (var path in website.pageByPath) {
-            if (website.pageByPath.hasOwnProperty(path)) {
-                compilePage(compiler, website.pageByPath[path], withMetrics);
-            }
-        }
     };
     
     var mergeConfig = function() {
@@ -192,7 +178,6 @@ function Website(args, Sate) {
     };
     
     var crawlSitemapFromDirectory = function(graph, directory, encoding, name, complete, error) {
-        console.log(graph, directory, encoding, name, complete, error);
         var files = fs.readdirSync(path.normalize(directory));
         var page = {
             type: Sate.PageType.Index,
@@ -242,7 +227,6 @@ function Website(args, Sate) {
             compiledPartials: {},
             compiledTemplates: {},
             pageByPath: {},
-            siteMenu: [],
             isCompiling: false,
             pendingRequests: [],
             performAfterCompile: function(action) {
@@ -285,6 +269,13 @@ function Website(args, Sate) {
                         generateIndexes(self, this);
                     },
                     function() {
+                        Sate.Log.logAction("compiling error pages", 0);
+                        for (var id in self.errorPages) {
+                            if (self.errorPages.hasOwnProperty(id)) {
+                                Sate.Log.logAction(id, 1);
+                                self.errorPages[id].compile(withMetrics, this.MULTI(id));
+                            }
+                        }
                         Sate.Log.logAction("compiling pages", 0);
                         for (var path in self.pageByPath) {
                             if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type != Sate.PageType.Index) {
@@ -312,7 +303,6 @@ function Website(args, Sate) {
                 // clear compiled data
                 cleanObject(this.compiledPartials);
                 cleanObject(this.pageByPath);
-                this.siteMenu.length = 0;
                 this.json = null;
                 this.compiled = false;
 
@@ -331,24 +321,12 @@ function Website(args, Sate) {
                 }
                 var page = website.pageByPath[filePath];
                 if (!page) {
-                    page = website.pageByPath['sate-cms/error/404'];
+                    page = website.errorPages.error404;
                 }
                 return page;
             },
             resourceForPath: function(filePath) {
                 return fs.readFileSync(path.join(this.sitePath, filePath));
-            },
-            menuByPage: function(page) {
-                // walk up the page graph until we get to a page with a menu defined
-                var menuPage = page;
-                while (menuPage.menu === null && menuPage.parent !== null) {
-                    if (menuPage.parent) {
-                        menuPage = menuPage.parent;
-                    } else {
-                        break;
-                    }
-                }
-                return menuPage.menu;
             },
             typeOf: 'Sate.Website',
             eachPage: function(method, recurseSubpages) {
