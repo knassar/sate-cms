@@ -9,6 +9,7 @@
   "dependencies": {
     "connect": "latest",
     "mustache": "latest",
+    "markdown": "latest",
     "imagemagick": "latest",
     "ncp": "latest",
     "flow": "latest",

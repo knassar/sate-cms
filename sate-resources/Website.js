@@ -18,7 +18,8 @@ function Website(args, Sate) {
             name: "untitled page",
             menu: null,
             indexSort: "Sate.IndexSort.DateDescending",
-            type: "Sate.PageType.Article",
+            type: Sate.PageType.Article,
+            parser: Sate.Parser.HTML,
             classNames: [],
             extraStyles: [],
             extraScripts: [],
@@ -64,9 +65,6 @@ function Website(args, Sate) {
 
     var indexPage = function(id, pageData, website, parent) {
         var page = new Sate.Page(id, pageData, parent, website, Sate);
-        if (!page) {
-            console.log(id);
-        }
         website.pageByPath[page.url] = page;
         if (page.subPages) {
             for (var p in page.subPages) {
@@ -177,46 +175,6 @@ function Website(args, Sate) {
         }
     };
     
-    var crawlSitemapFromDirectory = function(graph, directory, encoding, name, complete, error) {
-        var files = fs.readdirSync(path.normalize(directory));
-        var page = {
-            type: Sate.PageType.Index,
-            subPages: {}
-        };
-        
-        page = extend(true, page, Sate.Page.dataFromFile(path.join(directory, "index.html"), encoding));
-        if (!page.name) {
-            page.name = Sate.utils.pageNameFromFileName(name);
-        }
-                
-        for (var f=0; f < files.length; f++) {
-            if (files[f] != "index.html" && files[f].substring(0,1) != ".") {
-                var filepath = path.join(directory, files[f]);
-                var stats = fs.statSync(filepath);
-                if (stats.isDirectory()) {
-                    crawlSitemapFromDirectory(page.subPages, filepath, encoding, files[f]);
-                }
-                else if (stats.isFile()) {
-                    var fileName = files[f].replace(".html", "");
-                    var article = {
-                        type: Sate.PageType.Article,
-                        subPages: {}
-                    };
-        
-                    article = extend(true, article, Sate.Page.dataFromFile(filepath, encoding));
-                    if (!article.name) {
-                        article.name = Sate.utils.pageNameFromFileName(fileName);
-                    }
-                    page.subPages[fileName] = article;
-                }
-            }
-        }
-        graph[name] = page;
-        if (complete) {
-            complete.apply();
-        }
-    };
-    
     website = extend(true,
         {
             json: null,
@@ -262,7 +220,8 @@ function Website(args, Sate) {
                         }
 
                         self.siteMap = {};
-                        crawlSitemapFromDirectory(self.siteMap, self.contentPath, self.config.encoding, self.config.rootPage, this);
+                        var generator = Sate.SiteMapGenerator(Sate);
+                        generator.crawlWebsite(self, this);
                     },
                     function() {
                         Sate.Log.logAction("generating page data", 0);

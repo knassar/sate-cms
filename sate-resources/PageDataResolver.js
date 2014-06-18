@@ -32,6 +32,17 @@ var resolvePageType = function(page, Sate) {
     }
 };
 
+var resolveParser = function(page, Sate) {
+    if (!page.parser) {
+        page.parser = Sate.Parser.HTML;
+    } else if (typeof page.parser == 'string') {
+        var parts = page.parser.split('.');
+        if (parts.length == 3 && parts[0] == 'Sate' && parts[1] == 'Parser') {
+            page.parser = parts[2].toLowerCase(); 
+        }
+    }
+};
+
 var dateProps = [
     'date',
     'created',
@@ -46,6 +57,8 @@ function PageDataResolver(Sate) {
     resolver.resolve = function(page) {
         // resolve PageType constant
         resolvePageType(page, Sate);
+        // resolve Parser constant
+        resolveParser(page, Sate);
         for (var prop in page) {
             if (dateProps.indexOf(prop) > -1 && typeof page[prop] == 'string') {
                 resolveDate(prop, page);

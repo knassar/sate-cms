@@ -10,6 +10,7 @@ function Page(id, props, parent, website, Sate) {
         extend = require('node.extend'),
         flow = require('flow'),
         Mustache = require('mustache'),
+        Markdown = require('markdown').markdown,
         PageDataResolver = require(__dirname+'/PageDataResolver'),
         dataResolver = new PageDataResolver(Sate),
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
@@ -22,17 +23,28 @@ function Page(id, props, parent, website, Sate) {
     };
 
     var loadPartial = function(page, website, t, stepDone) {
-        fs.readFile(path.join(website.sateSources, 'templates', page.partials[t]), {encoding: website.config.encoding}, function(err, data) {
-            if (!err) {
-                // @TODO: compile the templates for better performance
-                page.compiledPartials[t] = data;
-                website.compiledPartials[t] = data;
-                stepDone(t);
-            } else {
-                console.log( err );
-                stepDone(t, err);
-            }
-        });
+        var data = fs.readFileSync(path.join(website.sateSources, 'templates', page.partials[t]), {encoding: website.config.encoding});
+        
+        if (data) {
+            // @TODO: compile the templates for better performance
+            page.compiledPartials[t] = data;
+            website.compiledPartials[t] = data;
+            stepDone(t);
+        } else {
+            stepDone(t);
+        }
+    };
+
+    var parsedContent = function(content, page) {
+        if (page.parser == Sate.Parser.HTML) {
+            return content;
+        }
+        else if (page.parser == Sate.Parser.Markdown) {
+            return Markdown.toHTML(content);
+        }
+        else {
+            return content;
+        }
     };
 
     var processPageContent = function(page, data, success) {
@@ -64,7 +76,7 @@ function Page(id, props, parent, website, Sate) {
                 var partialCaps = partials[m].match(partialCapturer);
                 if (partialCaps.length > 2) {
                     // @TODO: compile the templates for better performance
-                    page.compiledPartials[partialCaps[1]] = partialCaps[2];
+                    page.compiledPartials[partialCaps[1]] = parsedContent(partialCaps[2], page);
                 }
             }
         }
@@ -89,11 +101,13 @@ function Page(id, props, parent, website, Sate) {
     var initialize = function(page, website, Sate) {
         resolvePage(page);
         
+        var extension = (page.contentExtension) ? '.'+page.contentExtension : Sate.Parser.extensionForParser(page.parser);
+        
         if (page.isRoot) {
             if (!page.url) {
                 page.url = website.config.rootPageUrl;
             }
-            page.resolvedContentPath = path.join(website.contentPath, 'index.html');
+            page.resolvedContentPath = path.join(website.contentPath, 'index' + extension);
         } else if (page.type == Sate.PageType.Error && page.contentPath) {
             page.url = page.contentPath.replace(/^\.\//, '').replace(/\.html$/, '');
             page.resolvedContentPath = page.contentPath;
@@ -102,12 +116,13 @@ function Page(id, props, parent, website, Sate) {
                 page.url = [page.parentUrl, page.id].join('/').replace(/[\/]+/g, '/');
             }
             if (page.type === Sate.PageType.Index) {
-                page.resolvedContentPath = path.join(website.contentPath, page.url + '/index.html');
+                page.resolvedContentPath = path.join(website.contentPath, page.url + '/index' + extension);
                 page.articles = [];
             } else {
-                page.resolvedContentPath = path.join(website.contentPath, page.url + '.html');
+                page.resolvedContentPath = path.join(website.contentPath, page.url + extension);
             }
         }
+
         if (page.name === false) {
             page.name = '';
         } else if (!page.name) {
@@ -130,6 +145,7 @@ function Page(id, props, parent, website, Sate) {
             classNames: [],
             extraStyles: [],
             extraScripts: [],
+            parser: Sate.Parser.HTML,
             plugins: [
                 {
                     type: 'sate-breadcrumbs',
@@ -186,9 +202,6 @@ function Page(id, props, parent, website, Sate) {
                 fs.readFile(self.resolvedContentPath, self.encoding, this);
             },
             function(err, data) {
-                if (err) {
-                    console.log( 'ERROR ' + err );
-                }
                 if (data) {
                     processPageContent(self, data, this);
                 } else {
