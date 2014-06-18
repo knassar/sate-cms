@@ -124,7 +124,6 @@ $(function() {
                 }
             };
 
-            $galleries.off('click.sate-gallery');
             $galleries.on('click.sate-gallery', function(event) {
                 var idx = $(event.target).data('img-idx');
                 if (idx > -1) {
