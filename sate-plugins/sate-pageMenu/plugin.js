@@ -39,35 +39,56 @@ module.exports = function(Sate) {
                     if (!obj.items[u].classes) {
                         obj.items[u].classes = [];
                     }
+                    
                     if (!obj.items[u].name && obj.items[u].url) {
+                        var thisPage = website.pageForPath(obj.items[u].url);
+                        if (!thisPage) {
+                            console.log(obj.items[u].url);
+                        }
                         obj.items[u].name = website.pageForPath(obj.items[u].url).name;
                     }
                     else if (obj.items[u].name && !obj.items[u].url) {
                         obj.items[u].subtitle = true;
                     }
+                    
                     if (obj.items[u].url) {
                         var menuPage = website.pageForPath(obj.items[u].url);
                     }
+                    
                     if (obj.items[u].items) {
                         this.populateMenu(obj.items[u], page, website, true);
                         obj.items[u].hasSubItems = true;
                     }
-                    else if (obj.items[u].includeSublevel && menuPage.subPages) {
-                        var items = [];
-                        for (p in menuPage.subPages) {
-                            if (menuPage.subPages.hasOwnProperty(p)) {
-                                items.push({
-                                    "url": menuPage.subPages[p].url
-                                });
+                    else if (obj.items[u].includeSublevel) {
+                        var thisPage = website.pageForPath(obj.items[u].url);
+                        if (thisPage && thisPage.type == Sate.PageType.Index) {
+                            var base = "/";
+                            if (!thisPage.isRoot) {
+                                base = thisPage.url + "/";
+                            }
+                            obj.items[u].items = [];
+                            for (var i = 0; i < thisPage.articles.length; i++) {
+                                obj.items[u].items.push({"url": base + thisPage.articles[i].id});
                             }
                         }
-                        obj.items[u].items = items;
-                        this.populateMenu(obj.items[u], page, website, true);
+                        else if (menuPage.subPages) {
+                            var items = [];
+                            for (p in menuPage.subPages) {
+                                if (menuPage.subPages.hasOwnProperty(p)) {
+                                    items.push({
+                                        "url": menuPage.subPages[p].url
+                                    });
+                                }
+                            }
+                            obj.items[u].items = items;
+                        }
+                        this.populateMenu(obj.items[u], page, website);
                         obj.items[u].hasSubItems = true;
                     }
                     else {
                         obj.items[u].hasSubItems = false;
                     }
+
                     if (!sub) {
                         this.setItemActiveState(obj.items[u], page);
                     }
@@ -102,14 +123,12 @@ module.exports = function(Sate) {
         },
         findRelatedMenuItems: function(obj, page, config) {
             if (page.type == Sate.PageType.Index) {
-                for (var p in page.subPages) {
-                    if (page.subPages.hasOwnProperty(p)) {
-                        var base = "/";
-                        if (!page.isRoot) {
-                            base = page.url + "/";
-                        }
-                        obj.items.push({"url": base + p});
-                    }
+                var base = "/";
+                if (!page.isRoot) {
+                    base = page.url + "/";
+                }
+                for (var i = 0; i < page.articles.length; i++) {
+                    obj.items.push({"url":base + page.articles[i].id});
                 }
             }
             else if (!page.isRoot) {

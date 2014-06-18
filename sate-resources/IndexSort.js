@@ -17,5 +17,21 @@ module.exports = {
         } else {
             return 1;
         }
+    },
+    ManualOrder: function(urls) {
+        var orderedUrls = Array.prototype.slice.call(arguments)[0];
+        var sorter = function(a, b) {
+            var aIdx = (a) ? orderedUrls.indexOf(a.url) : -1;
+            var bIdx = (b) ? orderedUrls.indexOf(b.url) : -1;
+            
+            if (aIdx > -1 && bIdx > -1) {
+                return aIdx - bIdx;
+            } else if (aIdx > -1 && bIdx == -1) {
+                return -1;
+            } else {
+                return 1;
+            }
+        };
+        return sorter;
     }
 };

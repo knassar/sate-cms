@@ -19,7 +19,19 @@ module.exports = function(Sate) {
         },
         templates: {'main': __dirname+'/sequenceNav.tpl'},
         stylesheets: ['/sate-cms/plugins/sate-sequenceNav/sequence-nav.css'],
-
+        closestIndexPage: function(page) {
+            if (page.parent) {
+                do {
+                    page = page.parent;
+                } while (page.type != Sate.PageType.Index && page.parent);
+            }
+            if (page.type == Sate.PageType.Index) {
+                return page;
+            }
+            else {
+                return null;
+            }
+        },
         objectToRender: function(config, page) {
             var obj;
             if (config.id) {
@@ -40,29 +52,34 @@ module.exports = function(Sate) {
                 obj.classes = obj.classes.join(' ');
             }
             var seq = obj.sequence;
-            if (!seq && page.menu && page.menu.sub) {
-                seq = page.menu.sub.slice(0, page.menu.sub.length);
-            }
-            currPageIdx = -1;
-            for (var i=0; i < seq.length; i++) {
-                if (page.url == seq[i].url) {
-                    currPageIdx = i;
-                    break;
+            if (!seq) {
+                var index = this.closestIndexPage(page);
+                if (index) {
+                    seq = index.articles;
                 }
             }
-            if (currPageIdx > 0) {
-                obj.prev = {
-                    prompt: this.previousPrompt,
-                    name: seq[currPageIdx-1].name,
-                    url: seq[currPageIdx-1].url
-                };
-            }
-            if (currPageIdx < seq.length -1) {
-                obj.next = {
-                    prompt: this.nextPrompt,
-                    name: seq[currPageIdx+1].name,
-                    url: seq[currPageIdx+1].url
-                };
+            if (seq) {
+                currPageIdx = -1;
+                for (var i=0; i < seq.length; i++) {
+                    if (page.url == seq[i].url) {
+                        currPageIdx = i;
+                        break;
+                    }
+                }
+                if (currPageIdx > 0) {
+                    obj.prev = {
+                        prompt: this.previousPrompt,
+                        name: seq[currPageIdx-1].name,
+                        url: seq[currPageIdx-1].url
+                    };
+                }
+                if (currPageIdx < seq.length -1) {
+                    obj.next = {
+                        prompt: this.nextPrompt,
+                        name: seq[currPageIdx+1].name,
+                        url: seq[currPageIdx+1].url
+                    };
+                }
             }
             return obj;
         }

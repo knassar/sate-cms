@@ -12,5 +12,8 @@ module.exports = {
             }
         }
         return str;
+    },
+    pageNameFromFileName: function(str, omitWords) {
+        return this.toTitleCase(str.replace('-', ' '));
     }
 };

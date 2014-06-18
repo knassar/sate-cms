@@ -9,6 +9,7 @@ function Website(args, Sate) {
         config: {
             rootPage: 'home',
             rootPageUrl: '/',
+            contentSources: './content',
             encoding: 'utf-8'
         },
         pageDefaults: {
@@ -72,10 +73,6 @@ function Website(args, Sate) {
         page.siteMenu = website.siteMenu;
     };
 
-    var generateMenus = function(website) {
-        setupMenu(website.pageByPath[website.config.rootPageUrl], website);
-    };
-
     var indexPage = function(id, pageData, website, parent) {
         var page = new Sate.Page(id, pageData, parent, website, Sate);
         website.pageByPath[page.url] = page;
@@ -100,7 +97,6 @@ function Website(args, Sate) {
             website.siteMap[website.config.rootPage] = indexPage(website.config.rootPage, website.siteMap[website.config.rootPage], website);
             mapParentGraph(website.siteMap[website.config.rootPage], website);
             website.siteMap[website.config.rootPage].website = website;
-            generateMenus(website);
             for (var id in website.errorPages) {
                 if (website.errorPages.hasOwnProperty(id)) {
                     website.errorPages[id] = indexPage(id, website.errorPages[id], website);
@@ -170,6 +166,7 @@ function Website(args, Sate) {
             defaults.templates, 
             website.json.templates
             );
+        website.contentPath = path.join(website.sitePath, website.config.contentSources);
     };
     
     var loadWebsiteJSON = function(sitePath, complete, error) {
@@ -191,6 +188,47 @@ function Website(args, Sate) {
             if (obj.hasOwnProperty(prop)) {
                 delete obj[prop];
             }
+        }
+    };
+    
+    var crawlSitemapFromDirectory = function(graph, directory, encoding, name, complete, error) {
+        console.log(graph, directory, encoding, name, complete, error);
+        var files = fs.readdirSync(path.normalize(directory));
+        var page = {
+            type: Sate.PageType.Index,
+            subPages: {}
+        };
+        
+        page = extend(true, page, Sate.Page.dataFromFile(path.join(directory, "index.html"), encoding));
+        if (!page.name) {
+            page.name = Sate.utils.pageNameFromFileName(name);
+        }
+                
+        for (var f=0; f < files.length; f++) {
+            if (files[f] != "index.html" && files[f].substring(0,1) != ".") {
+                var filepath = path.join(directory, files[f]);
+                var stats = fs.statSync(filepath);
+                if (stats.isDirectory()) {
+                    crawlSitemapFromDirectory(page.subPages, filepath, encoding, files[f]);
+                }
+                else if (stats.isFile()) {
+                    var fileName = files[f].replace(".html", "");
+                    var article = {
+                        type: Sate.PageType.Article,
+                        subPages: {}
+                    };
+        
+                    article = extend(true, article, Sate.Page.dataFromFile(filepath, encoding));
+                    if (!article.name) {
+                        article.name = Sate.utils.pageNameFromFileName(fileName);
+                    }
+                    page.subPages[fileName] = article;
+                }
+            }
+        }
+        graph[name] = page;
+        if (complete) {
+            complete.apply();
         }
     };
     
@@ -230,6 +268,17 @@ function Website(args, Sate) {
                                 loadTemplate(self, t, self.templates, this.MULTI(t));
                             }
                         }
+                    },
+                    function() {
+                        for (var p in self.siteMap) {
+                            if (self.siteMap.hasOwnProperty(p)) {
+                                this.apply();
+                                return;
+                            }
+                        }
+
+                        self.siteMap = {};
+                        crawlSitemapFromDirectory(self.siteMap, self.contentPath, self.config.encoding, self.config.rootPage, this);
                     },
                     function() {
                         Sate.Log.logAction("generating page data", 0);
@@ -283,7 +332,6 @@ function Website(args, Sate) {
                 var page = website.pageByPath[filePath];
                 if (!page) {
                     page = website.pageByPath['sate-cms/error/404'];
-                    console.log( page );
                 }
                 return page;
             },

@@ -1,3 +1,7 @@
+var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
+var partialMatcher = /\{\{<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{<\/[\w\d]+\}\}/mg;
+var partialCapturer = /\{\{<([\w\d]+)\}\}([\s\S]*?)\{\{<\//m;
+
 function Page(id, props, parent, website, Sate) {
     var fs = require('fs'),
         path = require('path'),
@@ -31,13 +35,9 @@ function Page(id, props, parent, website, Sate) {
         });
     };
 
-    var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
-    var partialMatcher = /\{\{<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{<\/[\w\d]+\}\}/mg;
-    var partialCapturer = /\{\{<([\w\d]+)\}\}([\s\S]*?)\{\{<\//m;
     var processPageContent = function(page, data, success) {
         var pageData = null,
             matches = data.match(pageDataMatcher);
-        
         if (matches && matches.length > 1) {
             pageData = JSON.parse(matches[1].trim());
         }
@@ -93,19 +93,19 @@ function Page(id, props, parent, website, Sate) {
             if (!page.url) {
                 page.url = website.config.rootPageUrl;
             }
-            page.resolvedContentPath = path.join(website.sitePath, 'index.html');
+            page.resolvedContentPath = path.join(website.contentPath, 'index.html');
         } else if (page.type == Sate.PageType.Error && page.contentPath) {
             page.url = page.contentPath.replace(/^\.\//, '').replace(/\.html$/, '');
-            page.resolvedContentPath = path.join(website.sitePath, page.contentPath);
+            page.resolvedContentPath = path.join(website.contentPath, page.contentPath);
         } else {
             if (!page.url) {
                 page.url = [page.parentUrl, page.id].join('/').replace(/[\/]+/g, '/');
             }
             if (page.type === Sate.PageType.Index) {
-                page.resolvedContentPath = path.join(website.sitePath, page.url + '/index.html');
+                page.resolvedContentPath = path.join(website.contentPath, page.url + '/index.html');
                 page.articles = [];
             } else {
-                page.resolvedContentPath = path.join(website.sitePath, page.url + '.html');
+                page.resolvedContentPath = path.join(website.contentPath, page.url + '.html');
             }
         }
         if (page.name === false) {
@@ -151,6 +151,7 @@ function Page(id, props, parent, website, Sate) {
             templates: website.compiledTemplates,
             compiledPartials: website.compiledPartials,
             sitePath: website.sitePath,
+            contentPath: website.contentPath,
             sateSources: website.sateSources,
             parentUrl: (parent) ? parent.url : null,
             siteMenu: website.siteMenu,
@@ -342,4 +343,22 @@ function Page(id, props, parent, website, Sate) {
     initialize(newPage, website, Sate);
     return newPage;
 }
+
+Page.dataFromFile = function(directory, encoding) {
+    var fs = require('fs'),
+        path = require('path');
+
+    var filepath = path.normalize(directory);
+    var data = fs.readFileSync(filepath, {encoding: encoding});
+    
+    var pageData = null,
+        matches = data.match(pageDataMatcher);
+    
+    if (matches && matches.length > 1) {
+        pageData = JSON.parse(matches[1].trim());
+    }
+    
+    return pageData;
+};
+
 module.exports = Page;

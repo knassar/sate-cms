@@ -9,6 +9,9 @@ var resolveArticleSort = function(page, Sate) {
             page.articleSort = Sate.IndexSort[parts[2]]; 
         }
     }
+    else if (util.isArray(page.articleSort)) {
+        page.articleSort = Sate.IndexSort.ManualOrder(page.articleSort);
+    }
 };
 
 var resolvePageType = function(page, Sate) {
