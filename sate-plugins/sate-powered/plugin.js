@@ -3,8 +3,7 @@
 * Use like: {{sate-powered}}
 */
 module.exports = function(Sate) {
-    var Plugin = require(__dirname+'/../Plugin'),
-        util = require('util');
+    var Plugin = require(__dirname+'/../Plugin');
 
     var plg = new Plugin(Sate, {
         type: 'sate-powered',
@@ -17,8 +16,7 @@ module.exports = function(Sate) {
         stylesheets: ['/sate-cms/plugins/sate-powered/powered-by-sate.css'],
 
         objectToRender: function(config, page) {
-            var obj = page.pluginFirstByType(this.type);
-            return obj;
+            return this;
         }
     });
     return plg;
