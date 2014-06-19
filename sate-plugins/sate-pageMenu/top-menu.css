@@ -63,6 +63,7 @@
     left: -0.25em;
     padding: 0.5em 1em 1em 0.5em;
     z-index: 1;
+    min-width: 100%;
 }
 
 .plugin-sate-pageMenu.top-menu > li:hover > ul::before
