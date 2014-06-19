@@ -39,9 +39,13 @@ function Create(Sate) {
             _super: (new Command(Sate)),
             args: {
                 createTarget: './',
-                clean: false
+                clean: false,
+                contentFormat: 'html'
             },
             argFlags: {
+                '--html': 'html',
+                '--md': 'md',
+                '--markdown': 'md',
                 '--clean': 'clean'
             },
             captureFlags: function(args) {
@@ -53,6 +57,13 @@ function Create(Sate) {
                             case '--clean':
                                 this.args.clean = true;
                                 break;
+                            case '--html':
+                                this.args.contentFormat = 'html';
+                                break;
+                            case '--md':
+                            case '--markdown':
+                                this.args.contentFormat = 'md';
+                                break;
                             default:
                                 this.help();
                                 process.exit(0);
@@ -62,6 +73,7 @@ function Create(Sate) {
             },
             copySitePrototype: function(complete) {
                 var target = this.args.createTarget;
+                var contentFormat = this.args.contentFormat;
                 ncp(path.join(__dirname, '../sate-site-proto'), target, {
                     filter: function(filename) {
                         return (!/\.DS\_Store/.test(filename));
@@ -69,6 +81,18 @@ function Create(Sate) {
                     clobber: false
                 }, function(err) {
                     if (!err) {
+                        switch (contentFormat) {
+                        case 'html':
+                            cleanTarget(path.join(target, 'content.md'));
+                            fs.renameSync(path.join(target, 'content.html'), path.join(target, 'content'));
+                            break;
+                            
+                        case 'md':
+                            cleanTarget(path.join(target, 'content.html'));
+                            fs.renameSync(path.join(target, 'content.md'), path.join(target, 'content'));                            
+                            break;
+                        }
+                        
                         ncp(path.join(__dirname, '../sate-plugins'), path.join(target, 'sate-cms/plugins'), complete);
                     } else {
                         console.log( " X-> ", err );

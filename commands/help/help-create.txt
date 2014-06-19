@@ -10,4 +10,8 @@ Bootstraps a Sate website at the location provided in targetPath, with a default
 
     Flag                    Explanation
    ----------------------  ---------------------------------------------------------
+    --html                  use HTML as the initial content format for the website prototype (default)
+    --md                    use Markdown as the initial content format for the website prototype
+    
     --clean                 delete ALL files from [targetPath] before bootstrapping the site
+    
