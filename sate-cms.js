@@ -18,6 +18,7 @@
             Website: require(__dirname+'/sate-resources/Website'),
             SiteMapGenerator: require(__dirname+'/sate-resources/SiteMapGenerator'),
             Page: require(__dirname+'/sate-resources/Page'),
+            chain: require(__dirname+'/sate-resources/chain'),
             Server: require(__dirname+'/sate-resources/Server'),
             utils: require(__dirname+'/sate-resources/sate-utils'),
             LogLevel: {

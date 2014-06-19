@@ -235,6 +235,8 @@ function Website(args, Sate) {
                                 self.errorPages[id].compile(withMetrics, this.MULTI(id));
                             }
                         }
+                    },
+                    function() {
                         Sate.Log.logAction("compiling pages", 0);
                         for (var path in self.pageByPath) {
                             if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type != Sate.PageType.Index) {

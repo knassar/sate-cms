@@ -7,8 +7,8 @@ function Page(id, props, parent, website, Sate) {
         path = require('path'),
         util = require('util'),
         crypto = require('crypto'),
-        extend = require('node.extend'),
         flow = require('flow'),
+        extend = require('node.extend'),
         Mustache = require('mustache'),
         Markdown = require('markdown').markdown,
         PageDataResolver = require(__dirname+'/PageDataResolver'),
@@ -70,7 +70,6 @@ function Page(id, props, parent, website, Sate) {
         }
         resolvePage(page);
         var partials = data.match(partialMatcher);
-        // page.partials = extend({}, website.compiledPartials, page.partials);
         if (partials && partials.length > 0) {
             for (var m = 0; m < partials.length; m++) {
                 var partialCaps = partials[m].match(partialCapturer);
@@ -81,16 +80,17 @@ function Page(id, props, parent, website, Sate) {
             }
         }
         if (!page.compiledPartials.intro) {
-            page.compiledPartials.intro = null;
+            page.compiledPartials.intro = "";
         }
         if (!page.compiledPartials.content) {
-            page.compiledPartials.content = null;
+            page.compiledPartials.content = "";
         }
         success.apply();
     };
     
     var composeArticleIntroForIndexPage = function(page, subPage) {
-        subPage.articleIntro = Mustache.render(subPage.compiledPartials.intro, subPage, subPage.compiledPartials);
+        var articleIntro = Mustache.render(subPage.compiledPartials.intro, subPage, subPage.compiledPartials);
+        subPage.articleIntro = articleIntro;
         page.articles.push(subPage);
     };
 
@@ -133,13 +133,12 @@ function Page(id, props, parent, website, Sate) {
         }
     };
 
-    var newPage = extend(true,
+    var newPage = Sate.chain(
         {
             name: "untitled page",
-            menu: null,
             indexSort: Sate.IndexSort.DateDescending,
             type: Sate.PageType.Empty,
-            subPages: null,
+            subPages: {},
             encoding: website.config.encoding,
             contentPath: website.contentPath,
             classNames: [],
@@ -159,7 +158,8 @@ function Page(id, props, parent, website, Sate) {
                     type: 'sate-sequenceNav'
                 }
             ],
-            partials: {}
+            partials: {},
+            compiledPartials: {}
         },
         website.pageDefaults,
         props, 
@@ -170,7 +170,6 @@ function Page(id, props, parent, website, Sate) {
             sitePath: website.sitePath,
             sateSources: website.sateSources,
             parentUrl: (parent) ? parent.url : null,
-            siteMenu: website.siteMenu,
             compiled: false,
             styles: [],
             scripts: [],
@@ -178,7 +177,7 @@ function Page(id, props, parent, website, Sate) {
             scriptIds: [],
             typeOf: 'Sate.Page',
             isRoot: (id == website.config.rootPage)
-    });
+        });
 
     newPage.compile = function(withMetrics, complete) {
         var self = this;
