@@ -170,7 +170,6 @@ module.exports = function(Sate) {
             else if (!obj.classes.push) {
                 obj.classes = [];
             }
-            console.log(obj.classes);
             obj.classes.push('plugin-sate-pageMenu');
             obj.classes = obj.classes.join(' ');
             
