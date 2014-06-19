@@ -155,9 +155,22 @@ module.exports = function(Sate) {
                 this.findRelatedMenuItems(obj, page, config);
             }
 
-            if (!util.isArray(obj.classes)) {
+            if (typeof obj.classes == 'string') {
+                obj.classes = [obj.classes];
+            }
+            else if (typeof obj.classes == 'object' && !util.isArray(obj.classes)) {
+                var classes = [];
+                for (var c in obj.classes) {
+                    if (obj.classes.hasOwnProperty(c)) {
+                        classes.push(obj.classes[c]);
+                    }
+                }
+                obj.classes = classes;
+            }
+            else if (!obj.classes.push) {
                 obj.classes = [];
             }
+            console.log(obj.classes);
             obj.classes.push('plugin-sate-pageMenu');
             obj.classes = obj.classes.join(' ');
             
