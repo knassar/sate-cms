@@ -9,7 +9,7 @@
   "dependencies": {
     "connect": "latest",
     "mustache": "0.7.2",
-    "markdown": "latest",
+    "marked": "latest",
     "imagemagick": "latest",
     "ncp": "latest",
     "flow": "latest",

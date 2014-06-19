@@ -10,7 +10,7 @@ function Page(id, props, parent, website, Sate) {
         flow = require('flow'),
         extend = require('node.extend'),
         Mustache = require('mustache'),
-        Markdown = require('markdown').markdown,
+        markdown = require('marked'),
         PageDataResolver = require(__dirname+'/PageDataResolver'),
         dataResolver = new PageDataResolver(Sate),
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
@@ -40,7 +40,7 @@ function Page(id, props, parent, website, Sate) {
             return content;
         }
         else if (page.parser == Sate.Parser.Markdown) {
-            return Markdown.toHTML(content);
+            return markdown(content);
         }
         else {
             return content;
