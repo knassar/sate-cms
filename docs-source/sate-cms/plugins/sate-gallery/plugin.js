@@ -6,6 +6,7 @@
 module.exports = function(Sate) {
     var fs = require('fs'),
         path = require('path'),
+        util = require('util'),
         flow = require('flow'),
         im,
         Plugin = require('../Plugin'),
@@ -91,12 +92,14 @@ module.exports = function(Sate) {
             },
             function(err, imagesPaths) {
                 var multiCount = 0;
-                for (var i=0; i < imagesPaths.length; i++) {
-                    if (imgExtRegex.test(imagesPaths[i])) {
-                        var imagePath = path.join(gallery.contentPath, gallery.imagesPath, imagesPaths[i]);
-                        gallery.heroes.push(imagePath);
-                        multiCount++;
-                        makeThumbnailImage(imagePath, gallery, this.MULTI(imagePath));
+                if (util.isArray(imagesPaths)) {
+                    for (var i=0; i < imagesPaths.length; i++) {
+                        if (imgExtRegex.test(imagesPaths[i])) {
+                            var imagePath = path.join(gallery.contentPath, gallery.imagesPath, imagesPaths[i]);
+                            gallery.heroes.push(imagePath);
+                            multiCount++;
+                            makeThumbnailImage(imagePath, gallery, this.MULTI(imagePath));
+                        }
                     }
                 }
                 if (multiCount === 0) {
@@ -138,14 +141,16 @@ module.exports = function(Sate) {
             if (config.id) {
                 g = page.pluginById(config.id);
             }
-            var thumbPath = g.thumbnailsPath.replace(g.contentPath, '');
-            g.images = g.heroes.map(function(item) {
-                var hero = item.replace(g.contentPath, '');
-                return {
-                    heroSrc: hero,
-                    thumbSrc: path.join(thumbPath, hero)
-                };
-            });
+            if (g.thumbnailsPath) {
+                var thumbPath = g.thumbnailsPath.replace(g.contentPath, '');
+                g.images = g.heroes.map(function(item) {
+                    var hero = item.replace(g.contentPath, '');
+                    return {
+                        heroSrc: hero,
+                        thumbSrc: path.join(thumbPath, hero)
+                    };
+                });
+            }
             return g;
         }
     });

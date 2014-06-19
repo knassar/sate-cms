@@ -1,6 +1,5 @@
 function Plugin(Sate, subobj) {
     var fs = require('fs'),
-        flow = require('flow'),
         extend = require('node.extend');
         
     var plg = {

@@ -1,10 +1,10 @@
 ul.sate-gallery {
     margin: 1em 0;
     padding: 0;
+    list-style: none;
 }
 
-ul.sate-gallery > li.thumbnail {
-    list-style: none;
+ul.sate-gallery > li {
     display: inline-block;
     margin: 0 0.5em 0.5em 0;
     vertical-align: middle;
@@ -16,6 +16,14 @@ ul.sate-gallery > li.thumbnail:hover {
     box-shadow: #999 0 2px 5px;
 }
 
+ul.sate-gallery > li.no-images {
+    border: #ddd 5px dashed;
+    padding: 1.5em 1em;
+    color: #ccc;
+    font-weight: 600;
+    opacity: 0.5;
+    text-align: center;
+}
 
 #sateGalleryHeroViewer {
     position: fixed;
