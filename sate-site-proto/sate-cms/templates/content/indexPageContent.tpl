@@ -20,7 +20,7 @@
             {{/date}}
         </div>
         <div class="intro">
-            {{{intro}}}
+            {{{articleIntro}}}
         </div>
         <a href="{{root}}{{url}}" class="read-more">read more...</a>
     </li>

@@ -91,6 +91,7 @@ function Page(id, props, parent, website, Sate) {
     var composeArticleIntroForIndexPage = function(page, subPage) {
         var articleIntro = Mustache.render(subPage.compiledPartials.intro, subPage, subPage.compiledPartials);
         subPage.articleIntro = articleIntro;
+        page.addSubPageResources(subPage)
         page.articles.push(subPage);
     };
 
@@ -274,6 +275,18 @@ function Page(id, props, parent, website, Sate) {
         if (this.scriptIds.indexOf(script.id) === -1) {
             this.scriptIds.push(script.id);
             this.scripts.push(script);
+        }
+    };
+    newPage.addSubPageResources = function(subPage) {
+        for (var css in subPage.styles) {
+            if (subPage.styles.hasOwnProperty(css)) {
+                this.addStylesheet(subPage.styles[css].href, subPage.styles[css]);
+            }
+        }
+        for (var scr in subPage.scripts) {
+            if (subPage.scripts.hasOwnProperty(scr)) {
+                this.addScript(subPage.scripts[scr].src, subPage.scripts[scr]);
+            }
         }
     };
     newPage.mergeStyles = function() {
