@@ -1,8 +1,8 @@
 function Plugin(Sate, subobj) {
     var fs = require('fs'),
-        extend = require('node.extend');
-        
-    var plg = {
+        extend = require(Sate.nodeModInstallDir+'node.extend');
+
+        var plg = {
         type: 'abstract-base-class',
         version: '0.2.0',
         classes: [],
@@ -30,7 +30,7 @@ function Plugin(Sate, subobj) {
         getRenderer: function() {
             var plugin = this;
             return function() {
-                var Mustache = require('mustache');
+                var Mustache = require(Sate.nodeModInstallDir+'mustache');
                 return function(config, render) {
                     try { 
                         config = JSON.parse(config);

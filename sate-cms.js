@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 (function(){
+    
     var Sate = {
             Command: {
                 help:   require(__dirname+'/commands/Help'),
@@ -25,9 +26,10 @@
                 Quiet: 'quiet',
                 Normal: 'normal',
                 Verbose: 'verbose'
-            }
+            },
+            nodeModInstallDir: __dirname + '/node_modules/'
         };
-
+        
     var sateCMS = {
         command: Sate.Command.develop,
         processCommand: function(processArgv) {

@@ -1,8 +1,8 @@
 function Website(args, Sate) {
-    var fs = require('fs'),
+        var fs = require('fs'),
         path = require('path'),
-        extend = require('node.extend'),
-        flow = require('flow');
+        extend = require(Sate.nodeModInstallDir+'node.extend'),
+        flow = require(Sate.nodeModInstallDir+'flow');
 
     var website = {};
     var defaults = {
@@ -83,7 +83,7 @@ function Website(args, Sate) {
     };
 
     var generateIndexes = function(website, success, error) {
-        try {
+        // try {
             website.siteMap[website.config.rootPage] = indexPage(website.config.rootPage, website.siteMap[website.config.rootPage], website);
             mapParentGraph(website.siteMap[website.config.rootPage], website);
             website.siteMap[website.config.rootPage].website = website;
@@ -96,10 +96,10 @@ function Website(args, Sate) {
                 }
             }
             success();
-        } catch (err) {
-            console.log( err );
-            error(err);
-        }
+        // } catch (err) {
+        //     console.log( err );
+        //     error(err);
+        // }
     };
 
     var loadTemplate = function(website, t, coll, stepDone) {

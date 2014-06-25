@@ -1,8 +1,8 @@
 function Create(Sate) {
-    var extend = require('node.extend'),
+    var extend = require(Sate.nodeModInstallDir+'node.extend'),
         fs = require('fs'),
         path = require('path'),
-        ncp = require('ncp'),
+        ncp = require(Sate.nodeModInstallDir+'ncp'),
         exec = require('child_process').exec,
         Command = require(__dirname+'/command');
 

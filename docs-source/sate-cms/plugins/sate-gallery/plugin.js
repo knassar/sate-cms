@@ -7,9 +7,9 @@ module.exports = function(Sate) {
     var fs = require('fs'),
         path = require('path'),
         util = require('util'),
-        flow = require('flow'),
+        flow = require(Sate.nodeModInstallDir+'flow'),
         im,
-        Plugin = require('../Plugin'),
+        Plugin = require(__dirname+'/../Plugin'),
         foundIM;
 
     var ensurePath = function(filepath) {
@@ -25,7 +25,7 @@ module.exports = function(Sate) {
 
     var loadIM = function() {
         if (foundIM) {
-            im = require('imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
+            im = require(Sate.nodeModInstallDir+'imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
         } else {
             // mock out im;
             im = {

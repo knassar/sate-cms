@@ -3,14 +3,14 @@ var partialMatcher = /\{\{<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{<\/[\w\d]+\}\}/mg;
 var partialCapturer = /\{\{<([\w\d]+)\}\}([\s\S]*?)\{\{<\//m;
 
 function Page(id, props, parent, website, Sate) {
-    var fs = require('fs'),
+        var fs = require('fs'),
         path = require('path'),
         util = require('util'),
         crypto = require('crypto'),
-        flow = require('flow'),
-        extend = require('node.extend'),
-        Mustache = require('mustache'),
-        markdown = require('marked'),
+        flow = require(Sate.nodeModInstallDir+'flow'),
+        extend = require(Sate.nodeModInstallDir+'node.extend'),
+        Mustache = require(Sate.nodeModInstallDir+'mustache'),
+        markdown = require(Sate.nodeModInstallDir+'marked'),
         PageDataResolver = require(__dirname+'/PageDataResolver'),
         dataResolver = new PageDataResolver(Sate),
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),

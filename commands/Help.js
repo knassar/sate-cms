@@ -1,5 +1,5 @@
 function Help(Sate) {
-    var extend = require('node.extend'),
+    var extend = require(Sate.nodeModInstallDir+'node.extend'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,

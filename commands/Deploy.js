@@ -1,9 +1,9 @@
 function Deploy(Sate) {
-    var extend = require('node.extend'),
-        flow = require('flow'),
+    var extend = require(Sate.nodeModInstallDir+'node.extend'),
+        flow = require(Sate.nodeModInstallDir+'flow'),
         fs = require('fs'),
         path = require('path'),
-        ncp = require('ncp'),
+        ncp = require(Sate.nodeModInstallDir+'ncp'),
         Command = require(__dirname+'/command');
     
     var cleanDir = function(target) {

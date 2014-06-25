@@ -1,8 +1,12 @@
 (function() {
-    var fs = require('fs'),
-        connect = require('connect');
+    var fs = require('fs');
 
     var baseServer = function(website, Sate) {
+        // @TODO: upgrade to latest version of connect 
+        //          need to require all sub-modules individually
+        
+        var connect = require(Sate.nodeModInstallDir+'connect');
+        
         var server = connect()
             .use(connect.favicon())
             .use(connect.logger('dev')) // @TODO: use the right log-level

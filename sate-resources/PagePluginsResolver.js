@@ -1,11 +1,12 @@
-var fs = require('fs'),
-    path = require('path'),
-    flow = require('flow');
-
 var pluginClassesByType = {};
 var pluginTemplatesByType = {};
 
 var resolvePlugin = function(idx, page, Sate, complete) {
+
+    var fs = require('fs'),
+        path = require('path'),
+        flow = require(Sate.nodeModInstallDir+'flow');
+
     if (page.plugins[idx].type) {
         var pluginType = page.plugins[idx].type;
     } else {
@@ -89,6 +90,8 @@ var resolvePlugin = function(idx, page, Sate, complete) {
 };
 
 function PagePluginsResolver(Sate) {
+    var flow = require(Sate.nodeModInstallDir+'flow');
+
     var resolver = this;
     resolver.resolve = function(page, complete) {
         flow.exec(

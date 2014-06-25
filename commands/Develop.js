@@ -1,6 +1,6 @@
 function Develop(Sate) {
-    var extend = require('node.extend'),
-        flow = require('flow'),
+    var extend = require(Sate.nodeModInstallDir+'node.extend'),
+        flow = require(Sate.nodeModInstallDir+'flow'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,

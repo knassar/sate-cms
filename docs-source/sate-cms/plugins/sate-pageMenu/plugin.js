@@ -43,7 +43,6 @@ module.exports = function(Sate) {
                     if (!obj.items[u].name && obj.items[u].url) {
                         var thisPage = website.pageForPath(obj.items[u].url);
                         if (!thisPage) {
-                            console.log(obj.items[u].url);
                         }
                         obj.items[u].name = website.pageForPath(obj.items[u].url).name;
                     }
@@ -57,7 +56,7 @@ module.exports = function(Sate) {
                     
                     if (obj.items[u].items) {
                         this.populateMenu(obj.items[u], page, website, true);
-                        obj.items[u].hasSubItems = true;
+                        obj.items[u].hasSubItems = obj.items[u].items.length > 0;
                     }
                     else if (obj.items[u].includeSublevel) {
                         var thisPage = website.pageForPath(obj.items[u].url);
@@ -83,7 +82,7 @@ module.exports = function(Sate) {
                             obj.items[u].items = items;
                         }
                         this.populateMenu(obj.items[u], page, website);
-                        obj.items[u].hasSubItems = true;
+                        obj.items[u].hasSubItems = obj.items[u].items.length > 0;
                     }
                     else {
                         obj.items[u].hasSubItems = false;
@@ -156,7 +155,19 @@ module.exports = function(Sate) {
                 this.findRelatedMenuItems(obj, page, config);
             }
 
-            if (!util.isArray(obj.classes)) {
+            if (typeof obj.classes == 'string') {
+                obj.classes = [obj.classes];
+            }
+            else if (typeof obj.classes == 'object' && !util.isArray(obj.classes)) {
+                var classes = [];
+                for (var c in obj.classes) {
+                    if (obj.classes.hasOwnProperty(c)) {
+                        classes.push(obj.classes[c]);
+                    }
+                }
+                obj.classes = classes;
+            }
+            else if (!obj.classes.push) {
                 obj.classes = [];
             }
             obj.classes.push('plugin-sate-pageMenu');

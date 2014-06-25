@@ -1,6 +1,6 @@
 function Docs(Sate) {
-    var extend = require('node.extend'),
-        flow = require('flow'),
+    var extend = require(Sate.nodeModInstallDir+'node.extend'),
+        flow = require(Sate.nodeModInstallDir+'flow'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
@@ -19,7 +19,7 @@ function Docs(Sate) {
             captureFlags: function(args) {
                 this._super.captureFlags(args);
                 // @TODO: point at ./docs for the deployed docs instead!
-                this.args.sitePath = './docs-source';
+                this.args.sitePath = __dirname+'/../docs-source';
             },
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Docs"] );

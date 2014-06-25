@@ -1,9 +1,12 @@
 function SiteMapGenerator(Sate) {
-
+    try {
     var fs = require('fs'),
         path = require('path'),
-        extend = require('node.extend'),
-        flow = require('flow');
+        extend = require(Sate.nodeModInstallDir+'node.extend'),
+        flow = require(Sate.nodeModInstallDir+'flow');
+    } catch(e) {
+        console.log(e);
+    }
 
     var availableParsers = Sate.Parser.parsers();
 
@@ -76,7 +79,6 @@ function SiteMapGenerator(Sate) {
     var generator = {
         crawlWebsite: function(website, complete) {
             crawlSitemapFromDirectory(website.siteMap, website.contentPath, website.config.encoding, website.config.rootPage, complete);
-            // console.log(JSON.stringify(website.siteMap));
         }
     };
     return generator;
