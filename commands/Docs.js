@@ -1,6 +1,8 @@
 function Docs(Sate) {
     var extend = require(Sate.nodeModInstallDir+'node.extend'),
+        path = require('path'),
         flow = require(Sate.nodeModInstallDir+'flow'),
+        ncp = require(Sate.nodeModInstallDir+'ncp'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
@@ -9,17 +11,44 @@ function Docs(Sate) {
             _super: (new Command()),
             args: {
                 port: 4000,
-                logLevel: Sate.LogLevel.Normal
+                logLevel: Sate.LogLevel.Normal,
+                docsTargetPath: '/tmp/sate-cms-docs'
             },
             argFlags: {
                 '-p': 'port',
-                '--port': 'port'
+                '--port': 'port',
+                '-t': 'docsTargetPath',
+                '--target': 'docsTargetPath'
             },
             site: null,
+            docsSourcesPath: __dirname+'/../docs-source',
             captureFlags: function(args) {
                 this._super.captureFlags(args);
-                // @TODO: point at ./docs for the deployed docs instead!
-                this.args.sitePath = __dirname+'/../docs-source';
+            },
+            installDocs: function(complete) {
+                var s = path.join(this.docsSourcesPath),
+                    d = path.join(this.args.docsTargetPath);
+                ncp(s, d, {
+                    filter: function(filename) {
+                        return (!/\.DS\_Store/.test(filename));
+                    },
+                    clobber: true
+                }, function() {
+                    complete();
+                });
+            },
+            installPlugins: function(complete) {
+                var s = path.join(__dirname, '../sate-plugins'),
+                    d = path.join(this.args.docsTargetPath, 'sate-cms/plugins');
+                ncp(s, d, {
+                    filter: function(filename) {
+                        return (!/\.DS\_Store/.test(filename));
+                    },
+                    clobber: true
+                }, function() {
+                    complete();
+                });
+
             },
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Docs"] );
@@ -27,11 +56,18 @@ function Docs(Sate) {
                 self = this;
                 flow.exec(
                     function() {
+                        self.installDocs(this);
+                    },
+                    function() {
+                        self.installPlugins(this);
+                    },
+                    function() {
+                        process.chdir(self.args.docsTargetPath);
                         self.site.compile(true, this);
                     },
                     function() {
                         Sate.Log.logAction("starting server...", 0);
-                        var server = new Sate.Server.DevelopmentServer(self.site, Sate);
+                        var server = new Sate.Server.ProductionServer(self.site, Sate);
                         Sate.Log.logAction("Sate documentation available at http://localhost:"+cmd.site.args.port, 1);
                     }
                 );
