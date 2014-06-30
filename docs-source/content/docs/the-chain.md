@@ -1,8 +1,3 @@
-{{#pageData}}
-{
-    "name": "The Chain"
-}
-{{/pageData}}
 {{<intro}}
     <p>
         The Chain is a structured inheritance sequence which allows Sate pages to be functional with as little explicit definition as possible.
