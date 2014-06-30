@@ -78,7 +78,9 @@
                     if (type == RequestTargetType.Page) {
                         if (!website.isCompiling) {
                             website.recompile(true, function(errors) {
-                                process.nextTick(respondToReq);
+                                // HACK HACK... this avoids a race condition with the end of complile.
+                                // Not sure why yet
+                                setTimeout(respondToReq, 25);
                             });
                         } else {
                             website.performAfterCompile(respondToReq);
