@@ -53,21 +53,7 @@ function Page(id, props, parent, website, Sate) {
         if (matches && matches.length > 1) {
             pageData = JSON.parse(matches[1].trim());
         }
-        for (var d in pageData) {
-            if (pageData.hasOwnProperty(d)) {
-                if (util.isArray(pageData[d])) {
-                    if (util.isArray(page[d])) {
-                        page[d] = page[d].concat(pageData[d]);
-                    } else {
-                        page[d] = pageData[d];
-                    }
-                } else if (typeof pageData[d] == 'object') {
-                    page[d] = extend(true, page[d], pageData[d]);
-                } else {
-                    page[d] = pageData[d];
-                }
-            }
-        }
+        page = Sate.chain(page, pageData);
         resolvePage(page);
         var partials = data.match(partialMatcher);
         if (partials && partials.length > 0) {

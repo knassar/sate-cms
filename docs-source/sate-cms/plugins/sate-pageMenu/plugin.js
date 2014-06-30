@@ -121,7 +121,7 @@ module.exports = function(Sate) {
             return obj;
         },
         findRelatedMenuItems: function(obj, page, config) {
-            if (page.type == Sate.PageType.Index) {
+            if (page.type == Sate.PageType.Index && util.isArray(page.articles)) {
                 var base = "/";
                 if (!page.isRoot) {
                     base = page.url + "/";

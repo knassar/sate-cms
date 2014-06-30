@@ -14,7 +14,12 @@ module.exports = function(Sate) {
 
     var ensurePath = function(filepath) {
         var pathParts = filepath.split('/');
-        var check = fs.realpathSync(pathParts.shift());
+        var check = pathParts.shift();
+        if (check.length > 0 && !fs.existsSync(check)) {
+            fs.mkdirSync(check);
+        }
+        
+        var check = fs.realpathSync(check);
         while (pathParts.length > 1) {
             check = path.join(check, pathParts.shift());
             if (!fs.existsSync(check)) {
@@ -63,7 +68,7 @@ module.exports = function(Sate) {
         } else {
             loadIM();
             filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
-            var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath));
+            var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, '.', gallery.thumbnailsPath));
             ensurePath(thumbPath);
             im.resize({
                 srcPath: imagePath,
