@@ -1,14 +1,14 @@
 var pluginClassesByType = {};
 var pluginTemplatesByType = {};
 
-var resolvePlugin = function(idx, page, Sate, complete) {
+var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) {
 
     var fs = require('fs'),
         path = require('path'),
         flow = require(Sate.nodeModInstallDir+'flow');
 
-    if (page.plugins[idx].type) {
-        var pluginType = page.plugins[idx].type;
+    if (pluginData.type) {
+        var pluginType = pluginData.type;
     } else {
         throw new Error("cannot resolve plugin declared without 'type' at index: "+idx);
     }
@@ -21,12 +21,13 @@ var resolvePlugin = function(idx, page, Sate, complete) {
         PluginClass = require(fs.realpathSync(path.join(page.sateSources, 'plugins', pluginType, 'plugin.js')));
         pluginClassesByType[pluginType] = PluginClass;
     }
+
     var plugin = new PluginClass(Sate);
     
-    var compile = function(complete) {
+    var compile = function(finishedCompile) {
         flow.exec(
             function() {
-                plugin.compile(page.plugins[idx], page, Sate, this);
+                plugin.compile(pluginData, page, Sate, this);
             },
             function() {
                 if (!page['plugin-'+pluginType]) {
@@ -40,10 +41,10 @@ var resolvePlugin = function(idx, page, Sate, complete) {
                     page.addScript(plugin.scripts[s]);
                 }
                 if (plugin.id) {
-                    page.plugins[plugin.id] = plugin;
+                    page.pluginsById[plugin.id] = plugin;
                 }
-                page.plugins[idx] = plugin;
-                complete.apply();
+                resolvedPlugins.push(plugin);
+                finishedCompile.apply();
             }
         );
     }
@@ -56,10 +57,10 @@ var resolvePlugin = function(idx, page, Sate, complete) {
     else {    
         var templates = {};
     
-        var loadPluginTemplate = function(plugin, t, page, complete) {
+        var loadPluginTemplate = function(plugin, t, page, loadedTemplate) {
             fs.readFile(plugin.templates[t], {encoding: page.encoding}, function(err, data) {
                 templates[t] = data;
-                complete.apply();
+                loadedTemplate.apply();
             });
         };
     
@@ -96,11 +97,11 @@ function PagePluginsResolver(Sate) {
     resolver.resolve = function(page, complete) {
         flow.exec(
             function() {
+                var resolvedPlugins = [];
                 for (var i=0; i < page.plugins.length; i++) {
-                    if (!page.plugins[i].resolved) {
-                        resolvePlugin(i, page, Sate, this.MULTI(page.plugins[i].type));
-                    }
+                    resolvePlugin(page.plugins[i], resolvedPlugins, page, Sate, this.MULTI(page.plugins[i].type));
                 }
+                page.plugins = resolvedPlugins;
             },
             function() {
                 complete.apply();

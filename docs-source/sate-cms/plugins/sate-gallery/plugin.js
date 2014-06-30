@@ -9,11 +9,11 @@ module.exports = function(Sate) {
         util = require('util'),
         flow = require(Sate.nodeModInstallDir+'flow'),
         im,
-        Plugin = require(__dirname+'/../Plugin'),
-        foundIM;
+        Plugin = require(__dirname+'/../Plugin');
 
     var ensurePath = function(filepath) {
         var pathParts = filepath.split('/');
+        
         var check = pathParts.shift();
         if (check.length > 0 && !fs.existsSync(check)) {
             fs.mkdirSync(check);
@@ -29,7 +29,7 @@ module.exports = function(Sate) {
     };
 
     var loadIM = function() {
-        if (foundIM) {
+        if (Sate.configForPlugin('sate-gallery').foundIM) {
             im = require(Sate.nodeModInstallDir+'imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
         } else {
             // mock out im;
@@ -39,65 +39,61 @@ module.exports = function(Sate) {
         }
     };
 
-    var verifyImageMagick = function(verified) {
+    // verify that ImageMagick dependency is installed
+    if (!Sate.configForPlugin('sate-gallery').FoundIM) {
         var exec = require('child_process').exec;
         exec('convert -version', function(er, stdout, stderr) {
             if (stdout.toString().indexOf('ImageMagick') > -1) {
                 var matches = /ImageMagick [\S]+/.exec(stdout.toString());
                 if (matches) {
-                    if (!foundIM) {
-                        foundIM = matches[0];
-                        console.log( " +--> plugin-sate-gallery: found "+foundIM );
-                    }
-                    loadIM();
-                    verified();
+                    Sate.configForPlugin('sate-gallery').foundIM = matches[0];
+                    console.log( " +--> plugin-sate-gallery: found");
                     return;
                 }
-            } else if (foundIM !== false) {
-                foundIM = false;
+            } else if (Sate.configForPlugin('sate-gallery').foundIM !== false) {
+                Sate.configForPlugin('sate-gallery').foundIM = false;
                 console.log(" X--> plugin-sate-gallery: ImageMagick binaries not installed. IM calls will be skipped.");
             }
         });
-    };
+    }
 
     var makeThumbnailImage = function(imagePath, gallery, complete) {
-        if (foundIM === undefined) {
-            verifyImageMagick(function() {
-                makeThumbnailImage(imagePath, gallery, complete);
-            });
-        } else {
-            loadIM();
-            filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
-            var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, '.', gallery.thumbnailsPath));
-            ensurePath(thumbPath);
-            im.resize({
-                srcPath: imagePath,
-                dstPath: thumbPath,
-                quality: 0.8,
-                format: gallery.thumbnail.format,
-                width: gallery.thumbnail.width,
-                height: gallery.thumbnail.height,
-                strip: true
-            }, function(err, stdout, stderr) {
-                if (err) {
-                    console.log( err );
-                } else {
-                    gallery.thumbnails.push(thumbPath);
-                }
-                complete.apply();
-            });
-        }
+        loadIM();
+        filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
+        var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath));
+        ensurePath(thumbPath);
+        im.resize({
+            srcPath: imagePath,
+            dstPath: thumbPath,
+            quality: 0.8,
+            format: gallery.thumbnail.format,
+            width: gallery.thumbnail.width,
+            height: gallery.thumbnail.height,
+            strip: true
+        }, function(err, stdout, stderr) {
+            if (err) {
+                console.log( err );
+            } else {
+                gallery.thumbnails.push(thumbPath);
+            }
+            complete.apply();
+        });
     };
 
     var compileFlow = function(gallery, complete) {
         var imgExtRegex = /\.jpg|\.gif|\.png$/;
         flow.exec(
             function() {
-                fs.readdir(path.join(__dirname, '../../../', gallery.imagesPath), this);
+                if (Sate.configForPlugin('sate-gallery').foundIM) {
+                    fs.readdir(path.join(gallery.contentPath, gallery.imagesPath), this);
+                }
+                else {
+                    this.apply();
+                }
             },
             function(err, imagesPaths) {
                 var multiCount = 0;
-                if (util.isArray(imagesPaths)) {
+                if (Sate.configForPlugin('sate-gallery').foundIM && util.isArray(imagesPaths)) {
                     for (var i=0; i < imagesPaths.length; i++) {
                         if (imgExtRegex.test(imagesPaths[i])) {
                             var imagePath = path.join(gallery.contentPath, gallery.imagesPath, imagesPaths[i]);
@@ -127,12 +123,12 @@ module.exports = function(Sate) {
             height: 150 // use w/h to crop
         },
         contentPath: '',
-        thumbnailsPath: "/gallery-thumbs",
+        thumbnailsPath: "../gallery-thumbs",
         imagesPath: "",
         thumbnails: [],
         heroes: [],
         compile: function(props, page, Sate, complete) {
-            this.contentPath = page.sitePath.replace(/^\.\//, '');
+            this.contentPath = path.join(page.contentPath, '.');
             this.extendWithProperties(props);
             compileFlow(this, complete);
         },
@@ -147,17 +143,17 @@ module.exports = function(Sate) {
                 g = page.pluginById(config.id);
             }
             if (g.thumbnailsPath) {
-                var thumbPath = g.thumbnailsPath.replace(g.contentPath, '');
+                var thumbPath = g.thumbnailsPath.replace(g.contentPath, '').replace(/^\.\./, '');
                 g.images = g.heroes.map(function(item) {
-                    var hero = item.replace(g.contentPath, '');
                     return {
-                        heroSrc: hero,
-                        thumbSrc: path.join(thumbPath, hero)
+                        heroSrc: '/'+item,
+                        thumbSrc: path.join(thumbPath, item.replace(g.contentPath, ''))
                     };
                 });
             }
             return g;
         }
     });
+    
     return plg;
 };

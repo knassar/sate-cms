@@ -158,6 +158,7 @@ function Page(id, props, parent, website, Sate) {
             sateSources: website.sateSources,
             parentUrl: (parent) ? parent.url : null,
             compiled: false,
+            pluginsById: {},
             styles: [],
             scripts: [],
             styleIds: [],
@@ -282,7 +283,7 @@ function Page(id, props, parent, website, Sate) {
         this.scripts = this.scripts.concat(this.extraScripts);
     };
     newPage.pluginById = function(pluginId) {
-        return this.plugins[pluginId];
+        return this.pluginsById[pluginId];
     };
     newPage.pluginFirstByType = function(pluginType) {
         for (var i=0; i < this.plugins.length; i++) {

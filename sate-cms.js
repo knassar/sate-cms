@@ -27,7 +27,14 @@
                 Normal: 'normal',
                 Verbose: 'verbose'
             },
-            nodeModInstallDir: __dirname + '/node_modules/'
+            nodeModInstallDir: __dirname + '/node_modules/',
+            pluginConfig: {},
+            configForPlugin: function(pluginType) {
+                if (!this.pluginConfig.hasOwnProperty(pluginType)) {
+                    this.pluginConfig[pluginType] = {};
+                }
+                return this.pluginConfig[pluginType];
+            }
         };
         
     var sateCMS = {

@@ -50,6 +50,10 @@ function Plugin(Sate, subobj) {
             };
         }
     };
+
+    Sate.configForPlugin(subobj.type);
+    
     return extend(true, {_super: plg}, plg, subobj);
 }
 module.exports = Plugin;
+
