@@ -14,6 +14,7 @@ module.exports = {
         return str;
     },
     pageNameFromFileName: function(str, omitWords) {
-        return this.toTitleCase(str.replace('-', ' '));
+        var hyph = '%%%hyphen%%%';
+        return this.toTitleCase(str.replace('--', hyph).replace('-', ' ').replace(hyph, '-'));
     }
 };
