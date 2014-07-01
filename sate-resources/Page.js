@@ -277,7 +277,18 @@ function Page(id, props, parent, website, Sate) {
         }
     };
     newPage.mergeStyles = function() {
-        this.styles = this.styles.concat(this.extraStyles);
+        var extraStyles = this.extraStyles.map(function(obj) {
+            if (typeof obj == 'string') {
+                return {
+                    href: obj,
+                    media: "all"
+                };
+            }
+            else if (typeof obj == 'object') {
+                return obj;
+            }
+        });
+        this.styles = this.styles.concat(extraStyles);
     };
     newPage.mergeScripts = function() {
         this.scripts = this.scripts.concat(this.extraScripts);

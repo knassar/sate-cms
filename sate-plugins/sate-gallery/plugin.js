@@ -47,12 +47,12 @@ module.exports = function(Sate) {
                 var matches = /ImageMagick [\S]+/.exec(stdout.toString());
                 if (matches) {
                     Sate.configForPlugin('sate-gallery').foundIM = matches[0];
-                    console.log( " +--> plugin-sate-gallery: found");
+                    Sate.Log.logAction("plugin-sate-gallery: found", 1);
                     return;
                 }
             } else if (Sate.configForPlugin('sate-gallery').foundIM !== false) {
                 Sate.configForPlugin('sate-gallery').foundIM = false;
-                console.log(" X--> plugin-sate-gallery: ImageMagick binaries not installed. IM calls will be skipped.");
+                Sate.Log.logError("plugin-sate-gallery: ImageMagick binaries not installed. IM calls will be skipped.", 1);
             }
         });
     }

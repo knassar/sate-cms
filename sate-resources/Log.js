@@ -26,6 +26,9 @@ Log = function() {
         logAction: function(msg, depth) {
             console.log( " +"+xChars(dash, depth * 2 + 1)+"> "+msg );
         },
+        logError: function(msg, depth) {
+            console.log( " X"+xChars(dash, depth * 2 + 1)+"> "+msg );
+        },
         logBox: function(lines) {
             var boxWidth = minLineLen,
                 l = 0;

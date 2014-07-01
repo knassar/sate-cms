@@ -12,6 +12,9 @@ module.exports = function(Sate) {
         mainTag: 'ul',
         items: [],
         classes: [],
+        hasItems: function() {
+            return this.items.length > 0;
+        },
         hasSubItems: false,
         includeSublevel: false,
         compile: function(props, page, Sate, complete) {

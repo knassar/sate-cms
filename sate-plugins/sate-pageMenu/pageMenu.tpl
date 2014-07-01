@@ -1,3 +1,4 @@
+{{#hasItems}}
 <{{mainTag}} class="{{{classes}}}">
     {{#parent}}
     <li class="parent-page">
@@ -15,3 +16,4 @@
         {{>menu-node}}
     {{/items}}
 </{{mainTag}}>
+{{/hasItems}}

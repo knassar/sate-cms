@@ -35,7 +35,20 @@ function Plugin(Sate, subobj) {
                     try { 
                         config = JSON.parse(config);
                     } catch (err) {
+                        if (this.parser == Sate.Parser.Markdown) {
+                            try { // Markdown escapes " to &quot;
+                                var unmarked = config.replace(/\&quot\;/g, '"');
+                                config = JSON.parse(unmarked);
+                            }
+                            catch (err) {}
+                        }
+                    }
+                    if (!config) {
                         config = {};
+                    }
+                    else if (typeof config != 'object') {
+                        Sate.Log.logAction('failed to parse config for plugin: '+plugin.type+' on page: '+this.url, 2);
+                        console.log(config);
                     }
                     if (plugin.templates.hasOwnProperty('main')) {
                         plugin.template = plugin.templates.main;
