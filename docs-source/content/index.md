@@ -56,6 +56,7 @@ Design decisions in Sate have been driven by the following underlying philosophi
    * digest pages
    * image galleries
  * Content is stored on the filesystem in individual files, prime for SCM management
+ * Implicit Site-mapping allows you to focus on your content, instead of what the sitemap looks like
  * Developer-friendly workflow:
    * Edit & Refresh "develop" server for rapid iteration of site content
    * deploy the entire site as static pages for high-performance

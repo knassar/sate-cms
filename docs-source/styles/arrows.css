@@ -1,0 +1,51 @@
+span.arrow 
+{
+    display: inline-block;
+    margin: 0 0.5em;
+    position: relative;
+
+    top: -0.4em;
+
+    width: 2em;
+    height: 0.1875em;
+    background-color: orange;
+}
+
+span.arrow.r 
+{
+    margin-right: 1em;
+}
+
+span.arrow.l
+{
+    margin-left: 1em;
+}
+
+span.arrow.l::before,
+span.arrow.r::after
+{
+    content: "";
+    position: absolute;
+    top: -0.3em;
+    
+    height: 0;
+    width: 0;
+    
+    border-width: 0.4em 0.5em;
+    border-style: solid;
+}
+
+span.arrow.l::before
+{
+    border-color: transparent;
+    border-right-color: orange;
+    left: -1em;
+}
+
+span.arrow.r::after
+{
+    border-color: transparent;
+    border-left-color: orange;
+    right: -1em;
+}
+

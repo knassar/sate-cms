@@ -14,9 +14,6 @@ Optional flags which can be combined with the develop command to provide finer c
     -p [port number]        The port to listen on.
     --port [port number]    If not provided, checks for 'config.port' in website.json, then defaults to 3000
 
-    -l [path]               Path to output logging when running 'run'.
-    --log [path]            If not provided, checks for 'config.log' in website.json, then defaults to './log/.'
-
     -v                      Turns on 'verbose' logging.
     --verbose               If not provided, logging level is defined by 'config.logLevel' in website.json, then assumes normal logging.
 

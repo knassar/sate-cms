@@ -4,72 +4,40 @@
 }
 {{/pageData}}
 {{<intro}}
-    <p>
-        A website using Sate is structured in two parts: 
-    </p>
-    <ol>
-        <li>A JSON file containing the site configuration and an object map of all the website's pages</li>
-        <li>A file structure in which each "page" in the site is represented by an HTML file</li>
-    </ol>
+
+A website using Sate is structured in two parts: 
+
+ * A JSON file containing the site configuration and an object map of all the website's pages
+ * A file structure in which each "page" in the site is represented by an HTML file
+ 
 {{</intro}}
 {{<content}}
-    <h3>The Sate website.json</h3>
-    <p>
-        This file Contains two major areas, the site-level configuration, and the map of pages to be served. Here's an example of a Site website.json file:
-    </p>
+## The Sate website.json
+
+This file contains the site-level configuration. Here's an example of a Site website.json file:
+
 <pre class="json">
-    {
-        "siteConfig": {
-            "title": "Sate",
-            "subtitle": "Just Enough CMS",
-            "breadcrumbSeparator": ":"
-        },
-        "siteMap": {
-            "home": {
-                "type": "Sate.PageType.Index",
-                "name": " ",
-                "subPages": {
-                    "docs": {
-                        "type": "Sate.PageType.Index",
-                        "name": "Documentation",
-                        "subPages": {
-                            "sate-website": {
-                                "name": "Anatomy of a Sate website"
-                            },
-                            "using-sate": {
-                                "name": "Using Sate"
-                            }
-                        },
-                        "menu": {
-                            "sub": [
-                                {
-                                    "url": "/docs/sate-website"
-                                },
-                                {
-                                    "url": "/docs/using-sate"
-                                }
-                            ]
-                        }
-                    },
-                    "about": {
-                        "type": "Sate.PageType.Article",
-                        "name": "About Sate"
-                    }
-                },
-                "menu": {
-                    "name": "Home"
-                }
-            }
-        }
+{
+    "config": {
+        "rootPage": "home",
+        "rootPageUrl": "/",
+        "contentSources": "./content",
+        "encoding": "utf-8"
+    },
+    "pageDefaults": {
+        "title": "Sate",
+        "classNames": "sate-docs",
+        "subtitle": "Just Enough CMS"
     }
+}
 </pre>
 
-<h3>The Sate site files</h3>
-<p>
-Given the website.json above, Sate will assume a file structure exists that looks like this:
-</p>
+## The Sate site files
+
+Given the website.json above, Sate will scan the current directory for the `content` directory. Lets assume the content looks like this:
+
 <pre>
-    ./
+    ./content
         index.html
         about.html
         /docs
@@ -78,9 +46,7 @@ Given the website.json above, Sate will assume a file structure exists that look
             using-sate.html
 </pre>
 
-<p>
-When serving pages, Sate maps the above structure to URLs like so:
-</p>
+When serving these pages as a website, Sate maps the above file structure into URLs like so:
 
 <table>
     <tr><th>URL</th><th>Content file path</th></tr>
@@ -91,27 +57,22 @@ When serving pages, Sate maps the above structure to URLs like so:
     <tr><td>[domain]/docs/using-sate</td><td>./docs/using-sate.html</td></tr>
 </table>
 
-<p>
-    Each of these files is an HTML Fragment file which contains "Just Enough" content to render the page when combined with the data from website.json.
-</p>
-<p>
-    Sate is built on the concept of "template inversion", which means that in the file for each page, you write &amp; declare only the details that are different for that page. There's no need to include common headers, footers, includes, etc, unless those elements differ from the rest of the site. And when any element does differ on a given page, <a href="/docs/sate-chain">the chain</a> lets you override previously established properties at the individual page level.
-</p>
-<p>
+Each of these files is an HTML fragment file which contains "Just Enough" content to render the page when combined with the data from website.json and information Sate infers from the structure.
+
+Sate is built on the concept of "template inversion", which means that in the file for each page, you write & declare only the details that are different for that page. There's no need to include common headers, footers, includes, etc, unless those elements differ from the rest of the site. And when any element does differ on a given page, [the chain][/docs/sate-chain] lets you override previously established properties at the individual page level.
+
 There are currently 3 special blocks that Sate will look for in a content file. Any of these blocks may be omitted, and Sate will generally do the right thing:
-</p>
+
 <table>  
     <tr><th>Block       </th><th>Type           </th><th>Purpose</th></tr>
-    <tr><td>pageData    </td><td>JSON           </td><td>a JSON object to override website.json properies for this page</td></tr>
+    <tr><td>pageData    </td><td>JSON           </td><td>a JSON object to override properies for this page</td></tr>
     <tr><td>intro       </td><td>inline-partial </td><td>the Intro section markup for this page</td></tr>
     <tr><td>content     </td><td>inline-partial </td><td>the Content section markup for this page</td></tr>
 </table>
-<p>
-The <code>pageData</code> block is a standard Mustache section which Sate expects to include JSON.
-</p>
-<p>
+
+The `pageData` block is a standard Mustache section which Sate expects to include JSON.
+
 Inline-partial blocks are represented by using Mustache.js brackets in a "reverse partial" notation surrounding HTML-style tag opens/closes:
-</p>
 
 <pre>
 &#123&#123&lt;blockName&#125&#125
@@ -119,12 +80,9 @@ Inline-partial blocks are represented by using Mustache.js brackets in a "revers
 &#123&#123&lt;/blockName&#125&#125
 </pre>
 
-<p>
-    You should think of this notation as an inline declaration of a Mustache partial, whose partial name is given in the brackets (because that's in-fact what it is). All inline-partials (not just the ones described above) declared in a page's HTML file will be parsed and injected into the partials dictionary before the page is rendered. You can leverage this process to help keep your <code>intro</code> and <code>content</code> blocks DRY by declaring one-off inline partials and then referencing them from the same file.
-</p>
-<p>
-    Here's an example of a content file using all 3 blocks:
-</p>
+You should think of this notation as an inline declaration of a Mustache partial, whose partial name is given in the brackets (because that's in-fact what it is). All inline-partials (not just the ones described above) declared in a page's HTML file will be parsed and injected into the partials dictionary before the page is rendered. You can leverage this process to help keep your `intro` and `content` blocks DRY by declaring one-off inline partials and then referencing them from the same file.
+
+Here's an example of a content file using all 3 blocks:
 
 <pre>
 &#123&#123#pageData&#125&#125
@@ -156,5 +114,6 @@ Inline-partial blocks are represented by using Mustache.js brackets in a "revers
     &lt;/script&gt;
 &#123&#123&lt;/content&#125&#125
 </pre>
+
 {{{plugin-sate-sequenceNav}}}
 {{</content}}

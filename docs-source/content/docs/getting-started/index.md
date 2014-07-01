@@ -5,6 +5,14 @@
         "/docs/getting-started/installing-sate",
         "/docs/getting-started/creating",
         "/docs/getting-started/sate-basics"
+    ],
+    "plugins": [
+        {
+            "type": "sate-pageMenu",
+            "id": "pageMenu",
+            "inherited": true,
+            "parentLink": true
+        }
     ]
 }
 {{/pageData}}

@@ -6,6 +6,28 @@
         "/docs/sate-website",
         "/docs/the-chain",
         "/docs/using-sate"
+    ],
+    "plugins": [
+        {
+            "type": "sate-pageMenu",
+            "id": "pageMenu",
+            "inherited": true,
+            "parentLink": true,
+            "items": [
+                {
+                    "url": "/docs/getting-started"
+                },
+                {
+                    "url": "/docs/sate-website"
+                },
+                {
+                    "url": "/docs/the-chain"
+                },
+                {
+                    "url": "/docs/using-sate"
+                }
+            ]
+        }
     ]
 }
 {{/pageData}}

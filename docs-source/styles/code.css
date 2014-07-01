@@ -1,7 +1,9 @@
 code,
 pre.cli,
 pre.json,
-pre.ls
+pre.ls,
+th.code,
+td.code
 {
     font-family: "Menlo", "Courier New", monospace;
 }
