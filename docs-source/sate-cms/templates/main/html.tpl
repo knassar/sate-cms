@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <title>{{title}}{{#subtitle}} &rsaquo; {{/subtitle}}{{subtitle}}</title>
+        <title>{{title}}{{#subtitle}}: {{/subtitle}}{{subtitle}}</title>
 
         <link rel="stylesheet" href="/styles/main.css" type="text/css" media="screen" charset="utf-8">
 
@@ -46,7 +46,11 @@
             {{>content}}
             </div>
         </div>
-        <div id="copyright">Copyright <span class="copyright-symbol">&copy;</span>2013</div>
+        <div id="footer">
+            <div id="copyright">Copyright <span class="copyright-symbol">&copy;</span>2013</div>
+            {{{plugin-sate-powered}}}
+        </div>
+        
         <script type="text/javascript" charset="utf-8" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         {{#scripts}}
         <!-- {{id}} -->

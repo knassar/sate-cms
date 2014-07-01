@@ -8,7 +8,7 @@
 A website using Sate is structured in two parts: 
 
  * A JSON file containing the site configuration and an object map of all the website's pages
- * A file structure in which each "page" in the site is represented by an HTML file
+ * A file structure in which each "page" in the site is represented by an HTML or Markdown file
  
 {{</intro}}
 {{<content}}

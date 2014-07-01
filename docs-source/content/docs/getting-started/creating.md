@@ -28,12 +28,12 @@ The directory structure you'll see is something like this:
         /content
             index.html 
             about.html
+            /images
         /styles
         /sate-cms
             /error
-            /tempmlates
+            /templates
             /plugins
-        /images
 </pre>
 
 We'll go deeper into this structure in the next section. For now, try out this website by using the <code>develop</code> command:

@@ -35,3 +35,36 @@ td.code
 .cli .line .dir-prompt::after {
     content: " me$ ";
 }
+
+.type {
+    display: inline-block;
+    padding: 0.0625em 0.75em;
+    font-size: 0.8em;
+    border-radius: 0.25em;
+    background-color: silver;
+    color: white;
+}
+
+.type.string {
+    background-color: #955;
+}
+
+.type.array {
+    background-color: #595;
+}
+
+.type.object {
+    background-color: #559;
+}
+
+.type.number {
+    background-color: #959;
+}
+
+.type.date {
+    background-color: #995;
+}
+
+.type.sate {
+    background-color: orange;
+}

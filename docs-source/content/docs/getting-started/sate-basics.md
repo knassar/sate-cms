@@ -13,6 +13,27 @@ For now, find the value under the key `pageDefaults.title` and change the string
 
 While the `website.json` gives you a convenient place to do site-global configuration, most of the time you will set it up once, then not really touch it again. It primarily acts as a fixed entry point for Sate to find your website content.
 
+## Site Resources Structure
+
+The boilerplate that Sate generates when you use the `create` directive includes several top-level directories. Each of these has a specific purpose. Sate includes facilities to rename several of these directories if you desire, but it is important that the directory `sate-cms` not be renamed, as this will cause Sate to be unable to find critical resources.
+
+### `sate-cms`
+
+This directory contains several key pieces of the Sate website. Under `sate-cms`, you'll find the following directories:
+
+ * `error`: Template files for 404 errors
+ * `templates`: The default templates used by Sate. You may modify these or add any site-wide templates to this subdirectory
+ * `plugins`: This directory contains all the standard [Sate plugins](/plugins). To install a new plugin for your site, simply copy it into this directory. When new versions of Sate are relased, you can non-destructively update the plugins you've installed by using the [Update](/docs/using-sate) directive.
+ 
+ 
+### `styles` & `scripts`
+
+The `styles` and `scripts` directories are for your stylesheets and javascript files respectively. These are not considered "content" and thus are not contained in the `content` directory. When you generate a Sate website with the `deploy` directive, Sate will merge the contents of these directories with the stylesheets and scripts provided by any Sate plugins your site uses and copy them to the build target.
+
+### `content`
+
+The `content` directory contains the content and structure of your website. Sate considers images to be content, so the `images` directory is contained here. If you wish to change the name of the `content` directory, it is important to tell Sate how to find the new content directory. Do this by setting the `config.contentSources` key in your `website.json` file.
+
 ## Editing Content
 
 Next, lets look in the `content` directory that Sate has created for your site. You'll find that the Sate boilerplate includes two files in here, `index.html` and `about.html` to get you started. These files demonstrate an important feature of Sate: Implicit Site-Mapping.
@@ -23,8 +44,8 @@ Sate looks for an `index` page at each directory level. Each index file creates 
 
   * `./content/index.*` <span class="arrow r"></span> `/`
   * `./content/sub-directory/index.*` <span class="arrow r"></span> `/sub-directory`
-  * `./content/some-page` <span class="arrow r"></span> `/some-page`
-  * `./content/sub-directory/some-page` <span class="arrow r"></span> `/sub-directory/some-page`
+  * `./content/some-page.*` <span class="arrow r"></span> `/some-page`
+  * `./content/sub-directory/some-page.*` <span class="arrow r"></span> `/sub-directory/some-page`
 
 Sate also infers as much as it can about each page simply from information it can identify automatically:
 
@@ -39,7 +60,7 @@ Sate also infers as much as it can about each page simply from information it ca
   * `./content/some-page` <span class="arrow r"></span> "Some Page"
   * `./content/extra--special` <span class="arrow r"></span> "Extra-Special"
 
-It's important to note that these automatic inferences can be overridden for any given page. More on page-level overrides later.
+It's important to note that these automatic inferences can be [overridden for any given page](/docs/page-data).
 
 {{{plugin-sate-sequenceNav}}}
 {{</content}}

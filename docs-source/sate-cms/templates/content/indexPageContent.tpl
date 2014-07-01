@@ -13,7 +13,7 @@
             {
                 "forClass": "article-intro-breadcrumbs",
                 "headingTag": "h3",
-                "minCrumbs": 2
+                "minCrumbs": 3
             }
             {{/plugin-sate-breadcrumbs}}
             {{# date}}

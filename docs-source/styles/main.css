@@ -14,12 +14,24 @@ body {
     min-height: 300px;
 }
 
+#pageBody {
+    margin: 0 5rem;
+}
+
 .side-menu + #pageBody {
+    margin: 0;
     margin-left: 16rem;
 }
 
-.content-footer {
-    text-align: right;
+#footer {
+    position: relative;
+    min-height: 80px;
+}
+
+#footer .sate-logo {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 #copyright {
@@ -45,3 +57,17 @@ body {
     margin-right: 0.5em;
 }
 
+.warn {
+    background-color: #fcc;
+    color: #c00;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    border: #c00 1px dashed;
+}
+
+.warn::before {
+    content: "!!";
+    color: #c00;
+    font-weight: normal;
+    margin-right: 0.5em;
+}

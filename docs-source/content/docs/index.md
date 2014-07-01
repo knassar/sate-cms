@@ -5,7 +5,8 @@
         "/docs/getting-started",
         "/docs/sate-website",
         "/docs/the-chain",
-        "/docs/using-sate"
+        "/docs/using-sate",
+        "/docs/page-data"
     ],
     "plugins": [
         {
@@ -25,6 +26,9 @@
                 },
                 {
                     "url": "/docs/using-sate"
+                },
+                {
+                    "url": "/docs/page-data"
                 }
             ]
         }

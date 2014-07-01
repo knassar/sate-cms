@@ -16,6 +16,10 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
+h2 {
+    margin-top: 2em;
+}
+
 h3 {
     margin-top: 2em;
 }

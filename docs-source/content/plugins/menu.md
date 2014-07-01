@@ -1,9 +1,10 @@
 {{<intro}}
-<p>
-    The Menu plugin provides site-global, page-specific, and section menus.
-</p>
+
+The Menu plugin provides site-global, page-specific, and section menus.
+
 {{</intro}}
 {{<content}}
 
-    {{{plugin-sate-sequenceNav}}}
+{{{plugin-sate-sequenceNav}}}
+
 {{</content}}

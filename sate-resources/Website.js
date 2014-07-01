@@ -13,10 +13,9 @@ function Website(args, Sate) {
             encoding: 'utf-8'
         },
         pageDefaults: {
-            title: "Sate",
-            subtitle: "Just Enough CMS",
+            title: "Untitled Website",
+            subtitle: "",
             name: "untitled page",
-            menu: null,
             indexSort: "Sate.IndexSort.DateDescending",
             type: Sate.PageType.Article,
             parser: Sate.Parser.HTML,

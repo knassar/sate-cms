@@ -1,5 +1,6 @@
 {{#pageData}}
 {
+    "type": "Sate.PageType.Index",
     "plugins": [
         {
             "type": "sate-pageMenu",
@@ -40,8 +41,6 @@ Sate is a minimum set of features built on top of a lightweight framework. Sate 
 ## Key Philosophies
 
 Design decisions in Sate have been driven by the following underlying philosophies:
-
-<div class="todo">Make this make more sense!</div>
     
  * Convention before Configuration - Unless something is genuinely unusual, there's no sense in making someone configure it... ship with intelligent defaults.
  * Override instead of Declare - If a value at one level is the same as one level up, don't make me declare it again.

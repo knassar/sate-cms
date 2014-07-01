@@ -39,7 +39,7 @@
 }
 {{/pageData}}
 {{<intro}}
-<p>
-    Sate has some modules.
-</p>
+
+Sate has some modules.
+
 {{</intro}}
