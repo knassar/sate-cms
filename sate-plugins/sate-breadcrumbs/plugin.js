@@ -8,10 +8,11 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-breadcrumbs',
-        version: '0.2.0',
+        version: '0.4.0',
         headingTag: 'h2',
         separator: ':',
         minCrumbs: 1,
+        includePageName: true,
         compile: function(props, page, Sate, complete) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;

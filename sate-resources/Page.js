@@ -61,7 +61,7 @@ function Page(id, props, parent, website, Sate) {
                 var partialCaps = partials[m].match(partialCapturer);
                 if (partialCaps.length > 2) {
                     // @TODO: compile the templates for better performance
-                    page.compiledPartials[partialCaps[1]] = parsedContent(partialCaps[2], page);
+                    page.compiledPartials[partialCaps[1]] = parsedContent(partialCaps[2], page).replace(/^\s+$/, '');
                 }
             }
         }
@@ -195,21 +195,6 @@ function Page(id, props, parent, website, Sate) {
                     this.apply();
                 }
             },
-            // function() {
-            //     if (self.type == Sate.PageType.Index && !self.compiledPartials.content && self.subPages) {
-            //         self.compiledPartials.content = self.compiledPartials.indexPageContent;
-            //         self.articles = [];
-            //         for (var p in self.subPages) {
-            //             if (self.subPages.hasOwnProperty(p)) {
-            //                 composeArticleIntroForIndexPage(self, self.subPages[p]);
-            //             }
-            //         }
-            //         if (self.articleSort) {
-            //             self.articles.sort(self.articleSort);
-            //         }
-            //     }
-            //     this.apply();
-            // },
             function() {
                 pluginsResolver.resolve(self, this);
             },
@@ -218,6 +203,12 @@ function Page(id, props, parent, website, Sate) {
                 complete.apply();
             }
         );
+    };
+    newPage.hasContent = function() {
+        return (this.compiledPartials.content && this.compiledPartials.content.length > 0);
+    };
+    newPage.hasIntro = function() {
+        return (this.compiledPartials.intro && this.compiledPartials.intro.length > 0);
     };
     newPage.composeArticleDigest = function(withMetrics, complete) {
         if (this.type == Sate.PageType.Index && this.compiledPartials.content == "" && this.subPages) {

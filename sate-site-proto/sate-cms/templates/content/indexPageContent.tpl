@@ -11,7 +11,7 @@
         <div class="details">
             {{#plugin-sate-breadcrumbs}}
             {
-                "headingTag": "h3",
+                "includePageName": false,
                 "minCrumbs": 2
             }
             {{/plugin-sate-breadcrumbs}}

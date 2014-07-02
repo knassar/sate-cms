@@ -4,7 +4,7 @@ function Plugin(Sate, subobj) {
 
         var plg = {
         type: subobj.type,
-        version: '0.2.0',
+        version: '0.5.0',
         classes: [],
         compile: function(props, page, Sate, complete) {
             complete.apply();
