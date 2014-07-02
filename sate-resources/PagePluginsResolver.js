@@ -44,7 +44,9 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) 
                     page.pluginsById[plugin.id] = plugin;
                 }
                 resolvedPlugins.push(plugin);
-                finishedCompile.apply();
+                // HACK HACK... this avoids a race condition with the end of complile.
+                // Not sure why yet
+                setTimeout(finishedCompile, 10);
             }
         );
     }

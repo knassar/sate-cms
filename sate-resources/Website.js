@@ -190,7 +190,7 @@ function Website(args, Sate) {
                 if (this.isCompiling) {
                     this.pendingRequests.push(action);
                 } else {
-                    process.nextTick(action);
+                    setTimeout(action, 25);
                 }
             },
             compile: function(withMetrics, complete) {
@@ -256,6 +256,11 @@ function Website(args, Sate) {
                     function() {
                         self.isCompiling = false;
                         complete();
+                        if (self.pendingRequests.length > 0) {
+                            for (var i = 0; i < self.pendingRequests.length; i++) {
+                                self.pendingRequests[i].apply();
+                            }
+                        }
                     }
                 );
             },

@@ -217,6 +217,10 @@ function Page(id, props, parent, website, Sate) {
             for (var p in this.subPages) {
                 if (this.subPages.hasOwnProperty(p)) {
                     composeArticleIntroForIndexPage(this, this.subPages[p]);
+                    for (var i = 0; i < this.subPages[p].plugins.length; i++) {
+                        var plugin = this.subPages[p].plugins[i];
+                        this.plugins.push(plugin);
+                    }
                 }
             }
             if (this.articleSort) {
