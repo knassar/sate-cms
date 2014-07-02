@@ -13,7 +13,7 @@ This plugin is included in the default HTML template. Feel free to remove it if 
 
 The result is the following markup which is pre-styled to match the Sate logo, and which links back to the Sate github site:
 
-    {{{plugin-sate-powered}}}
+{{{plugin-sate-powered}}}
 
 {{{plugin-sate-sequenceNav}}}
 

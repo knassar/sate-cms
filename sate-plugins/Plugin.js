@@ -17,7 +17,6 @@ function Plugin(Sate, subobj) {
         scripts: [],
         objectToRender: function(config, page) {
             var obj;
-            console.log(this.type);
             if (config.id) {
                 obj = page.pluginById(config.id);
             } else if (config.forClass) {
@@ -29,7 +28,6 @@ function Plugin(Sate, subobj) {
             if (obj) {
                 obj.extendWithProperties(config);
             }
-            console.log(obj);
             return obj;
         },
         template: '',
@@ -54,7 +52,6 @@ function Plugin(Sate, subobj) {
                     }
                     else if (typeof config != 'object') {
                         Sate.Log.logAction('failed to parse config for plugin: '+plugin.type+' on page: '+this.url, 2);
-                        console.log(config);
                     }
                     if (plugin.templates.hasOwnProperty('main')) {
                         plugin.template = plugin.templates.main;
