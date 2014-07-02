@@ -21,19 +21,9 @@ module.exports = function(Sate) {
         templates: {'main': __dirname+'/breadcrumbs.tpl'},
         stylesheets: ['/sate-cms/plugins/sate-breadcrumbs/breadcrumbs.css'],
         objectToRender: function(config, page) {
-            var obj;
-            if (config.id) {
-                obj = page.pluginById(config.id);
-            } else if (config.forClass) {
-                obj = page.pluginByTypeAndClassName(this.type, config.forClass);
-            }
-            if (!obj) {
-                obj = page.pluginFirstByType(this.type);
-            }
+            var obj = this.super.objectToRender(config, page);
             if (!obj) {
                 obj = {};
-            } else {
-                obj.extendWithProperties(config);
             }
             if (util.isArray(obj.classes)) {
                 obj.classes.push('plugin-sate-breadcrumbs');

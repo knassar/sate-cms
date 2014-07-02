@@ -46,17 +46,9 @@ module.exports = function(Sate) {
         // instead you provide an object to the render phase by implementing objectToRender:
         // if you want to render nothing, return false
         objectToRender: function(config, page) {
-            var obj;
+            // attempt to identify which plugin is referenced by config
+            var obj = this.super.objectToRender(config, page);
             
-            // decide which plugin is referenced by config
-            if (config.id) {
-                obj = page.pluginById(config.id);
-            } else if (config.forClass) {
-                obj = page.pluginByTypeAndClassName(this.type, config.forClass);
-            }
-            if (!obj) {
-                obj = page.pluginFirstByType(this.type);
-            }
             if (!obj) {
                 obj = {};
             }

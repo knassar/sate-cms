@@ -3,28 +3,34 @@ function Plugin(Sate, subobj) {
         extend = require(Sate.nodeModInstallDir+'node.extend');
 
         var plg = {
-        type: 'abstract-base-class',
+        type: subobj.type,
         version: '0.2.0',
         classes: [],
         compile: function(props, page, Sate, complete) {
             complete.apply();
         },
         extendWithProperties: function(props) {
-            for (var p in props) {
-                if (props.hasOwnProperty(p)) {
-                    if (typeof props[p] == 'object') {
-                        this[p] = extend(true, this[p], props[p]);
-                    } else {
-                        this[p] = props[p];
-                    }
-                }
-            }
+            Sate.chain.inPlace(this, props);
         },
         templates: [],
         stylesheets: [],
         scripts: [],
-        objectToRender: function(config) {
-            return config;
+        objectToRender: function(config, page) {
+            var obj;
+            console.log(this.type);
+            if (config.id) {
+                obj = page.pluginById(config.id);
+            } else if (config.forClass) {
+                obj = page.pluginByTypeAndClassName(this.type, config.forClass);
+            }
+            if (!obj) {
+                obj = page.pluginFirstByType(this.type);
+            }
+            if (obj) {
+                obj.extendWithProperties(config);
+            }
+            console.log(obj);
+            return obj;
         },
         template: '',
         getRenderer: function() {
@@ -66,7 +72,7 @@ function Plugin(Sate, subobj) {
 
     Sate.configForPlugin(subobj.type);
     
-    return extend(true, {_super: plg}, plg, subobj);
+    return extend(true, {super: plg}, plg, subobj);
 }
 module.exports = Plugin;
 

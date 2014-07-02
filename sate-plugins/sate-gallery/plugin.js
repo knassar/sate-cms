@@ -137,21 +137,23 @@ module.exports = function(Sate) {
         scripts: ['/sate-cms/plugins/sate-gallery/sate-gallery.js'],
         objectToRender: function(config, page) {
             this.template = this.templates.main;
-            var path = require('path'),
-                g = {};
-            if (config.id) {
-                g = page.pluginById(config.id);
+            var path = require('path');
+            
+            var obj = this.super.objectToRender(config, page);
+            if (!obj) {
+                obj = {};
             }
-            if (g.thumbnailsPath) {
-                var thumbPath = g.thumbnailsPath.replace(g.contentPath, '').replace(/^\.\./, '');
-                g.images = g.heroes.map(function(item) {
+
+            if (obj.thumbnailsPath) {
+                var thumbPath = obj.thumbnailsPath.replace(obj.contentPath, '').replace(/^\.\./, '');
+                obj.images = obj.heroes.map(function(item) {
                     return {
                         heroSrc: '/'+item,
-                        thumbSrc: path.join(thumbPath, item.replace(g.contentPath, ''))
+                        thumbSrc: path.join(thumbPath, item.replace(obj.contentPath, ''))
                     };
                 });
             }
-            return g;
+            return obj;
         }
     });
     

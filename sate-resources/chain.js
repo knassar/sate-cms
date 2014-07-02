@@ -43,10 +43,9 @@ var merge = function(a, b) {
     }
 }
 
-function chain() {
-    var obj = {};
-
-    for (var i = 0; i < arguments.length; i++) {
+function chainToObj() {
+    var obj = arguments[0];
+    for (var i = 1; i < arguments.length; i++) {
         var link = arguments[i];
         if (typeof link == 'object') {
             for (var prop in link) {
@@ -61,9 +60,17 @@ function chain() {
             }
         }
     }
+}
 
+function chain() {
+    var obj = {};
+    var args = Array.prototype.slice.call(arguments, 0);
+    args.unshift(obj);
+    chainToObj.apply(this, args);
+    
     return obj;
 }
 
+chain.inPlace = chainToObj;
 
 module.exports = chain;
