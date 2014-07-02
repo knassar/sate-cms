@@ -238,7 +238,7 @@ function Website(args, Sate) {
                     function() {
                         Sate.Log.logAction("compiling pages", 0);
                         for (var path in self.pageByPath) {
-                            if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type != Sate.PageType.Index) {
+                            if (self.pageByPath.hasOwnProperty(path)) {
                                 Sate.Log.logAction(path, 1);
                                 self.pageByPath[path].compile(withMetrics, this.MULTI(path));
                             }
@@ -249,7 +249,7 @@ function Website(args, Sate) {
                         for (var path in self.pageByPath) {
                             if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type == Sate.PageType.Index) {
                                 Sate.Log.logAction(path, 1);
-                                self.pageByPath[path].compile(withMetrics, this.MULTI(path));
+                                self.pageByPath[path].composeArticleDigest(withMetrics, this.MULTI(path));
                             }
                         }
                     },

@@ -195,21 +195,21 @@ function Page(id, props, parent, website, Sate) {
                     this.apply();
                 }
             },
-            function() {
-                if (self.type == Sate.PageType.Index && !self.compiledPartials.content && self.subPages) {
-                    self.compiledPartials.content = self.compiledPartials.indexPageContent;
-                    self.articles = [];
-                    for (var p in self.subPages) {
-                        if (self.subPages.hasOwnProperty(p)) {
-                            composeArticleIntroForIndexPage(self, self.subPages[p]);
-                        }
-                    }
-                    if (self.articleSort) {
-                        self.articles.sort(self.articleSort);
-                    }
-                }
-                this.apply();
-            },
+            // function() {
+            //     if (self.type == Sate.PageType.Index && !self.compiledPartials.content && self.subPages) {
+            //         self.compiledPartials.content = self.compiledPartials.indexPageContent;
+            //         self.articles = [];
+            //         for (var p in self.subPages) {
+            //             if (self.subPages.hasOwnProperty(p)) {
+            //                 composeArticleIntroForIndexPage(self, self.subPages[p]);
+            //             }
+            //         }
+            //         if (self.articleSort) {
+            //             self.articles.sort(self.articleSort);
+            //         }
+            //     }
+            //     this.apply();
+            // },
             function() {
                 pluginsResolver.resolve(self, this);
             },
@@ -218,6 +218,21 @@ function Page(id, props, parent, website, Sate) {
                 complete.apply();
             }
         );
+    };
+    newPage.composeArticleDigest = function(withMetrics, complete) {
+        if (this.type == Sate.PageType.Index && this.compiledPartials.content == "" && this.subPages) {
+            this.compiledPartials.content = this.compiledPartials.indexPageContent;
+            this.articles = [];
+            for (var p in this.subPages) {
+                if (this.subPages.hasOwnProperty(p)) {
+                    composeArticleIntroForIndexPage(this, this.subPages[p]);
+                }
+            }
+            if (this.articleSort) {
+                this.articles.sort(this.articleSort);
+            }
+        }
+        complete.apply();
     };
     newPage.eachSubpage = function(method, recurseSubpages) {
         if (this.subPages) {
