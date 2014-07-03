@@ -18,6 +18,11 @@
             "type": "sate-pageMenu",
             "id": "pageMenu",
             "items": false
+        },
+        {
+            "type": "sate-breadcrumbs",
+            "id": "mainBreadcrumbs",
+            "includePageName": false
         }
     ]
 }
