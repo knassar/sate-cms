@@ -1,9 +1,8 @@
-{{<intro}}
+@intro:
 
 Sate is a node.js application, so you'll need to have Node.js and NPM installed.
 
-{{</intro}}
-{{<content}}
+@content:
 
 ## System Requirements
 
@@ -26,4 +25,4 @@ Once you have Node and NPM installed, installing Sate couldn't be easier:
 </pre>
 
 {{{plugin-sate-sequenceNav}}}
-{{</content}}
+

@@ -6,16 +6,6 @@ function Create(Sate) {
         exec = require('child_process').exec,
         Command = require(__dirname+'/command');
 
-    var ensurePath = function(filepath) {
-        var pathParts = filepath.split('/');
-        var check = fs.realpathSync(pathParts.shift());
-        while (pathParts.length > 0) {
-            check = path.join(check, pathParts.shift());
-            if (!fs.existsSync(check)) {
-                fs.mkdirSync(check);
-            }
-        }
-    };
     var verifyEmpty = function(filepath) {
         return (fs.readdirSync(filepath).length === 0);
     };
@@ -103,11 +93,11 @@ function Create(Sate) {
                 Sate.Log.logBox( ["Creating a Sate site"] );
                 var target = this.args.createTarget;
                 console.log(" +-> verifying target directory: "+target );
-                ensurePath(target);
+                Sate.utils.ensurePath(target);
                 if (!verifyEmpty(target)) {
                     if (this.args.clean) {
                         cleanTarget(target);
-                        ensurePath(target);
+                        Sate.utils.ensurePath(target);
                     } else {
                         console.error(" X-> target directory is not empty! Choose another target or use --clean to overwrite.");
                         process.exit(1);

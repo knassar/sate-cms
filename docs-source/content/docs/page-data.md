@@ -1,20 +1,18 @@
-{{#pageData}}
 {
     "extraStyles": [
         "/styles/sate-chain.css"
     ]
 }
-{{/pageData}}
-{{<intro}}
+@intro:
 
 Sate infers a great deal about individual pages from metadata that it can gather automatically, including filename, extension, file-system metadata (ie: creation/modification date), etc. However, sometimes the inferred values are not exactly what you want. In these cases, you can always override individual page properties using Page Data.
 
-{{</intro}}
-{{<content}}
+
+@content:
 
 ## Declaring Page Data
 
-You can declare page-level overrides of inferred values at two different levels: In the `website.json` and in the page's `pageData` block. These declarations are collapsed into a single configuration for each Page using the Page Data Chain:
+You can declare page-level overrides of inferred values at two different levels: In the `website.json` and at the top of a page's content file. These declarations are collapsed into a single configuration for each Page using the Page Data Chain:
 
 ### The Page Data Chain
 
@@ -22,10 +20,10 @@ You can declare page-level overrides of inferred values at two different levels:
     <li><span>Sate Defaults</span></li>
     <li><span>`pageDefaults` in `website.json`</span></li>
     <li><span>Automatic Inference</span></li>
-    <li><span>`pageData` block in content file</span></li>
+    <li><span>Page data block in content file</span></li>
 </ol>
 
-The `pageData` block defined in the page content file must contain valid JSON.
+The page data block defined at the top of the page content file must contain valid JSON.
 
 When using Sate types (such as Sate.PageType.Index), wrap the value in quotes:
 
@@ -35,7 +33,7 @@ When using Sate types (such as Sate.PageType.Index), wrap the value in quotes:
 
 ## Page Data Properties
 
-The following properties are supported by Sate at the page level:
+You can set any data you wish in the page data block for use in page-level templates. However, there are several properties which have special meaning to Sate, and you should avoid any naming collisions. The following properties hold special meaning to Sate at the page level:
 
 ### `parser` <span class="type sate">Sate.Parser</span>
 
@@ -139,4 +137,3 @@ An Array of plugin config objects to be compiled and used for the page. Each obj
 
 {{{plugin-sate-sequenceNav}}}
 
-{{</content}}

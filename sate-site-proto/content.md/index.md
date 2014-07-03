@@ -1,4 +1,3 @@
-{{#pageData}}
 {
     "plugins": [
         {
@@ -22,9 +21,12 @@
         }
     ]
 }
-{{/pageData}}
-{{<content}}
+
+@intro:
+
+An Intro
+
+@content:
 
 Start building your website here.
 
-{{</content}}

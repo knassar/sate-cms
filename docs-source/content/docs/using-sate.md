@@ -1,4 +1,4 @@
-{{<intro}}
+@intro:
 
 Sate is a Node.js command-line-application that is run with the following syntax:
 
@@ -8,8 +8,7 @@ Sate is a Node.js command-line-application that is run with the following syntax
 
 Sate supports the following directives:
 
-{{</intro}}
-{{<content}}
+@content:
 
 <table>
     <tr>
@@ -454,4 +453,3 @@ The `analyze` directive compiles the website without creating any new resources,
 
 {{{plugin-sate-sequenceNav}}}
 
-{{</content}}

@@ -38,6 +38,9 @@ module.exports = function(Sate) {
             }
             if (page.name && obj.crumbs.length >= obj.minCrumbs) {
                 return obj;
+            } else if (page.name && obj.includePageName) {
+                obj.crumbs = [];
+                return obj;
             } else {
                 return false;
             }

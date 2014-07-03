@@ -1,4 +1,3 @@
-{{#pageData}}
 {
     "articleSort": [
         "/plugins/hello-world", 
@@ -7,7 +6,7 @@
         "/plugins/sequence-nav", 
         "/plugins/gallery", 
         "/plugins/sate-powered"
-        ],
+    ],
     "plugins": [
         {
             "type": "sate-pageMenu",
@@ -37,9 +36,8 @@
         }
     ]
 }
-{{/pageData}}
-{{<intro}}
+
+@intro:
 
 Sate has some modules.
 
-{{</intro}}

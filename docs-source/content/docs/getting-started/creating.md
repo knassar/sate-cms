@@ -1,14 +1,14 @@
-{{#pageData}}
 {
     "name": "Creating a Sate site"
 }
-{{/pageData}}
-{{<intro}}
+
+@intro:
 
 The first Sate command you will run is <code>create</code>. Sate <code>create</code> establishes all the scaffolding and boilerplate necessary to drive a Sate website. Pass the <code>create</code> command either an empty directory, or the name of a directory you want Sate to create.
 
-{{</intro}}
-{{<content}}
+
+@content:
+
 <pre class="cli">
 <div class="line"><span class="dir-prompt">~</span>sate-cms create ./my-sate-website</div>
 </pre>
@@ -22,7 +22,7 @@ After <code>create</code> does its thing, <code>cd</code> into the new directory
 
 The directory structure you'll see is something like this:
 
-<pre class="ls">
+<pre class="ls cli">
     ./
         website.json
         /content
@@ -47,4 +47,3 @@ You'll see a log of console output telling you that Sate is compiling the site. 
 Now point your browser at <code>http://localhost:3000</code> (or whatever port you're using), and you'll see the Sate boilerplate website.
 
 {{{plugin-sate-sequenceNav}}}
-{{</content}}

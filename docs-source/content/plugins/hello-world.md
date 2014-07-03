@@ -1,4 +1,3 @@
-{{#pageData}}
 {
     "plugins": [
         {
@@ -13,13 +12,11 @@
         }
     ]
 }
-{{/pageData}}
-{{<intro}}
+@intro:
 
 Sate plugins encapsulate reusable data, configuration, templates and client resources in a "plug-and-play" package. Sate includes several useful default plugins, and additional plugins are easy to write and are registered with Sate simply by dropping them into the plugins directory of the Sate site.
 
-{{</intro}}
-{{<content}}
+@content:
 
 <dl>
     <dt>English (run-time configured): </dt>
@@ -62,4 +59,3 @@ Sate plugins encapsulate reusable data, configuration, templates and client reso
     
 {{{plugin-sate-sequenceNav}}}
 
-{{</content}}

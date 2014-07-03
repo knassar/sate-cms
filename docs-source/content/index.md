@@ -1,4 +1,3 @@
-{{#pageData}}
 {
     "type": "Sate.PageType.Index",
     "plugins": [
@@ -28,11 +27,16 @@
             "type": "sate-pageMenu",
             "id": "pageMenu",
             "items": false
+        },
+        {
+            "type": "sate-breadcrumbs",
+            "id": "mainBreadcrumbs",
+            "includePageName": false
         }
     ]
 }
-{{/pageData}}
-{{<content}}
+
+@content:
 
 ## Basic principles
 
@@ -60,4 +64,3 @@ Design decisions in Sate have been driven by the following underlying philosophi
    * Edit & Refresh "develop" server for rapid iteration of site content
    * deploy the entire site as static pages for high-performance
 
-{{</content}}

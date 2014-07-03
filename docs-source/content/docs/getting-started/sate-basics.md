@@ -1,13 +1,12 @@
-{{<intro}}
+@intro:
 
 Now that you've got a basic site up and running, you'll want to start making changes to make it your own site. 
 
-{{</intro}}
-{{<content}}
+@content:
 
 The first thing to know is that the development web server started by the `develop` command automatically recompiles the entire site sources on each page request, so you don't need to restart Sate between changes. Just edit a source file and reload the page. To see this in action, lets make a few small changes to the stock Sate boilerplate.
 
-Open the `website.json` file in your favorite editor and take a look at it's structure. This file acts as the high-level "manifest" for your Sate website. The `website.json` file contains site-wide configuration like the site Title, and defines the path to the site's root page.
+Open the `website.json` file in your favorite editor and take a look at its structure. This file acts as the high-level "manifest" for your Sate website. The `website.json` file contains site-wide configuration like the site Title, and defines the path to the site's root page.
 
 For now, find the value under the key `pageDefaults.title` and change the string "Your New Sate Site" to the name of your own website. Save the file, and reload the browser page. You should see the new page title show up as the page title.
 
@@ -21,9 +20,9 @@ The boilerplate that Sate generates when you use the `create` directive includes
 
 This directory contains several key pieces of the Sate website. Under `sate-cms`, you'll find the following directories:
 
- * `error`: Template files for 404 errors
+ * `error`: Template file for 404 errors
  * `templates`: The default templates used by Sate. You may modify these or add any site-wide templates to this subdirectory
- * `plugins`: This directory contains all the standard [Sate plugins](/plugins). To install a new plugin for your site, simply copy it into this directory. When new versions of Sate are relased, you can non-destructively update the plugins you've installed by using the [Update](/docs/using-sate) directive.
+ * `plugins`: This directory contains all the standard [Sate plugins](/plugins). To install a new plugin for your site, simply copy it into this directory. If you choose not to use a plugin on your site, you can simply delete the folder for that plugin. When new versions of Sate are relased, you can non-destructively update the plugins you've installed or re-install plugins you've removed by using the [Update](/docs/using-sate) directive.
  
  
 ### `styles` & `scripts`
@@ -63,4 +62,4 @@ Sate also infers as much as it can about each page simply from information it ca
 It's important to note that these automatic inferences can be [overridden for any given page](/docs/page-data).
 
 {{{plugin-sate-sequenceNav}}}
-{{</content}}
+

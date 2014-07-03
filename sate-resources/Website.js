@@ -82,23 +82,18 @@ function Website(args, Sate) {
     };
 
     var generateIndexes = function(website, success, error) {
-        // try {
-            website.siteMap[website.config.rootPage] = indexPage(website.config.rootPage, website.siteMap[website.config.rootPage], website);
-            mapParentGraph(website.siteMap[website.config.rootPage], website);
-            website.siteMap[website.config.rootPage].website = website;
-            for (var id in website.errorPages) {
-                if (website.errorPages.hasOwnProperty(id) && !website.errorPages[id].compile) {
-                    var errPage = indexPage(id, website.errorPages[id], website);
-                    errPage.website = website;
-                    errPage.parent = website.siteMap[website.config.rootPage];
-                    website.errorPages[id] = errPage;
-                }
+        website.siteMap[website.config.rootPage] = indexPage(website.config.rootPage, website.siteMap[website.config.rootPage], website);
+        mapParentGraph(website.siteMap[website.config.rootPage], website);
+        website.siteMap[website.config.rootPage].website = website;
+        for (var id in website.errorPages) {
+            if (website.errorPages.hasOwnProperty(id) && !website.errorPages[id].compile) {
+                var errPage = indexPage(id, website.errorPages[id], website);
+                errPage.website = website;
+                errPage.parent = website.siteMap[website.config.rootPage];
+                website.errorPages[id] = errPage;
             }
-            success();
-        // } catch (err) {
-        //     console.log( err );
-        //     error(err);
-        // }
+        }
+        success();
     };
 
     var loadTemplate = function(website, t, coll, stepDone) {
@@ -255,12 +250,16 @@ function Website(args, Sate) {
                     },
                     function() {
                         self.isCompiling = false;
-                        complete();
-                        if (self.pendingRequests.length > 0) {
-                            for (var i = 0; i < self.pendingRequests.length; i++) {
-                                self.pendingRequests[i].apply();
+                        // HACK HACK... this avoids a race condition with the end of complile.
+                        // Not sure why yet
+                        setTimeout(function() {
+                            complete();
+                            if (self.pendingRequests.length > 0) {
+                                for (var i = 0; i < self.pendingRequests.length; i++) {
+                                    self.pendingRequests[i].apply();
+                                }
                             }
-                        }
+                        }, 10);
                     }
                 );
             },

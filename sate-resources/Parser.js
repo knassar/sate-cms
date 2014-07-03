@@ -13,9 +13,13 @@ module.exports = {
     parserForExtension: function(extension) {
         switch (extension.toLowerCase()) {
         case "html":
+        case "htm":
             return this.HTML;
         case "md":
+        case "markdown":
             return this.Markdown;
+        default: 
+            return false;
         }
     },
     parsers: function() {

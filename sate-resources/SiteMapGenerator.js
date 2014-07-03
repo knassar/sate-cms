@@ -28,7 +28,7 @@ function SiteMapGenerator(Sate) {
         }
         
         if (index) {
-            page = extend(true, page, Sate.Page.dataFromFile(path.join(directory, index), encoding));
+            page = extend(true, page, Sate.Page.dataFromFile(Sate, path.join(directory, index), encoding));
         }
 
         if (!page.name) {
@@ -52,20 +52,23 @@ function SiteMapGenerator(Sate) {
                 else if (stats.isFile()) {
                     var fileParts = files[f].split('.');
                     var ext = fileParts.reverse()[0];
-                    fileParts.shift();
-                    var fileName = fileParts.join('.');
-                    var article = {
-                        type: Sate.PageType.Article,
-                        parser: Sate.Parser.parserForExtension(ext),
-                        subPages: {}
-                    };
+                    var parser = Sate.Parser.parserForExtension(ext);
+                    if (parser !== false) {
+                        fileParts.shift();
+                        var fileName = fileParts.join('.');
+                        var article = {
+                            type: Sate.PageType.Article,
+                            parser: parser,
+                            subPages: {}
+                        };
     
-                    article = extend(true, article, Sate.Page.dataFromFile(filepath, encoding));
-                    if (!article.name) {
-                        article.name = Sate.utils.pageNameFromFileName(fileName);
+                        article = extend(true, article, Sate.Page.dataFromFile(Sate, filepath, encoding));
+                        if (!article.name) {
+                            article.name = Sate.utils.pageNameFromFileName(fileName);
+                        }
+                        article.contentExtension = ext;
+                        page.subPages[fileName] = article;
                     }
-                    article.contentExtension = ext;
-                    page.subPages[fileName] = article;
                 }
             }
         }

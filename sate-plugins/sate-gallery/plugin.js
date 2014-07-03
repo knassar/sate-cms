@@ -11,23 +11,6 @@ module.exports = function(Sate) {
         im,
         Plugin = require(__dirname+'/../Plugin');
 
-    var ensurePath = function(filepath) {
-        var pathParts = filepath.split('/');
-        
-        var check = pathParts.shift();
-        if (check.length > 0 && !fs.existsSync(check)) {
-            fs.mkdirSync(check);
-        }
-        
-        var check = fs.realpathSync(check);
-        while (pathParts.length > 1) {
-            check = path.join(check, pathParts.shift());
-            if (!fs.existsSync(check)) {
-                fs.mkdirSync(check);
-            }
-        }
-    };
-
     var loadIM = function() {
         if (Sate.configForPlugin('sate-gallery').foundIM) {
             im = require(Sate.nodeModInstallDir+'imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
@@ -61,7 +44,7 @@ module.exports = function(Sate) {
         loadIM();
         filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
         var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath));
-        ensurePath(thumbPath);
+        Sate.utils.ensurePath(thumbPath);
         im.resize({
             srcPath: imagePath,
             dstPath: thumbPath,

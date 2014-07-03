@@ -1,7 +1,3 @@
-var pageDataMatcher = /\{\{\#pageData\}\}([\s\S]*?)\{\{\//m;
-var partialMatcher = /\{\{<(?!pageData)[^\/]+\}\}[\s\S]*?\{\{<\/[\w\d]+\}\}/mg;
-var partialCapturer = /\{\{<([\w\d]+)\}\}([\s\S]*?)\{\{<\//m;
-
 function Page(id, props, parent, website, Sate) {
         var fs = require('fs'),
         path = require('path'),
@@ -10,7 +6,8 @@ function Page(id, props, parent, website, Sate) {
         flow = require(Sate.nodeModInstallDir+'flow'),
         extend = require(Sate.nodeModInstallDir+'node.extend'),
         Mustache = require(Sate.nodeModInstallDir+'mustache'),
-        markdown = require(Sate.nodeModInstallDir+'marked'),
+        PageContentParser = require(__dirname+'/PageContentParser'),
+        contentParser = new PageContentParser(Sate),
         PageDataResolver = require(__dirname+'/PageDataResolver'),
         dataResolver = new PageDataResolver(Sate),
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
@@ -35,42 +32,12 @@ function Page(id, props, parent, website, Sate) {
         }
     };
 
-    var parsedContent = function(content, page) {
-        if (page.parser == Sate.Parser.HTML) {
-            return content;
-        }
-        else if (page.parser == Sate.Parser.Markdown) {
-            return markdown(content);
-        }
-        else {
-            return content;
-        }
-    };
-
     var processPageContent = function(page, data, success) {
-        var pageData = null,
-            matches = data.match(pageDataMatcher);
-        if (matches && matches.length > 1) {
-            pageData = JSON.parse(matches[1].trim());
-        }
-        page = Sate.chain(page, pageData);
+        
+        contentParser.parse(page, data);
+        
         resolvePage(page);
-        var partials = data.match(partialMatcher);
-        if (partials && partials.length > 0) {
-            for (var m = 0; m < partials.length; m++) {
-                var partialCaps = partials[m].match(partialCapturer);
-                if (partialCaps.length > 2) {
-                    // @TODO: compile the templates for better performance
-                    page.compiledPartials[partialCaps[1]] = parsedContent(partialCaps[2], page).replace(/^\s+$/, '');
-                }
-            }
-        }
-        if (!page.compiledPartials.intro) {
-            page.compiledPartials.intro = "";
-        }
-        if (!page.compiledPartials.content) {
-            page.compiledPartials.content = "";
-        }
+
         success.apply();
     };
     
@@ -189,11 +156,10 @@ function Page(id, props, parent, website, Sate) {
                 fs.readFile(self.resolvedContentPath, self.encoding, this);
             },
             function(err, data) {
-                if (data) {
-                    processPageContent(self, data, this);
-                } else {
-                    this.apply();
+                if (!data) {
+                    data = "";
                 }
+                processPageContent(self, data, this);
             },
             function() {
                 pluginsResolver.resolve(self, this);
@@ -366,21 +332,16 @@ function Page(id, props, parent, website, Sate) {
     return newPage;
 }
 
-Page.dataFromFile = function(directory, encoding) {
+Page.dataFromFile = function(Sate, directory, encoding) {
     var fs = require('fs'),
         path = require('path');
+        PageContentParser = require(__dirname+'/PageContentParser'),
+        contentParser = new PageContentParser(Sate);
 
     var filepath = path.normalize(directory);
     var data = fs.readFileSync(filepath, {encoding: encoding});
     
-    var pageData = null,
-        matches = data.match(pageDataMatcher);
-    
-    if (matches && matches.length > 1) {
-        pageData = JSON.parse(matches[1].trim());
-    }
-    
-    return pageData;
+    return contentParser.extractDataBlock(data);
 };
 
 module.exports = Page;

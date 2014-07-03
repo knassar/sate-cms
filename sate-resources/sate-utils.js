@@ -16,5 +16,24 @@ module.exports = {
     pageNameFromFileName: function(str, omitWords) {
         var hyph = '%%%hyphen%%%';
         return this.toTitleCase(str.replace('--', hyph).replace('-', ' ').replace(hyph, '-'));
+    },
+    ensurePath: function(filepath) {
+        var fs = require('fs'),
+            path = require('path');
+            
+        var pathParts = filepath.split('/');
+        
+        var check = pathParts.shift();
+        if (check.length > 0 && !fs.existsSync(check)) {
+            fs.mkdirSync(check);
+        }
+        
+        var check = fs.realpathSync(check);
+        while (pathParts.length > 1) {
+            check = path.join(check, pathParts.shift());
+            if (!fs.existsSync(check)) {
+                fs.mkdirSync(check);
+            }
+        }
     }
 };

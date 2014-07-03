@@ -32,7 +32,7 @@
         <div id="pageBody" class="{{type}}">
             {{#plugin-sate-breadcrumbs}}
             {
-                "id": "breadcrumbs"
+                "id": "mainBreadcrumbs"
             }
             {{/plugin-sate-breadcrumbs}}
         

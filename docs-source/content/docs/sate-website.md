@@ -1,17 +1,15 @@
-{{#pageData}}
 {
     "name": "Anatomy of a Sate website"
 }
-{{/pageData}}
-{{<intro}}
+@intro:
 
 A website using Sate is structured in two parts: 
 
- * A JSON file containing the site configuration and an object map of all the website's pages
+ * A JSON file containing the site configuration
  * A file structure in which each "page" in the site is represented by an HTML or Markdown file
  
-{{</intro}}
-{{<content}}
+
+@content:
 ## The Sate website.json
 
 This file contains the site-level configuration. Here's an example of a Site website.json file:
@@ -57,63 +55,98 @@ When serving these pages as a website, Sate maps the above file structure into U
     <tr><td>[domain]/docs/using-sate</td><td>./docs/using-sate.html</td></tr>
 </table>
 
-Each of these files is an HTML fragment file which contains "Just Enough" content to render the page when combined with the data from website.json and information Sate infers from the structure.
+Each of these files is an HTML fragment or Markdown file which contains "Just Enough" content to render the page when combined with the data from website.json and information Sate infers from the structure.
 
-Sate is built on the concept of "template inversion", which means that in the file for each page, you write & declare only the details that are different for that page. There's no need to include common headers, footers, includes, etc, unless those elements differ from the rest of the site. And when any element does differ on a given page, [the chain][/docs/sate-chain] lets you override previously established properties at the individual page level.
+Sate is built on the concept of "template inversion", which means that in the file for each page, you write & declare only the details that are different for that page. There's no need to include common headers, footers, includes, etc, unless those elements differ from the rest of the site. And when any element does differ on a given page, [the chain](/docs/sate-chain) lets you override previously established properties at the individual page level.
 
-There are currently 3 special blocks that Sate will look for in a content file. Any of these blocks may be omitted, and Sate will generally do the right thing:
+## Content Structure
 
-<table>  
-    <tr><th>Block       </th><th>Type           </th><th>Purpose</th></tr>
-    <tr><td>pageData    </td><td>JSON           </td><td>a JSON object to override properies for this page</td></tr>
-    <tr><td>intro       </td><td>inline-partial </td><td>the Intro section markup for this page</td></tr>
-    <tr><td>content     </td><td>inline-partial </td><td>the Content section markup for this page</td></tr>
-</table>
+Sate content files must conform to a very specific, but very light-weight structure. This allows minimal ceremony in content files, so you can focus on your content. Your content in each page file consists of one or more named sections. The section names are delimeted by the marker `@[...]:`, where "`[...]`" is replaced by the section name. Section markers are not closed—Sate always assumes the section continues until the next section marker or until the end of the content file.
 
-The `pageData` block is a standard Mustache section which Sate expects to include JSON.
+The following simple rules must be adhered to:
 
-Inline-partial blocks are represented by using Mustache.js brackets in a "reverse partial" notation surrounding HTML-style tag opens/closes:
+ 1. If a page data JSON block is included in the file, it must occur at the beginning of the file, and must be valid JSON.
+ 2. All section name markers must begin on a new line, and must be followed by a newline character.
 
-<pre>
-&#123&#123&lt;blockName&#125&#125
-    block content
-&#123&#123&lt;/blockName&#125&#125
-</pre>
+### Standard Sections
 
-You should think of this notation as an inline declaration of a Mustache partial, whose partial name is given in the brackets (because that's in-fact what it is). All inline-partials (not just the ones described above) declared in a page's HTML file will be parsed and injected into the partials dictionary before the page is rendered. You can leverage this process to help keep your `intro` and `content` blocks DRY by declaring one-off inline partials and then referencing them from the same file.
+There are two "reserved" section markers which have special meaning: `@intro:` and `@content:`. These markers indicate the page Intro and Body content respectively. When a page is rendered, these two sections will be appended to each other seamlessly. When a page is included into an Index page, its Intro section will be displayed with a "readmore" link to the full page.
 
-Here's an example of a content file using all 3 blocks:
+Here is an example of a content file making use of all three standard sections:
 
-<pre>
-&#123&#123#pageData&#125&#125
+
     {
-        "date": '2013-06-13',
-        "title": "Some Good Title"
+        "date": "2013-06-13",
+        "name": "Some Good Page"
     }
-&#123&#123/pageData&#125&#125
-&#123&#123&lt;intro&#125&#125
-    &lt;p&gt;
-        Here&#x27;s some arbitrary intro text, which appears at 
+
+    @intro:
+
+    <p>
+        Here's some arbitrary intro text, which appears at 
         the top of the page, but is also extracted and displayed 
         in Index pages.
-    &lt;/p&gt;
-    &lt;p class=&quot;cool&quot;&gt;
-        Notice that there&#x27;s no repetition of the page name in this content
-    &lt;/p&gt;
-&#123&#123&lt;/intro&#125&#125
-&#123&#123&lt;content&#125&#125
-    &lt;p&gt;
-        Here&#x27;s where the meat of the page goes
+    </p>
+    <p class="cool">
+        Notice that there's no repetition of the page name in this content
+    </p>
+
+    @content:
+    <p>
+        Here's where the meat of the page goes
             ... 
         this is just Plain-ole HTML
-    &lt;/p&gt;
-    &lt;script type="text/javascript"&gt;
-        $(function() {
-            // Here&#x27;s where I can hook up any page-level scripts I want to run.
-        });
-    &lt;/script&gt;
-&#123&#123&lt;/content&#125&#125
-</pre>
+    </p>
+
+### Minimum Content—None!
+
+It's important to note that all sections are entirely optional. You can omit any or all of the above sections. In fact, an empty file is a perfectly valid Sate content file. While in many cases, this will result in an empty page (less than desirable), in cases where Sate can successfully infer the entirety of the page, Sate does not force you to create pointless boilerplate. 
+
+The most common scenario for an empty content file is when an index page occurs in the middle-tier of a site. For example, consider an empty file at:
+    
+    /products/index.html
+
+Sate can infer the page name from the directory ("Products") and the type from the filename ("Sate.PageType.Index"). The main menu is inherited from the parent page, and because the page is an Index, the page content will be auto-generated by compiling the `@intro:` sections of any non-index pages found in the `/producs` directory and/or the intros of index pages for any sub-directories under `/products`.
+
+
+### Custom Sections
+
+You can also create your own section markers by using the `@name:` pattern. The content you include in your custom sections will be parsed and injected into the partials dictionary for the page before the page is rendered. You can leverage this process to help keep your `intro` and `content` blocks DRY by declaring one-off inline partials and then referencing them from the same file using standard Mustache partial syntax:
+
+{{=<% %>=}}
+
+    {
+        "colors": [
+            { "name": "red", "value": "#ff0000" },
+            { "name": "blue", "value": "#0000ff" },
+            { "name": "green", "value": "#00ff00" }
+        ]
+    }
+
+    @intro:
+
+    <p>
+        Here's a list of my favorite colors:
+    </p>
+
+    @content:
+
+    <ul>
+        {{#colors}}
+            {{>color}}
+        {{/colors}}
+    </ul>
+
+    @color:
+    
+    <li style="color: {{value}};">{{name}}</li>
+    
+<%={{ }}=%>
+
+### Escaping Section Markers
+
+Because `@section:` markers must always appear at the beginning of a line, if you need to use the literal pattern: `@section:` in your content, simply lead the pattern with a space or other character:
+
+ @thisIsNotASectionMarker:
 
 {{{plugin-sate-sequenceNav}}}
-{{</content}}

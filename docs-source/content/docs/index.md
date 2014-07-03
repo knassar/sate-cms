@@ -1,4 +1,3 @@
-{{#pageData}}
 {
     "name": "Documentation",
     "articleSort": [
@@ -34,13 +33,12 @@
         }
     ]
 }
-{{/pageData}}
-{{<intro}}
 
-Sate is designed with the following principles:
+@intro:
 
- * Let you focus on content, not configuration
- * Let you get a website up and running quickly
+Sate is designed with the following principles in mind:
+
+ * Allow you to focus on content, not configuration
+ * Allow you to get a website up and running quickly
  * Be easy to maintain and modify content over time
 
-{{</intro}}

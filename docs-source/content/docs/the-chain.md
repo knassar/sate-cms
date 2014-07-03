@@ -1,16 +1,14 @@
-{{#pageData}}
 {
     "extraStyles": [
         "/styles/sate-chain.css"
     ]
 }
-{{/pageData}}
-{{<intro}}
+@intro:
 
 The Chain is a structured inheritance sequence which allows Sate pages to be functional with as little explicit definition as possible.
 
-{{</intro}}
-{{<content}}
+
+@content:
 
 Any properties defined at each link in the Chain gets overridden in sequence from left to right by subsequent links. Below is a basic diagram of the Chain in a Sate website.
 
@@ -41,4 +39,3 @@ There are several variations on this basic Chain of inheritance which apply to s
 </ol>
 
 {{{plugin-sate-sequenceNav}}}
-{{</content}}

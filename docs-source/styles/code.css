@@ -8,7 +8,12 @@ td.code
     font-family: "Menlo", "Courier New", monospace;
 }
 
-
+pre
+{
+    background-color: #f6f6f6;
+    padding: 0.5em 1em;
+    box-shadow: #aaa 0 5px 10px;
+}
 
 
 .cli {

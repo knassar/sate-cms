@@ -1,4 +1,3 @@
-{{#pageData}}
 {
     "plugins": [
         {
@@ -9,13 +8,13 @@
         }
     ]
 }
-{{/pageData}}
-{{<intro}}
+
+@intro:
 
 The Gallery plugin does two things to make your life easier. It provides a light-weight "lightbox" image viewer, but more importantly, it auto-thumbnails your whole collection of hero images.
 
-{{</intro}}
-{{<content}}
+
+@content:
 
 All you have to do is point the plugin at your directory of images, and then include the plugin in your page.
 
@@ -65,4 +64,3 @@ Having told Sate about this gallery, we can reference the gallery in the page <c
 
 {{{plugin-sate-sequenceNav}}}
     
-{{</content}}
