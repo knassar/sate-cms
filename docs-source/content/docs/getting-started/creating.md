@@ -10,7 +10,7 @@ The first Sate command you will run is <code>create</code>. Sate <code>create</c
 @content:
 
 <pre class="cli">
-<div class="line"><span class="dir-prompt">~</span>sate-cms create ./my-sate-website</div>
+<div class="line"><span class="dir-prompt">~</span>sate create ./my-sate-website</div>
 </pre>
 
 After <code>create</code> does its thing, <code>cd</code> into the new directory and check out the structure of your new Sate website.
@@ -39,7 +39,7 @@ The directory structure you'll see is something like this:
 We'll go deeper into this structure in the next section. For now, try out this website by using the <code>develop</code> command:
 
 <pre class="cli">
-<div class="line"><span class="dir-prompt">my-sate-website</span>sate-cms develop</div>
+<div class="line"><span class="dir-prompt">my-sate-website</span>sate develop</div>
 </pre>
 
 You'll see a log of console output telling you that Sate is compiling the site. Then you'll see Sate starting the development webserver, and listening on port 3000. If you need to change the default port, use the <code>-p</code> flag with the <code>develop</code> command. 

@@ -41,7 +41,7 @@
         command: Sate.Command.develop,
         processCommand: function(processArgv) {
             var argp = processArgv.shift(),
-                sateCheck = /sate\-cms/;
+                sateCheck = /sate/;
             while (!sateCheck.test(argp)) {
                 argp = processArgv.shift();
             }

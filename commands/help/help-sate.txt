@@ -1,6 +1,6 @@
 Call Sate like this:
 
-    sate-cms [command] [flags]
+    sate [command] [flags]
 
 Sate has the following commands:
     

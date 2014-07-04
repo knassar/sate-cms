@@ -1,7 +1,7 @@
 
 deploy help:
 
-    sate-cms deploy [flags]
+    sate deploy [flags]
 
 Compiles the source Sate website, generates all pages statically, and copies the static, generated website files to the target path, to be served out by a standard web server.
 

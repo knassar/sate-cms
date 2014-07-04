@@ -108,7 +108,7 @@ function Create(Sate) {
                     if (err) {
                         console.log( err );
                     } else {
-                        Sate.Log.logBox(["Done", "run: ", "    cd "+target+"; sate-cms develop", "to load your site"]);
+                        Sate.Log.logBox(["Done", "run: ", "    cd "+target+"; sate develop", "to load your site"]);
                     }
                 });
             }

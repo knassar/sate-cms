@@ -1,7 +1,7 @@
 
 develop help:
 
-    sate-cms develop [flags]
+    sate develop [flags]
 
 Starts a stateless web-server which serves website page requests by re-evaluating all website sources on each request. This is useful when developing site content, as individual pages can be tested by reloading the browser page with each tweak. 
 

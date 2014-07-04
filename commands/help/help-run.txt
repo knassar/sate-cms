@@ -1,7 +1,7 @@
 
 run help:
 
-    sate-cms run [flags]
+    sate run [flags]
 
 Compiles the website and starts a web-server which serves website page requests. This is experimental, and not intended for running a critical production website.
 

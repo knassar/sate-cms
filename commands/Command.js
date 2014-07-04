@@ -15,7 +15,7 @@ function Command(Sate) {
                     this.help();
                 }
             } else {
-                console.log(fs.readFileSync(path.join(__dirname, 'help/help.txt'), {encoding: this.args.encoding}));
+                console.log(fs.readFileSync(path.join(__dirname, 'help/help-sate.txt'), {encoding: this.args.encoding}));
             }
         },
         argFlags: {
