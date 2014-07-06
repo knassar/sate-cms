@@ -43,7 +43,7 @@ module.exports = function(Sate) {
     var makeThumbnailImage = function(imagePath, gallery, complete) {
         loadIM();
         filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
-        var thumbPath = imagePath.replace(gallery.contentPath, path.join(gallery.contentPath, gallery.thumbnailsPath));
+        var thumbPath = path.join(gallery.thumbnailsPath, imagePath);
         Sate.utils.ensurePath(thumbPath);
         im.resize({
             srcPath: imagePath,
@@ -62,36 +62,60 @@ module.exports = function(Sate) {
             complete.apply();
         });
     };
-
-    var compileFlow = function(gallery, complete) {
-        var imgExtRegex = /\.jpg|\.gif|\.png$/;
+    
+    var imgExtRegex = /\.jpg|\.gif|\.png$/;
+    var descendAndThumbnailImages = function(gallery, dir, complete) {
+        
         flow.exec(
             function() {
-                if (Sate.configForPlugin('sate-gallery').foundIM) {
-                    fs.readdir(path.join(gallery.contentPath, gallery.imagesPath), this);
-                }
-                else {
-                    this.apply();
-                }
+                fs.readdir(dir, this);
             },
             function(err, imagesPaths) {
-                var multiCount = 0;
-                if (Sate.configForPlugin('sate-gallery').foundIM && util.isArray(imagesPaths)) {
-                    for (var i=0; i < imagesPaths.length; i++) {
-                        if (imgExtRegex.test(imagesPaths[i])) {
-                            var imagePath = path.join(gallery.contentPath, gallery.imagesPath, imagesPaths[i]);
-                            gallery.heroes.push(imagePath);
-                            multiCount++;
-                            makeThumbnailImage(imagePath, gallery, this.MULTI(imagePath));
+                var outerFlow = this;
+                flow.serialForEach(
+                    imagesPaths, 
+                    function(filename) {
+                        var filepath = path.join(dir, filename);
+                        var fstats = fs.statSync(filepath);
+                        if (fstats.isDirectory()) {
+                            descendAndThumbnailImages(gallery, filepath, this);
                         }
+                        else if (fstats.isFile()) {
+                            if (imgExtRegex.test(filename)) {
+                                gallery.heroes.push(filepath);
+                                makeThumbnailImage(filepath, gallery, this);
+                            }
+                            else {
+                                this.apply();
+                            }
+                        }
+                        else {
+                            this.apply();
+                        }
+                    }, 
+                    function() {}, 
+                    function() {
+                        outerFlow.apply();
                     }
-                }
-                if (multiCount === 0) {
-                    this.apply();
-                }
+                );
             },
             function() {
-                complete.apply();
+                setTimeout(complete, 10);
+            }
+        );
+    };
+
+    var compileFlow = function(gallery, complete) {
+        flow.exec(
+            function() {
+                this(path.join(gallery.imagesPath));
+            },
+            function(dir) {
+                descendAndThumbnailImages(gallery, dir, this);
+            },
+            function() {
+                setTimeout(complete, 200);
+                // complete.apply();
             }
         );
     };
@@ -106,12 +130,11 @@ module.exports = function(Sate) {
             height: 150 // use w/h to crop
         },
         contentPath: '',
-        thumbnailsPath: "../gallery-thumbs",
+        thumbnailsPath: "gallery-thumbs",
         imagesPath: "",
         thumbnails: [],
         heroes: [],
         compile: function(props, page, Sate, complete) {
-            this.contentPath = path.join(page.contentPath, '.');
             this.extendWithProperties(props);
             compileFlow(this, complete);
         },
@@ -128,11 +151,10 @@ module.exports = function(Sate) {
             }
 
             if (obj.thumbnailsPath) {
-                var thumbPath = obj.thumbnailsPath.replace(obj.contentPath, '').replace(/^\.\./, '');
                 obj.images = obj.heroes.map(function(item) {
                     return {
-                        heroSrc: '/'+item,
-                        thumbSrc: path.join(thumbPath, item.replace(obj.contentPath, ''))
+                        heroSrc: '/' + item,
+                        thumbSrc: '/' + path.join(obj.thumbnailsPath, item)
                     };
                 });
             }
