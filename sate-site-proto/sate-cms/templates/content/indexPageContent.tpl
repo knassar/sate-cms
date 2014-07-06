@@ -22,7 +22,7 @@
         <div class="intro">
             {{{articleIntro}}}
         </div>
-        <a href="{{root}}{{url}}" class="read-more">read more...</a>
+        <a href="{{url}}" class="read-more">read more...</a>
     </li>
     {{/articles}}
     
