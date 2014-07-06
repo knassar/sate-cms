@@ -241,33 +241,54 @@ function Page(id, props, parent, website, Sate) {
         }
     };
     newPage.addSubPageResources = function(subPage) {
-        for (var css in subPage.styles) {
-            if (subPage.styles.hasOwnProperty(css)) {
-                this.addStylesheet(subPage.styles[css].href, subPage.styles[css]);
+        for (var css in subPage.extraStyles) {
+            if (subPage.extraStyles.hasOwnProperty(css)) {
+                var style = subPage.extraStyles[css];
+                if (typeof style == 'string') {
+                    this.addStylesheet(style, {});
+                }
+                else if (typeof style == 'object') {
+                    this.addStylesheet(style.href, style);
+                }
             }
         }
-        for (var scr in subPage.scripts) {
-            if (subPage.scripts.hasOwnProperty(scr)) {
-                this.addScript(subPage.scripts[scr].src, subPage.scripts[scr]);
+        for (var scr in subPage.extraScripts) {
+            if (subPage.extraScripts.hasOwnProperty(scr)) {
+                var script = subPage.extraScripts[scr];
+                if (typeof script == 'string') {
+                    this.addScript(script, {});
+                }
+                else if (typeof script == 'object') {
+                    this.addScript(script.src, script);
+                }
             }
         }
     };
     newPage.mergeStyles = function() {
-        var extraStyles = this.extraStyles.map(function(obj) {
-            if (typeof obj == 'string') {
-                return {
-                    href: obj,
-                    media: "all"
-                };
+        for (var s in this.extraStyles) {
+            if (this.extraStyles.hasOwnProperty(s)) {
+                var style = this.extraStyles[s];
+                if (typeof style == 'string') {
+                    this.addStylesheet(style, {});
+                }
+                else if (typeof style == 'object') {
+                    this.addStylesheet(style.href, style);
+                }
             }
-            else if (typeof obj == 'object') {
-                return obj;
-            }
-        });
-        this.styles = this.styles.concat(extraStyles);
+        }
     };
     newPage.mergeScripts = function() {
-        this.scripts = this.scripts.concat(this.extraScripts);
+        for (var s in this.extraScripts) {
+            if (this.extraScripts.hasOwnProperty(s)) {
+                var script = this.extraScripts[s];
+                if (typeof script == 'string') {
+                    this.addScript(script, {});
+                }
+                else if (typeof style == 'object') {
+                    this.addScript(script.src, script);
+                }
+            }
+        }
     };
     newPage.pluginById = function(pluginId) {
         return this.pluginsById[pluginId];
