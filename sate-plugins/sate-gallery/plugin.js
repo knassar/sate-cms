@@ -3,13 +3,22 @@
 * First initialize in page data, then
 * Use like: {{plugin-sate-gallery}}
 */
+
 module.exports = function(Sate) {
     var fs = require('fs'),
         path = require('path'),
-        util = require('util'),
         flow = require(Sate.nodeModInstallDir+'flow'),
         im,
         Plugin = require(__dirname+'/../Plugin');
+
+    var SateGalleryPluginThumbnailsRoot = 'sate-gallery-thumbs';
+    var SateGalleryPluginDefaultBase = '--';
+    var SateGalleryPluginDefaultThumbnailParams = {
+            format: 'jpg',
+            size: null, // use size for best fit
+            width: 150, // use w/h to crop
+            height: 150 // use w/h to crop
+        };
 
     var loadIM = function() {
         if (Sate.configForPlugin('sate-gallery').foundIM) {
@@ -23,14 +32,13 @@ module.exports = function(Sate) {
     };
 
     // verify that ImageMagick dependency is installed
-    if (!Sate.configForPlugin('sate-gallery').FoundIM) {
+    if (!Sate.configForPlugin('sate-gallery').foundIM) {
         var exec = require('child_process').exec;
         exec('convert -version', function(er, stdout, stderr) {
             if (stdout.toString().indexOf('ImageMagick') > -1) {
                 var matches = /ImageMagick [\S]+/.exec(stdout.toString());
                 if (matches) {
                     Sate.configForPlugin('sate-gallery').foundIM = matches[0];
-                    Sate.Log.logAction("plugin-sate-gallery: found", 1);
                     return;
                 }
             } else if (Sate.configForPlugin('sate-gallery').foundIM !== false) {
@@ -39,15 +47,22 @@ module.exports = function(Sate) {
             }
         });
     }
-
-    var makeThumbnailImage = function(imagePath, gallery, complete) {
+    
+    var generateThumbnail = function(thumbnailPath, handler, complete) {
         loadIM();
-        filenameBase = imagePath.split('/').reverse()[0].split('.').reverse().slice(1).reverse().join('.');
-        var thumbPath = path.join(gallery.thumbnailsPath, imagePath);
-        Sate.utils.ensurePath(thumbPath);
+
+        var pathParts = thumbnailPath.split('/');
+        pathParts.shift();
+        pathParts.shift();
+        var gallery = handler.galleries[pathParts.shift()];
+
+        var imagePath = pathParts.join('/');
+        thumbnailPath = path.join('.', thumbnailPath);
+        
+        Sate.utils.ensurePath(thumbnailPath);
         im.resize({
             srcPath: imagePath,
-            dstPath: thumbPath,
+            dstPath: thumbnailPath,
             quality: 0.8,
             format: gallery.thumbnail.format,
             width: gallery.thumbnail.width,
@@ -56,51 +71,86 @@ module.exports = function(Sate) {
         }, function(err, stdout, stderr) {
             if (err) {
                 console.log( err );
-            } else {
-                gallery.thumbnails.push(thumbPath);
             }
             complete.apply();
         });
     };
     
+    var handlerRegex = /^\/sate-gallery-thumbs\/.+/mi;
+    var sateGalleryThumbnailRequestHandler;
+    if (Sate.resourceRequestHandlers[handlerRegex]) {
+        sateGalleryThumbnailRequestHandler = Sate.resourceRequestHandlers[handlerRegex].handler;
+    }
+    else {
+        sateGalleryThumbnailRequestHandler = {
+            galleries: {},
+            headersForRequest: function(request) {
+                headers = {
+                    'Content-Type': ''
+                };
+                switch (request.url.split('.').reverse()[0]) {
+                    case 'jpg':
+                    case 'jpeg':
+                        headers['Content-Type'] = 'image/jpeg';
+                        break;
+                    case 'png':
+                        headers['Content-Type'] = 'image/png';
+                        break;
+                    case 'gif':
+                        headers['Content-Type'] = 'image/gif';
+                        break;
+                }
+                return headers;
+            },
+            handleRequest: function(request, website, deliverResponse) {
+                if (!Sate.configForPlugin('sate-gallery').foundIM) {
+                    deliverResponse('');
+                }
+                else {
+                    var thumb = website.resourceForPath(request.url);
+                    if (thumb) {
+                        deliverResponse(thumb);
+                    }
+                    else {
+                        generateThumbnail(request.url, this, function() {
+                            deliverResponse(website.resourceForPath(request.url));
+                        });
+                    }
+                }
+            }
+        };
+        sateGalleryThumbnailRequestHandler.galleries[SateGalleryPluginDefaultBase] = {thumbnail: SateGalleryPluginDefaultThumbnailParams};
+        Sate.registerRequestHandlerForRequests(sateGalleryThumbnailRequestHandler, handlerRegex);
+    }
+    
     var imgExtRegex = /\.jpg|\.gif|\.png$/;
-    var descendAndThumbnailImages = function(gallery, dir, complete) {
-        
+    var traverseImages = function(gallery, dir, complete) {
         flow.exec(
             function() {
                 fs.readdir(dir, this);
             },
             function(err, imagesPaths) {
-                var outerFlow = this;
-                flow.serialForEach(
-                    imagesPaths, 
-                    function(filename) {
+                var descent = 0;
+                for (var i in imagesPaths) {
+                    if (imagesPaths.hasOwnProperty(i)) {
+                        var filename = imagesPaths[i];
                         var filepath = path.join(dir, filename);
                         var fstats = fs.statSync(filepath);
                         if (fstats.isDirectory()) {
-                            descendAndThumbnailImages(gallery, filepath, this);
+                            descent++;
+                            traverseImages(gallery, filepath, this.MULTI(filepath));
                         }
-                        else if (fstats.isFile()) {
-                            if (imgExtRegex.test(filename)) {
-                                gallery.heroes.push(filepath);
-                                makeThumbnailImage(filepath, gallery, this);
-                            }
-                            else {
-                                this.apply();
-                            }
+                        else if (fstats.isFile() && imgExtRegex.test(filename)) {
+                            gallery.heroes.push(filepath);
                         }
-                        else {
-                            this.apply();
-                        }
-                    }, 
-                    function() {}, 
-                    function() {
-                        outerFlow.apply();
                     }
-                );
+                }
+                if (descent === 0) {
+                    this.apply();
+                }
             },
             function() {
-                setTimeout(complete, 10);
+                complete.apply();
             }
         );
     };
@@ -108,14 +158,16 @@ module.exports = function(Sate) {
     var compileFlow = function(gallery, complete) {
         flow.exec(
             function() {
-                this(path.join(gallery.imagesPath));
+                this(gallery.imagesPath);
             },
             function(dir) {
-                descendAndThumbnailImages(gallery, dir, this);
+                traverseImages(gallery, dir, this);
             },
             function() {
-                setTimeout(complete, 200);
-                // complete.apply();
+                if (gallery.id && !sateGalleryThumbnailRequestHandler.galleries.hasOwnProperty(gallery.id)) {
+                    sateGalleryThumbnailRequestHandler.galleries[gallery.id] = gallery;
+                }
+                complete.apply();
             }
         );
     };
@@ -123,12 +175,7 @@ module.exports = function(Sate) {
     var plg = new Plugin(Sate, {
         type: 'sate-gallery',
         version: '0.2.0',
-        thumbnail: {
-            format: 'jpg',
-            size: null, // use size for best fit
-            width: 150, // use w/h to crop
-            height: 150 // use w/h to crop
-        },
+        thumbnail: SateGalleryPluginDefaultThumbnailParams,
         contentPath: '',
         thumbnailsPath: "gallery-thumbs",
         imagesPath: "",
@@ -136,6 +183,9 @@ module.exports = function(Sate) {
         heroes: [],
         compile: function(props, page, Sate, complete) {
             this.extendWithProperties(props);
+            if (!this.id) {
+                this.id = Sate.utils.md5(this.imagesPath);
+            }
             compileFlow(this, complete);
         },
         templates: {'main': __dirname+'/gallery.tpl'},
@@ -146,18 +196,25 @@ module.exports = function(Sate) {
             var path = require('path');
             
             var obj = this.super.objectToRender(config, page);
+            if (!obj && config.imagesPath) {
+                
+            }
             if (!obj) {
                 obj = {};
             }
-
-            if (obj.thumbnailsPath) {
-                obj.images = obj.heroes.map(function(item) {
-                    return {
-                        heroSrc: '/' + item,
-                        thumbSrc: '/' + path.join(obj.thumbnailsPath, item)
-                    };
-                });
+            
+            var galleryBasePath = obj.id;
+            if (!galleryBasePath) {
+                galleryBasePath = SateGalleryPluginDefaultBase;
             }
+            
+            var thumbBaseURL = path.join(SateGalleryPluginThumbnailsRoot, galleryBasePath);
+            obj.images = obj.heroes.map(function(item) {
+                return {
+                    heroSrc: '/' + item,
+                    thumbSrc: '/' + path.join(thumbBaseURL, item)
+                };
+            });
             return obj;
         }
     });
