@@ -290,7 +290,12 @@ function Website(args, Sate) {
                 return page;
             },
             resourceForPath: function(filePath) {
-                return fs.readFileSync(path.join(this.sitePath, filePath));
+                try {
+                    return fs.readFileSync(path.join(this.sitePath, filePath));
+                }
+                catch (err) {
+                    return null;
+                }
             },
             typeOf: 'Sate.Website',
             eachPage: function(method, recurseSubpages) {
