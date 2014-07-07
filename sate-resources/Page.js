@@ -87,6 +87,9 @@ function Page(id, props, parent, website, Sate) {
             extraStyles: [],
             extraScripts: [],
             parser: Sate.Parser.HTML,
+            date: null,
+            created: null,
+            modified: null,
             plugins: [
                 {
                     type: 'sate-breadcrumbs',
@@ -139,6 +142,17 @@ function Page(id, props, parent, website, Sate) {
                 if (count === 0) {
                     this.apply();
                 }
+            },
+            function() {
+                fs.stat(self.resolvedContentPath, this);
+            },
+            function(err, stats) {
+                if (stats) {
+                    self.date = stats.mtime;
+                    self.modified = stats.mtime;
+                    self.created = stats.ctime;
+                }
+                this.apply();
             },
             function() {
                 fs.readFile(self.resolvedContentPath, self.encoding, this);

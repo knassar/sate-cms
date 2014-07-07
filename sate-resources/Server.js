@@ -94,9 +94,6 @@
     var cssMatcher = /\.css$/;
     var jpgMatcher = /\.jpg|\.jpeg|\.jpe$/;
     var pngMatcher = /\.png$/;
-    var gifMatcher = /\.gif$/;
-    var determineRequestTargetType = function(req, res) {
-        switch (true) {
             case jsMatcher.test(req.url):
                 return RequestTargetType.Javascript; 
             case cssMatcher.test(req.url):
@@ -104,35 +101,6 @@
             case jpgMatcher.test(req.url):
                 return RequestTargetType.JPG; 
             case pngMatcher.test(req.url):
-                return RequestTargetType.PNG; 
-            case gifMatcher.test(req.url):
-                return RequestTargetType.GIF; 
-        }
-        return RequestTargetType.Page;
-    };
-
-    var writeHeadersForType = function(res, type) {
-        switch (type) {
-            case RequestTargetType.Javascript:
-                res.writeHead(200, {'Content-Type': 'text/javascript'});
-                break;
-            case RequestTargetType.CSS:
-                res.writeHead(200, {'Content-Type': 'text/css'});
-                break;
-            case RequestTargetType.JPG:
-                res.writeHead(200, {'Content-Type': 'image/jpeg'});
-                break;
-            case RequestTargetType.PNG:
-                res.writeHead(200, {'Content-Type': 'image/png'});
-                break;
-            case RequestTargetType.GIF:
-                res.writeHead(200, {'Content-Type': 'image/gif'});
-                break;
-            default:
-                res.writeHead(200, {'Content-Type': 'text/html'});
-        }
-    };
-
     module.exports = {
         DevelopmentServer: function(website, Sate) {
             var server = baseServer(website, Sate);

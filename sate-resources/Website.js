@@ -323,12 +323,28 @@ function Website(args, Sate) {
                 }
                 return page;
             },
+            hasPageForPath: function(filePath) {
+                if (filePath.length > 1) {
+                    // ignore trailing '/' in url
+                    filePath = filePath.replace(/\/$/, '');
+                }
+                return website.pageByPath.hasOwnProperty(filePath);
+            },
             resourceForPath: function(filePath) {
                 try {
                     return fs.readFileSync(path.join(this.sitePath, filePath));
                 }
                 catch (err) {
                     return null;
+                }
+            },
+            hasResourceForPath: function(filePath) {
+                try {
+                    var stats = fs.statSync(path.join(this.sitePath, filePath));
+                    return stats.isFile();
+                }
+                catch (err) {
+                    return false;
                 }
             },
             typeOf: 'Sate.Website',

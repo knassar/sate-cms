@@ -102,6 +102,9 @@ module.exports = function(Sate) {
                 }
                 return headers;
             },
+            httpCodeForRequest: function(request) {
+                return 200;
+            },
             handleRequest: function(request, website, deliverResponse) {
                 if (!foundIMBins) {
                     deliverResponse('');

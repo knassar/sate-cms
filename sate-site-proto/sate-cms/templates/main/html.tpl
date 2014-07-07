@@ -36,9 +36,11 @@
             }
             {{/plugin-sate-breadcrumbs}}
         
-            {{#date}}
-                <div class="date">{{>longDate}}</div>
-            {{/date}}
+            {{#showStats}}
+                {{#date}}
+                    <div class="date">{{>longDate}}</div>
+                {{/date}}
+            {{/showStats}}
 
             {{#hasIntro}}
                 <div class="intro">
