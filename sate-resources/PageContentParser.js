@@ -5,7 +5,7 @@ function PageContentParser(Sate) {
         util = require('util'),
         markdown = require(Sate.nodeModInstallDir+'marked');
 
-    var blockMatcher = /^@([^\:]+):/gmi;
+    var blockMatcher = /^@([^\:]+):/mi;
 
     var chainPageData = function (Sate, page, data) {
         if (data.trim().length > 0) {
