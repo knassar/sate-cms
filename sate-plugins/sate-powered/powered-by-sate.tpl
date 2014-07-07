@@ -1,4 +1,4 @@
-<a class="sate-logo" href="{{{sateGithubUrl}}}" target="_blank">
+<a class="sate-logo {{composedClasses}}" href="{{{sateGithubUrl}}}" target="_blank">
     <span class="sate-logo-nameplate">s<span class="sate-logo-a">a</span>te:</span>
     <span class="powered">powered</span>
     <span class="tagline">Just Enough CMS</span>

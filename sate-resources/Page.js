@@ -314,10 +314,16 @@ function Page(id, props, parent, website, Sate) {
         }
     };
     newPage.mergePluginsFromSubPage = function(subPage) {
-        for (var i = 0; i < subPage.plugins.length; i++) {
-            var plugin = subPage.plugins[i];
-            this.plugins.push(plugin);
-        }
+        var pluginSig = function(plugin) {
+            return plugin.type + '+' + plugin.id;
+        };
+        var ownPlugins = this.plugins.map(pluginSig);
+        var self = this;
+        subPage.plugins.forEach(function(plugin) {
+            if (ownPlugins.indexOf(pluginSig(plugin)) == -1) {
+                self.plugins.push(plugin);
+            }
+        });
     };
     newPage.resolvePlugins = function(withMetrics, complete) {
         pluginsResolver.resolve(this, complete);

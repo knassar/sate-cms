@@ -20,7 +20,7 @@ module.exports = function(Sate) {
         compile: function(props, page, Sate, complete) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;
-            this.extendWithProperties(props);
+            Sate.chain.inPlace(this, props);
             complete.apply();
         },
         templates: {
@@ -149,32 +149,16 @@ module.exports = function(Sate) {
             var obj = this.pluginDataFromPage(page, config);
             
             if (!obj || obj == null) {
-                obj = this;
+                obj = Sate.chain.inPlace(this, config);
             } else {
-                obj.extendWithProperties(config);
+                obj = Sate.chain(obj, config);
             }
 
             if (obj.items && obj.items.length == 0) {
                 this.findRelatedMenuItems(obj, page, config);
             }
 
-            if (typeof obj.classes == 'string') {
-                obj.classes = [obj.classes];
-            }
-            else if (typeof obj.classes == 'object' && !util.isArray(obj.classes)) {
-                var classes = [];
-                for (var c in obj.classes) {
-                    if (obj.classes.hasOwnProperty(c)) {
-                        classes.push(obj.classes[c]);
-                    }
-                }
-                obj.classes = classes;
-            }
-            else if (!obj.classes.push) {
-                obj.classes = [];
-            }
-            obj.classes.push('plugin-sate-pageMenu');
-            obj.classes = obj.classes.join(' ');
+            obj.composeClasses();
             
             var website = page.rootPage().website;
             if (obj.parentLink && page.parent) {

@@ -30,7 +30,7 @@ module.exports = function(Sate) {
             }
             
             // extend this plugin instance with any pageData-level defines:
-            this.extendWithProperties(props);
+            Sate.chain.inPlace(this, props);
             
             // completion callback
             complete.apply();
@@ -53,10 +53,6 @@ module.exports = function(Sate) {
                 obj = {};
             }
 
-            // you can use extendWithProperties(config) to merge any config values in
-            // but keep in mind this will overwrite the plugin instance's values
-            // obj.extendWithProperties(config);
-            
             var language = (config.language) ? config.language : obj.language;
             // if you want to render using a template other than 'this.templates.main', then set 'this.template' here.
             // set up any object data for the render pass here:

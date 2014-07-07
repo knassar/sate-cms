@@ -1,1 +1,1 @@
-<strong>{{{hello}}}</strong>
+<strong class="{{composedClasses}}">{{{hello}}}</strong>

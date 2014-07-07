@@ -1,5 +1,6 @@
 function Plugin(Sate, subobj) {
     var fs = require('fs'),
+        util = require('util'),
         extend = require(Sate.nodeModInstallDir+'node.extend');
 
         var plg = {
@@ -9,8 +10,23 @@ function Plugin(Sate, subobj) {
         compile: function(props, page, Sate, complete) {
             complete.apply();
         },
-        extendWithProperties: function(props) {
-            Sate.chain.inPlace(this, props);
+        composeClasses: function() {
+            if (typeof this.classes == 'string') {
+                this.classes = [this.classes];
+            }
+            else if (typeof this.classes == 'object' && !util.isArray(this.classes)) {
+                var classes = [];
+                for (var c in this.classes) {
+                    if (this.classes.hasOwnProperty(c)) {
+                        classes.push(this.classes[c]);
+                    }
+                }
+                this.classes = classes;
+            }
+            else if (!util.isArray(this.classes)) {
+                this.classes = [];
+            }
+            this.composedClasses = this.classes.join(' ') + ' plugin-' + this.type;
         },
         templates: [],
         stylesheets: [],
@@ -26,7 +42,7 @@ function Plugin(Sate, subobj) {
                 obj = page.pluginFirstByType(this.type);
             }
             if (obj) {
-                obj.extendWithProperties(config);
+                obj = Sate.chain(obj, config);
             }
             return obj;
         },

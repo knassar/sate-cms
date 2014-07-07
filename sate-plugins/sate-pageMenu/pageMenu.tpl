@@ -1,5 +1,5 @@
 {{#hasItems}}
-<{{mainTag}} class="{{{classes}}}">
+<{{mainTag}} class="{{composedClasses}}">
     {{#parent}}
     <li class="parent-page">
         {{#parent.url}}

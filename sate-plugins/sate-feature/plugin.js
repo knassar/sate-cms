@@ -13,7 +13,7 @@ module.exports = function(Sate) {
         compile: function(props, page, Sate, complete) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;
-            this.extendWithProperties(props);
+            Sate.chain.inPlace(this, props);
             complete.apply();
         },
         featureURL: false,

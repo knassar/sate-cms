@@ -1,4 +1,4 @@
-<div class="{{{classes}}}">
+<div class="{{composedClasses}}">
     {{#crumbs}}
         <a href="{{{url}}}">{{name}}</a>
         <span class="seppa">{{separator}}</span>

@@ -158,6 +158,7 @@ module.exports = function(Sate) {
     var compileFlow = function(gallery, complete) {
         flow.exec(
             function() {
+                gallery.heroes = [];
                 this(cleanPath(gallery.imagesPath));
             },
             function(dir) {
@@ -197,7 +198,7 @@ module.exports = function(Sate) {
         thumbnails: [],
         heroes: [],
         compile: function(props, page, Sate, complete) {
-            this.extendWithProperties(props);
+            Sate.chain.inPlace(this, props);
             if (!this.id) {
                 this.id = Sate.utils.md5(this.imagesPath);
             }
@@ -212,7 +213,10 @@ module.exports = function(Sate) {
 
             var obj = page.pluginById(config.id);
 
-            if (!obj) {
+            if (obj) {
+                obj = Sate.chain(obj, config);
+            }
+            else {
                 obj = {
                     id: SateGalleryPluginDefaultBase
                 };
@@ -224,6 +228,9 @@ module.exports = function(Sate) {
             }
             var thumbBaseURL = path.join(SateGalleryPluginThumbnailsRoot, galleryBasePath);
 
+            obj.composeClasses();
+
+            obj.images = [];
             if (obj.heroes) {
                 if (config.image || config.imagesPath) {
                     if (config.image) {
@@ -233,13 +240,11 @@ module.exports = function(Sate) {
                     }
                     else if (config.imagesPath) {
                         imgPath = cleanPath(config.imagesPath);
-                        var images = [];
                         obj.heroes.forEach(function(item) {
                             if (cleanPath(item).indexOf(imgPath) == 0) {
-                                images.push(imageEntryForHero(item, thumbBaseURL));
+                                obj.images.push(imageEntryForHero(item, thumbBaseURL));
                             }
                         });
-                        obj.images = images;
                     }
                 }
                 else {

@@ -4,6 +4,13 @@ ul.sate-gallery {
     list-style: none;
 }
 
+ul.sate-gallery::after {
+  content: '';
+  display: inline-block;
+  clear: both;
+}
+
+
 ul.sate-gallery > li {
     display: inline-block;
     margin: 0 0.5em 0.5em 0;

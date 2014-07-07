@@ -1,4 +1,4 @@
-<div class="{{{classes}}}">
+<div class="{{composedClasses}}">
     {{#prev}}
     <div class="previous">
         <span class="prompt">{{prompt}}</span>
