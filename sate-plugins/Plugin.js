@@ -39,13 +39,11 @@ function Plugin(Sate, subobj) {
                     try { 
                         config = JSON.parse(config);
                     } catch (err) {
-                        if (this.parser == Sate.Parser.Markdown) {
-                            try { // Markdown escapes " to &quot;
-                                var unmarked = config.replace(/\&quot\;/g, '"');
-                                config = JSON.parse(unmarked);
-                            }
-                            catch (err) {}
+                        try { // Markdown escapes " to &quot;
+                            var unmarked = config.replace(/\&quot\;/g, '"');
+                            config = JSON.parse(unmarked);
                         }
+                        catch (err) {}
                     }
                     if (!config) {
                         config = {};

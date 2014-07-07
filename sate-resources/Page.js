@@ -44,8 +44,7 @@ function Page(id, props, parent, website, Sate) {
     var composeArticleIntroForIndexPage = function(page, subPage) {
         var articleIntro = Mustache.render(subPage.compiledPartials.intro, subPage, subPage.compiledPartials);
         subPage.articleIntro = articleIntro;
-        page.addSubPageResources(subPage)
-        page.articles.push(subPage);
+        page.addSubPageResources(subPage, true);
     };
 
     var resolvePage = function(page) {
@@ -71,7 +70,6 @@ function Page(id, props, parent, website, Sate) {
             }
             if (page.type === Sate.PageType.Index) {
                 page.resolvedContentPath = path.join(website.contentPath, page.url + '/index' + extension);
-                page.articles = [];
             } else {
                 page.resolvedContentPath = path.join(website.contentPath, page.url + extension);
             }
@@ -179,16 +177,24 @@ function Page(id, props, parent, website, Sate) {
     newPage.composeArticleDigest = function(withMetrics, complete) {
         if (this.type == Sate.PageType.Index && this.compiledPartials.content == "" && this.subPages) {
             this.compiledPartials.content = this.compiledPartials.indexPageContent;
-            this.articles = [];
-            for (var p in this.subPages) {
-                if (this.subPages.hasOwnProperty(p)) {
-                    composeArticleIntroForIndexPage(this, this.subPages[p]);
-                    for (var i = 0; i < this.subPages[p].plugins.length; i++) {
-                        var plugin = this.subPages[p].plugins[i];
-                        this.plugins.push(plugin);
+            if (!this.articles) {
+                this.articles = [];
+                for (var p in this.subPages) {
+                    if (this.subPages.hasOwnProperty(p)) {
+                        this.articles.push(this.subPages[p].url);
                     }
                 }
             }
+            var composedArticles = [];
+            for (var p in this.articles) {
+                if (this.articles.hasOwnProperty(p)) {
+                    var subPage = website.pageForPath(this.articles[p]);
+                    composeArticleIntroForIndexPage(this, subPage);
+                    this.mergePluginsFromSubPage(subPage);
+                    composedArticles.push(subPage);
+                }
+            }
+            this.articles = composedArticles;
             if (this.articleSort) {
                 this.articles.sort(this.articleSort);
             }
@@ -240,7 +246,10 @@ function Page(id, props, parent, website, Sate) {
             this.scripts.push(script);
         }
     };
-    newPage.addSubPageResources = function(subPage) {
+    newPage.addSubPageResources = function(subPage, includePlugins) {
+        if (includePlugins === true) {
+            this.mergePluginsFromSubPage(subPage);
+        }
         for (var css in subPage.extraStyles) {
             if (subPage.extraStyles.hasOwnProperty(css)) {
                 var style = subPage.extraStyles[css];
@@ -288,6 +297,12 @@ function Page(id, props, parent, website, Sate) {
                     this.addScript(script.src, script);
                 }
             }
+        }
+    };
+    newPage.mergePluginsFromSubPage = function(subPage) {
+        for (var i = 0; i < subPage.plugins.length; i++) {
+            var plugin = subPage.plugins[i];
+            this.plugins.push(plugin);
         }
     };
     newPage.pluginById = function(pluginId) {

@@ -29,19 +29,29 @@ var copy = function(a) {
             cp = a;
      }
      return cp;
-}
+};
+
+var uniqueArray = function(a) {
+    var u = [];
+    for (var i in a) {
+        if (u.indexOf(a[i]) == -1) {
+            u.push(a[i]);
+        }
+    }
+    return u;
+};
 
 var merge = function(a, b) {
     if (typeof b != 'object' || typeof a != typeof b || util.isArray(a) != util.isArray(b)) {
         return copy(b);
     }
-    else if (util.isArray(b)) {
-        return copy(a).concat(copy(b));
+    else if (util.isArray(a) && util.isArray(b)) {
+        return uniqueArray(copy(a).concat(copy(b)));
     }
     else {
         return chain(a, b);
     }
-}
+};
 
 function chainToObj() {
     var obj = arguments[0];
