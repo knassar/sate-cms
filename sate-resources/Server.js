@@ -1,5 +1,6 @@
 (function() {
-    var fs = require('fs');
+    var fs = require('fs'),
+        path = require('path');
 
     var baseServer = function(website, Sate) {
         // @TODO: upgrade to latest version of connect 
@@ -8,7 +9,7 @@
         var connect = require(Sate.nodeModInstallDir+'connect');
         
         var server = connect()
-            .use(connect.favicon())
+            .use(connect.favicon(path.join(website.sitePath, 'favicon.ico')))
             .use(connect.logger('dev')) // @TODO: use the right log-level
             .use(connect.query());
         return server;
@@ -17,6 +18,7 @@
     var RequestTargetType = {
         Javascript: '.js',
         CSS: '.css',
+        ICO: '.ico',
         PNG: '.png',
         JPG: '.jpg',
         GIF: '.gif',
@@ -25,6 +27,7 @@
 
     var jsMatcher = /\.js$/;
     var cssMatcher = /\.css$/;
+    var icoMatcher = /\.ico$/;
     var jpgMatcher = /\.jpg|\.jpeg|\.jpe$/;
     var pngMatcher = /\.png$/;
     var gifMatcher = /\.gif$/;
@@ -36,6 +39,8 @@
                     return RequestTargetType.Javascript; 
                 case cssMatcher.test(request.url):
                     return RequestTargetType.CSS; 
+                case icoMatcher.test(request.url):
+                    return RequestTargetType.ICO; 
                 case jpgMatcher.test(request.url):
                     return RequestTargetType.JPG; 
                 case pngMatcher.test(request.url):
@@ -55,6 +60,9 @@
                     break;
                 case RequestTargetType.CSS:
                     headers['Content-Type'] = 'text/css';
+                    break;
+                case RequestTargetType.ICO:
+                    headers['Content-Type'] = 'image/x-icon';
                     break;
                 case RequestTargetType.JPG:
                     headers['Content-Type'] = 'image/jpeg';
