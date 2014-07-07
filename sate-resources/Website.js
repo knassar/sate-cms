@@ -198,11 +198,16 @@ function Website(args, Sate) {
                     },
                     function() {
                         Sate.Log.logAction("loading templates", 0);
+                        var count = 0;
                         for (var t in self.templates) {
                             if (self.templates.hasOwnProperty(t)) {
                                 Sate.Log.logAction(t, 1);
                                 loadTemplate(self, t, self.templates, this.MULTI(t));
+                                count++;
                             }
+                        }
+                        if (count == 0) {
+                            this.apply();
                         }
                     },
                     function() {
@@ -223,29 +228,58 @@ function Website(args, Sate) {
                     },
                     function() {
                         Sate.Log.logAction("compiling error pages", 0);
+                        var count = 0;
                         for (var id in self.errorPages) {
                             if (self.errorPages.hasOwnProperty(id)) {
                                 Sate.Log.logAction(id, 1);
                                 self.errorPages[id].compile(withMetrics, this.MULTI(id));
+                                count++;
                             }
+                        }
+                        if (count == 0) {
+                            this.apply();
                         }
                     },
                     function() {
                         Sate.Log.logAction("compiling pages", 0);
+                        var count = 0;
                         for (var path in self.pageByPath) {
                             if (self.pageByPath.hasOwnProperty(path)) {
                                 Sate.Log.logAction(path, 1);
                                 self.pageByPath[path].compile(withMetrics, this.MULTI(path));
+                                count++;
                             }
+                        }
+                        if (count == 0) {
+                            this.apply();
                         }
                     },
                     function() {
                         Sate.Log.logAction("compiling index pages", 0);
+                        var count = 0;
                         for (var path in self.pageByPath) {
                             if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type == Sate.PageType.Index) {
                                 Sate.Log.logAction(path, 1);
                                 self.pageByPath[path].composeArticleDigest(withMetrics, this.MULTI(path));
+                                count++;
                             }
+                        }
+                        if (count == 0) {
+                            this.apply();
+                        }
+                    },
+                    function() {
+                        Sate.Log.logAction("resolving plugins", 0);
+                        var count = 0;
+                        for (var path in self.pageByPath) {
+                            if (self.pageByPath.hasOwnProperty(path)) {
+                                Sate.Log.logAction(path, 1);
+                                self.pageByPath[path].resolvePlugins(withMetrics, this.MULTI(path));
+                                count++;
+                            }
+                        }
+                        if (count == 0) {
+                            this.apply();
                         }
                     },
                     function() {

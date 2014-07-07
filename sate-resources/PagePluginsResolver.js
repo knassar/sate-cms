@@ -100,10 +100,15 @@ function PagePluginsResolver(Sate) {
         flow.exec(
             function() {
                 var resolvedPlugins = [];
+                var count = 0;
                 for (var i=0; i < page.plugins.length; i++) {
                     resolvePlugin(page.plugins[i], resolvedPlugins, page, Sate, this.MULTI(page.plugins[i].type));
+                    count++;
                 }
                 page.plugins = resolvedPlugins;
+                if (count == 0) {
+                    this.apply();
+                }
             },
             function() {
                 complete.apply();

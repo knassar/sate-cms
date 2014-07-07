@@ -126,17 +126,17 @@ function Page(id, props, parent, website, Sate) {
         var self = this;
         flow.exec(
             function() {
-                var multiCount = 0;
+                var count = 0;
                 for (var t in self.partials) {
                     if (self.partials.hasOwnProperty(t) && !website.compiledPartials.hasOwnProperty(t)) {
-                        multiCount++;
+                        count++;
                         Sate.Log.logAction("loading partial "+t, 1);
                         loadPartial(self, website, t, this.MULTI(t));
                     } else {
                         self.compiledPartials[t] = website.compiledPartials[t];
                     }
                 }
-                if (multiCount === 0) {
+                if (count === 0) {
                     this.apply();
                 }
             },
@@ -148,9 +148,6 @@ function Page(id, props, parent, website, Sate) {
                     data = "";
                 }
                 processPageContent(self, data, this);
-            },
-            function() {
-                pluginsResolver.resolve(self, this);
             },
             function() {
                 self.isCompiling = false;
@@ -165,31 +162,58 @@ function Page(id, props, parent, website, Sate) {
         return (this.compiledPartials.intro && this.compiledPartials.intro.length > 0);
     };
     newPage.composeArticleDigest = function(withMetrics, complete) {
-        if (this.type == Sate.PageType.Index && this.compiledPartials.content == "" && this.subPages) {
-            this.compiledPartials.content = this.compiledPartials.indexPageContent;
-            if (!this.articles) {
-                this.articles = [];
-                for (var p in this.subPages) {
-                    if (this.subPages.hasOwnProperty(p)) {
-                        this.articles.push(this.subPages[p].url);
+        var self = this;
+        
+        flow.exec(
+            function() {
+                if (self.type == Sate.PageType.Index && self.compiledPartials.content == "" && self.subPages) {
+                    self.compiledPartials.content = self.compiledPartials.indexPageContent;
+                    if (!self.articles) {
+                        self.articles = [];
+                        for (var p in self.subPages) {
+                            if (self.subPages.hasOwnProperty(p)) {
+                                self.articles.push(self.subPages[p].url);
+                            }
+                        }
+                    }
+                    this.apply();
+                }
+                else {
+                    complete();
+                }
+            },
+            function() {
+                var count = 0;
+                for (var p in self.articles) {
+                    if (self.articles.hasOwnProperty(p)) {
+                        var subPage = website.pageForPath(self.articles[p]);
+                        subPage.resolvePlugins(withMetrics, this.MULTI(p));
+                        count++;
                     }
                 }
-            }
-            var composedArticles = [];
-            for (var p in this.articles) {
-                if (this.articles.hasOwnProperty(p)) {
-                    var subPage = website.pageForPath(this.articles[p]);
-                    composeArticleIntroForIndexPage(this, subPage);
-                    this.mergePluginsFromSubPage(subPage);
-                    composedArticles.push(subPage);
+                if (count == 0) {
+                    this.apply();
                 }
+            },
+            function() {
+                var composedArticles = [];
+                for (var p in self.articles) {
+                    if (self.articles.hasOwnProperty(p)) {
+                        var subPage = website.pageForPath(self.articles[p]);
+                        composeArticleIntroForIndexPage(self, subPage);
+                        composedArticles.push(subPage);
+                    }
+                }
+                self.articles = composedArticles;
+                if (self.articleSort) {
+                    self.articles.sort(self.articleSort);
+                }
+                this.apply();
+            },
+            function() {
+                complete();
             }
-            this.articles = composedArticles;
-            if (this.articleSort) {
-                this.articles.sort(this.articleSort);
-            }
-        }
-        complete.apply();
+        );
     };
     newPage.eachSubpage = function(method, recurseSubpages) {
         if (this.subPages) {
@@ -240,9 +264,9 @@ function Page(id, props, parent, website, Sate) {
         if (includePlugins === true) {
             this.mergePluginsFromSubPage(subPage);
         }
-        for (var css in subPage.extraStyles) {
-            if (subPage.extraStyles.hasOwnProperty(css)) {
-                var style = subPage.extraStyles[css];
+        for (var css in subPage.styles) {
+            if (subPage.styles.hasOwnProperty(css)) {
+                var style = subPage.styles[css];
                 if (typeof style == 'string') {
                     this.addStylesheet(style, {});
                 }
@@ -251,9 +275,9 @@ function Page(id, props, parent, website, Sate) {
                 }
             }
         }
-        for (var scr in subPage.extraScripts) {
-            if (subPage.extraScripts.hasOwnProperty(scr)) {
-                var script = subPage.extraScripts[scr];
+        for (var scr in subPage.scripts) {
+            if (subPage.scripts.hasOwnProperty(scr)) {
+                var script = subPage.scripts[scr];
                 if (typeof script == 'string') {
                     this.addScript(script, {});
                 }
@@ -294,6 +318,9 @@ function Page(id, props, parent, website, Sate) {
             var plugin = subPage.plugins[i];
             this.plugins.push(plugin);
         }
+    };
+    newPage.resolvePlugins = function(withMetrics, complete) {
+        pluginsResolver.resolve(this, complete);
     };
     newPage.pluginById = function(pluginId) {
         return this.pluginsById[pluginId];
