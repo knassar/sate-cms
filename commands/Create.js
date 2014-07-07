@@ -4,10 +4,16 @@ function Create(Sate) {
         path = require('path'),
         ncp = require(Sate.nodeModInstallDir+'ncp'),
         exec = require('child_process').exec,
+        Mustache = require(Sate.nodeModInstallDir+'mustache'),
         Command = require(__dirname+'/command');
 
     var verifyEmpty = function(filepath) {
-        return (fs.readdirSync(filepath).length === 0);
+        try {
+            return (fs.readdirSync(filepath).length === 0);
+        }
+        catch (e) {
+            return true;
+        }
     };
     var cleanTarget = function(filepath) {
         var filesInTarget = fs.readdirSync(filepath);
@@ -64,6 +70,7 @@ function Create(Sate) {
             copySitePrototype: function(complete) {
                 var target = this.args.createTarget;
                 var contentFormat = this.args.contentFormat;
+                var self = this;
                 ncp(path.join(__dirname, '../sate-site-proto'), target, {
                     filter: function(filename) {
                         return (!/\.DS\_Store/.test(filename));
@@ -83,11 +90,26 @@ function Create(Sate) {
                             break;
                         }
                         
+                        self.templateGenWebsiteJSON();
+                        
                         ncp(path.join(__dirname, '../sate-plugins'), path.join(target, 'sate-cms/plugins'), complete);
                     } else {
                         console.log( " X-> ", err );
                     }
                 });
+            },
+            templateGenWebsiteJSON: function() {
+                var target = this.args.createTarget,
+                    targetName = target.split('/').reverse()[0],
+                    jsonFilename = path.join(target, 'website.json'),
+                    opts = {encoding: 'utf-8'};
+                
+                var jsonTemplate = fs.readFileSync(jsonFilename, opts);
+                var json = Mustache.render(jsonTemplate, {
+                    buildDirName: targetName,
+                    siteTitle: Sate.utils.pageNameFromFileName(targetName)
+                });
+                fs.writeFileSync(jsonFilename, json, opts);
             },
             execute: function() {
                 Sate.Log.logBox( ["Creating a Sate site"] );
