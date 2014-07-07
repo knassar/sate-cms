@@ -45,13 +45,24 @@ function Deploy(Sate) {
             targetPagePaths: {},
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Deploy"] );
-                this.site = new Sate.Website(this.args, Sate);
+                this.site = new Sate.Website(this.args, Sate);                
                 self = this;
-                if (this.args.targetPath === false) {
-                    this.args.targetPath = ['../sate-build',this.args.sitePath.split('/').pop()].join('-');
-                }
                 flow.exec(
                     function() {
+                        self.site.parseJSON(true, this);
+                    },
+                    function() {
+                        var buildLbl = self.site.config.buildDirName;
+                        if (!buildLbl) {
+                            buildLbl = self.args.sitePath.split('/').pop();
+                        }
+                        if (!buildLbl) {
+                            buildLbl = self.site.pageDefualts.title.replace(/\s/g, '-');
+                        }
+                        if (self.args.targetPath === false) {
+                            self.args.targetPath = ['../sate-build', buildLbl].join('-');
+                        }
+
                         fs.readdir(self.args.targetPath, this);
                     },
                     function(err, targetFiles) {
@@ -59,7 +70,7 @@ function Deploy(Sate) {
                             if (self.args.clean) {
                                 cleanDir(self.args.targetPath);
                             } else {
-                                console.log( " \u00D7--> Target directory not empty. Use --clean to overwrite." );
+                                Sate.Log.logError("Target directory not empty. Use --clean to overwrite.", 0);
                                 process.exit(1);
                             }
                         }

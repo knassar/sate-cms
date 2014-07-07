@@ -7,6 +7,7 @@ function Website(args, Sate) {
     var website = {};
     var defaults = {
         config: {
+            buildDirName: 'website',
             rootPage: 'home',
             rootPageUrl: '/',
             contentSources: './content',
@@ -188,13 +189,16 @@ function Website(args, Sate) {
                     setTimeout(action, 25);
                 }
             },
+            parseJSON: function(withMetrics, complete) {
+                Sate.Log.logAction("reading website.json", 0);
+                loadWebsiteJSON(this.sitePath, complete);
+            },
             compile: function(withMetrics, complete) {
                 this.isCompiling = true;
                 var self = this;
                 flow.exec(
                     function() {
-                        Sate.Log.logAction("reading website.json", 0);
-                        loadWebsiteJSON(self.sitePath, this);
+                        self.parseJSON(withMetrics, this);
                     },
                     function() {
                         Sate.Log.logAction("loading templates", 0);

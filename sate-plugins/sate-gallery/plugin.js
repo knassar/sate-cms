@@ -231,7 +231,9 @@ module.exports = function(Sate) {
             }
             var thumbBaseURL = path.join(SateGalleryPluginThumbnailsRoot, galleryBasePath);
 
-            obj.composeClasses();
+            if (obj.composeClasses) {
+                obj.composeClasses();
+            }
 
             obj.images = [];
             if (obj.heroes) {

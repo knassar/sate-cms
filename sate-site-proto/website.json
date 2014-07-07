@@ -1,11 +1,12 @@
 {
     "config": {
+        "buildDirName": "{{buildDirName}}",
         "rootPage": "home",
         "rootPageUrl": "/",
         "encoding": "utf-8"
     },
     "pageDefaults": {
-        "title": "Your New Sate Site",
+        "title": "{{siteTitle}}",
         "subtitle": ""
     }
 }

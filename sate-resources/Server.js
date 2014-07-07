@@ -13,7 +13,22 @@
             .use(connect.query());
         return server;
     };
+    
+    var RequestTargetType = {
+        Javascript: '.js',
+        CSS: '.css',
+        PNG: '.png',
+        JPG: '.jpg',
+        GIF: '.gif',
+        Page: '*'
+    };
 
+    var jsMatcher = /\.js$/;
+    var cssMatcher = /\.css$/;
+    var jpgMatcher = /\.jpg|\.jpeg|\.jpe$/;
+    var pngMatcher = /\.png$/;
+    var gifMatcher = /\.gif$/;
+    
     var defaultRequestHandler = {
         typeFromRequest: function(request) {
             switch (true) {
@@ -55,6 +70,15 @@
             }
             return headers;
         },
+        httpCodeForRequest: function(request, website) {
+            var type = this.typeFromRequest(request);
+            
+            if (type == RequestTargetType.Page) {
+                return website.hasPageForPath(request.url) ? 200 : 404;
+            } else {
+                return website.hasResourceForPath(request.url) ? 200 : 404;
+            }
+        },
         handleRequest: function(request, website, deliverResponse) {
             var type = this.typeFromRequest(request);
             
@@ -81,26 +105,6 @@
         return defaultRequestHandler;
     };
 
-    var RequestTargetType = {
-        Javascript: '.js',
-        CSS: '.css',
-        PNG: '.png',
-        JPG: '.jpg',
-        GIF: '.gif',
-        Page: '*'
-    };
-
-    var jsMatcher = /\.js$/;
-    var cssMatcher = /\.css$/;
-    var jpgMatcher = /\.jpg|\.jpeg|\.jpe$/;
-    var pngMatcher = /\.png$/;
-            case jsMatcher.test(req.url):
-                return RequestTargetType.Javascript; 
-            case cssMatcher.test(req.url):
-                return RequestTargetType.CSS; 
-            case jpgMatcher.test(req.url):
-                return RequestTargetType.JPG; 
-            case pngMatcher.test(req.url):
     module.exports = {
         DevelopmentServer: function(website, Sate) {
             var server = baseServer(website, Sate);
@@ -110,7 +114,9 @@
                 
                 var headers = handler.headersForRequest(req);
                 
-                res.writeHead(200, headers);
+                var code = handler.httpCodeForRequest(req, website);
+                
+                res.writeHead(code, headers);
                 
                 var handleRequest = function() {
                     handler.handleRequest(req, website, function(response) {
@@ -133,8 +139,9 @@
             server.use(function(req, res) {
                 
                 var handler = handlerForRequest(req, Sate);
+                var code = handler.httpCodeForRequest(req, website);
                 
-                res.writeHead(200, handler.headersForRequest(req));
+                res.writeHead(code, handler.headersForRequest(req));
                 handler.handleRequest(req, website, function(response) {
                     res.end(response);
                 });

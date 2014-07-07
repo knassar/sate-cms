@@ -1,5 +1,6 @@
 {
     "config": {
+        "buildDirName": "sate-docs",
         "rootPage": "home",
         "rootPageUrl": "/",
         "contentSources": "./content",
