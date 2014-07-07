@@ -4,6 +4,23 @@
 * Use like: {{plugin-sate-gallery}}
 */
 
+var foundIMBins = false;
+// verify that ImageMagick dependency is installed
+if (!foundIMBins) {
+    var exec = require('child_process').exec;
+    exec('convert -version', function(er, stdout, stderr) {
+        if (stdout.toString().indexOf('ImageMagick') > -1) {
+            var matches = /ImageMagick [\S]+/.exec(stdout.toString());
+            if (matches && matches.length > 0) {
+                foundIMBins = true;
+                return;
+            }
+        }
+        Sate.Log.logError("plugin-sate-gallery: ImageMagick binaries not installed. IM calls will be skipped.", 1);
+    });
+}
+
+
 module.exports = function(Sate) {
     var fs = require('fs'),
         path = require('path'),
@@ -21,7 +38,7 @@ module.exports = function(Sate) {
         };
 
     var loadIM = function() {
-        if (Sate.configForPlugin('sate-gallery').foundIM) {
+        if (foundIMBins) {
             im = require(Sate.nodeModInstallDir+'imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
         } else {
             // mock out im;
@@ -30,23 +47,6 @@ module.exports = function(Sate) {
             };
         }
     };
-
-    // verify that ImageMagick dependency is installed
-    if (!Sate.configForPlugin('sate-gallery').foundIM) {
-        var exec = require('child_process').exec;
-        exec('convert -version', function(er, stdout, stderr) {
-            if (stdout.toString().indexOf('ImageMagick') > -1) {
-                var matches = /ImageMagick [\S]+/.exec(stdout.toString());
-                if (matches) {
-                    Sate.configForPlugin('sate-gallery').foundIM = matches[0];
-                    return;
-                }
-            } else if (Sate.configForPlugin('sate-gallery').foundIM !== false) {
-                Sate.configForPlugin('sate-gallery').foundIM = false;
-                Sate.Log.logError("plugin-sate-gallery: ImageMagick binaries not installed. IM calls will be skipped.", 1);
-            }
-        });
-    }
     
     var generateThumbnail = function(thumbnailPath, handler, complete) {
         loadIM();
@@ -56,7 +56,7 @@ module.exports = function(Sate) {
         pathParts.shift();
         var gallery = handler.galleries[pathParts.shift()];
 
-        var imagePath = pathParts.join('/');
+        var imagePath = './'+pathParts.join('/');
         thumbnailPath = path.join('.', thumbnailPath);
         
         Sate.utils.ensurePath(thumbnailPath);
@@ -103,7 +103,7 @@ module.exports = function(Sate) {
                 return headers;
             },
             handleRequest: function(request, website, deliverResponse) {
-                if (!Sate.configForPlugin('sate-gallery').foundIM) {
+                if (!foundIMBins) {
                     deliverResponse('');
                 }
                 else {
@@ -123,7 +123,7 @@ module.exports = function(Sate) {
         Sate.registerRequestHandlerForRequests(sateGalleryThumbnailRequestHandler, handlerRegex);
     }
     
-    var imgExtRegex = /\.jpg|\.gif|\.png$/;
+    var imgExtRegex = /\.jpg|\.jpeg|\.gif|\.png$/mi;
     var traverseImages = function(gallery, dir, complete) {
         flow.exec(
             function() {
@@ -158,10 +158,10 @@ module.exports = function(Sate) {
     var compileFlow = function(gallery, complete) {
         flow.exec(
             function() {
-                this(gallery.imagesPath);
+                this(cleanPath(gallery.imagesPath));
             },
             function(dir) {
-                traverseImages(gallery, dir, this);
+                traverseImages(gallery, localPath(dir), this);
             },
             function() {
                 if (gallery.id && !sateGalleryThumbnailRequestHandler.galleries.hasOwnProperty(gallery.id)) {
@@ -172,9 +172,24 @@ module.exports = function(Sate) {
         );
     };
 
+    var cleanPath = function(path) {
+        return path.replace(/^[\/\.]*/m, '/');
+    };
+
+    var localPath = function(path) {
+        return path.replace(/^[\/\.]*/m, './');
+    };
+
+    var imageEntryForHero = function(hero, thumbBaseURL) {
+        return {
+            heroSrc: cleanPath(hero),
+            thumbSrc: '/' + path.join(thumbBaseURL, hero)
+        };
+    };
+
     var plg = new Plugin(Sate, {
         type: 'sate-gallery',
-        version: '0.2.0',
+        version: '0.8.0',
         thumbnail: SateGalleryPluginDefaultThumbnailParams,
         contentPath: '',
         thumbnailsPath: "gallery-thumbs",
@@ -194,27 +209,45 @@ module.exports = function(Sate) {
         objectToRender: function(config, page) {
             this.template = this.templates.main;
             var path = require('path');
-            
-            var obj = this.super.objectToRender(config, page);
-            if (!obj && config.imagesPath) {
-                
-            }
+
+            var obj = page.pluginById(config.id);
+
             if (!obj) {
-                obj = {};
+                obj = {
+                    id: SateGalleryPluginDefaultBase
+                };
             }
             
             var galleryBasePath = obj.id;
             if (!galleryBasePath) {
                 galleryBasePath = SateGalleryPluginDefaultBase;
             }
-            
             var thumbBaseURL = path.join(SateGalleryPluginThumbnailsRoot, galleryBasePath);
-            obj.images = obj.heroes.map(function(item) {
-                return {
-                    heroSrc: '/' + item,
-                    thumbSrc: '/' + path.join(thumbBaseURL, item)
-                };
-            });
+
+            if (obj.heroes) {
+                if (config.image || config.imagesPath) {
+                    if (config.image) {
+                        obj.images = [
+                            imageEntryForHero(config.image, thumbBaseURL)
+                        ];
+                    }
+                    else if (config.imagesPath) {
+                        imgPath = cleanPath(config.imagesPath);
+                        var images = [];
+                        obj.heroes.forEach(function(item) {
+                            if (cleanPath(item).indexOf(imgPath) == 0) {
+                                images.push(imageEntryForHero(item, thumbBaseURL));
+                            }
+                        });
+                        obj.images = images;
+                    }
+                }
+                else {
+                    obj.images = obj.heroes.map(function(item) {
+                        return imageEntryForHero(item, thumbBaseURL);
+                    });
+                }
+            }
             return obj;
         }
     });
