@@ -2,7 +2,6 @@ function Page(id, props, parent, website, Sate) {
         var fs = require('fs'),
         path = require('path'),
         util = require('util'),
-        crypto = require('crypto'),
         flow = require(Sate.nodeModInstallDir+'flow'),
         extend = require(Sate.nodeModInstallDir+'node.extend'),
         Mustache = require(Sate.nodeModInstallDir+'mustache'),
@@ -13,12 +12,6 @@ function Page(id, props, parent, website, Sate) {
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
         pluginsResolver = new PagePluginsResolver(Sate);
         
-    var md5 = function(str) {
-        var md5sum = crypto.createHash('md5');
-        md5sum.update(str);
-        return md5sum.digest('hex');
-    };
-
     var loadPartial = function(page, website, t, stepDone) {
         var data = fs.readFileSync(path.join(website.sateSources, 'templates', page.partials[t]), {encoding: website.config.encoding});
         
@@ -33,11 +26,8 @@ function Page(id, props, parent, website, Sate) {
     };
 
     var processPageContent = function(page, data, success) {
-        
         contentParser.parse(page, data);
-        
         resolvePage(page);
-
         success.apply();
     };
     
@@ -228,7 +218,7 @@ function Page(id, props, parent, website, Sate) {
     newPage.addStylesheet = function(href, options) {
         var style = extend({
             href: href,
-            id: md5(href),
+            id: Sate.utils.md5(href),
             media: 'all'
         }, options);
         if (this.styleIds.indexOf(style.id) === -1) {
@@ -239,7 +229,7 @@ function Page(id, props, parent, website, Sate) {
     newPage.addScript = function(src, options) {
         var script = extend({
             src: src,
-            id: md5(src)
+            id: Sate.utils.md5(src)
         }, options);
         if (this.scriptIds.indexOf(script.id) === -1) {
             this.scriptIds.push(script.id);

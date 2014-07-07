@@ -35,5 +35,10 @@ module.exports = {
                 fs.mkdirSync(check);
             }
         }
+    },
+    md5: function(str) {
+        var md5sum = require('crypto').createHash('md5');
+        md5sum.update(str);
+        return md5sum.digest('hex');
     }
 };
