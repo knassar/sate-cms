@@ -14,6 +14,73 @@
         return server;
     };
 
+    var defaultRequestHandler = {
+        typeFromRequest: function(request) {
+            switch (true) {
+                case jsMatcher.test(request.url):
+                    return RequestTargetType.Javascript; 
+                case cssMatcher.test(request.url):
+                    return RequestTargetType.CSS; 
+                case jpgMatcher.test(request.url):
+                    return RequestTargetType.JPG; 
+                case pngMatcher.test(request.url):
+                    return RequestTargetType.PNG; 
+                case gifMatcher.test(request.url):
+                    return RequestTargetType.GIF; 
+            }
+            return RequestTargetType.Page;
+        },
+        headersForRequest: function(request) {
+            headers = {
+                'Content-Type': ''
+            };
+            switch (this.typeFromRequest(request)) {
+                case RequestTargetType.Javascript:
+                    headers['Content-Type'] = 'text/javascript';
+                    break;
+                case RequestTargetType.CSS:
+                    headers['Content-Type'] = 'text/css';
+                    break;
+                case RequestTargetType.JPG:
+                    headers['Content-Type'] = 'image/jpeg';
+                    break;
+                case RequestTargetType.PNG:
+                    headers['Content-Type'] = 'image/png';
+                    break;
+                case RequestTargetType.GIF:
+                    headers['Content-Type'] = 'image/gif';
+                    break;
+                default:
+                    headers['Content-Type'] = 'text/html';
+            }
+            return headers;
+        },
+        handleRequest: function(request, website, deliverResponse) {
+            var type = this.typeFromRequest(request);
+            
+            if (type == RequestTargetType.Page) {
+                // HACK HACK... this avoids a race condition with the end of complile.
+                // Not sure why yet
+                    setTimeout(function() {
+                        deliverResponse(website.pageForPath(request.url).render());
+                    }, 25);
+            } else {
+                deliverResponse(website.resourceForPath(request.url));
+            }
+        }
+    };
+    
+    var handlerForRequest = function(request, Sate) {
+        for (var requestMatcher in Sate.resourceRequestHandlers) {
+            if (Sate.resourceRequestHandlers.hasOwnProperty(requestMatcher) && 
+                Sate.resourceRequestHandlers[requestMatcher].matcher.test(request.url)) {
+
+                return Sate.resourceRequestHandlers[requestMatcher].handler;
+            }
+        }
+        return defaultRequestHandler;
+    };
+
     var RequestTargetType = {
         Javascript: '.js',
         CSS: '.css',
@@ -70,38 +137,41 @@
         DevelopmentServer: function(website, Sate) {
             var server = baseServer(website, Sate);
             server.use(function(req, res) {
-                    var type = determineRequestTargetType(req, res);
-                    writeHeadersForType(res, type);
-                    var respondToReq = function() {
-                        res.end(website.pageForPath(req.url).render());
-                    };
-                    if (type == RequestTargetType.Page) {
-                        if (!website.isCompiling) {
-                            website.recompile(true, function(errors) {
-                                // HACK HACK... this avoids a race condition with the end of complile.
-                                // Not sure why yet
-                                setTimeout(respondToReq, 25);
-                            });
-                        } else {
-                            website.performAfterCompile(respondToReq);
-                        }
-                    } else {
-                        res.end(website.resourceForPath(req.url));
-                    }
+                
+                var handler = handlerForRequest(req, Sate);
+                
+                var headers = handler.headersForRequest(req);
+                
+                res.writeHead(200, headers);
+                
+                var handleRequest = function() {
+                    handler.handleRequest(req, website, function(response) {
+                        res.end(response);
+                    });
+                };
+                
+                if (handler == defaultRequestHandler && headers['Content-Type'] == 'text/html') {
+                    website.recompile(true, handleRequest);
+                }
+                else {
+                    handleRequest.apply();
+                }
+                
                 }).listen(website.args.port);
             return server;
         },
         ProductionServer: function(website, Sate) {
             var server = baseServer(website, Sate);
             server.use(function(req, res) {
-                    var type = determineRequestTargetType(req, res);
-                    writeHeadersForType(res, type);
-                    if (type == RequestTargetType.Page) {
-                        res.end(website.pageForPath(req.url).render());
-                    } else {
-                        res.end(website.resourceForPath(req.url));
-                    }
-                }).listen(website.args.port);
+                
+                var handler = handlerForRequest(req, Sate);
+                
+                res.writeHead(200, handler.headersForRequest(req));
+                handler.handleRequest(req, website, function(response) {
+                    res.end(response);
+                });
+
+            }).listen(website.args.port);
             return server;
         }
     };

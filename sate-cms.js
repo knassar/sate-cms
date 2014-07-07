@@ -28,12 +28,19 @@
                 Verbose: 'verbose'
             },
             nodeModInstallDir: __dirname + '/node_modules/',
-            pluginConfig: {},
+            pluginConfig: {},            
             configForPlugin: function(pluginType) {
                 if (!this.pluginConfig.hasOwnProperty(pluginType)) {
                     this.pluginConfig[pluginType] = {};
                 }
                 return this.pluginConfig[pluginType];
+            },
+            resourceRequestHandlers:{},
+            registerRequestHandlerForRequests: function(requestHandler, requestMatcher) {
+                this.resourceRequestHandlers[requestMatcher] = {
+                    matcher: requestMatcher,
+                    handler: requestHandler
+                };
             }
         };
         
