@@ -14,6 +14,7 @@ $(function() {
                 viewingIndex = -1;
             
             var imgs = [];
+            var transition = false;
 
             $imgs.each(function(idx, el) {
                 $(el).data('img-idx', idx);
@@ -53,13 +54,15 @@ $(function() {
             };
             
             var next = function() {
-                if (viewingIndex < imgs.length-1) {
+                if (!transition && viewingIndex < imgs.length-1) {
+                    transition = true;
                     viewByIndex(viewingIndex+1);
                     adjustNav();
                 }
             };
             var prev = function() {
-                if (viewingIndex > 0) {
+                if (!transition && viewingIndex > 0) {
+                    transition = true;
                     viewByIndex(viewingIndex-1);
                     adjustNav();
                 }
@@ -100,6 +103,9 @@ $(function() {
                     if (offsetH) {
                         $img.css({top: (vH - h) / 2, height: h});
                     }
+                    setTimeout(function() {
+                        transition = false;
+                    }, 250);
                 }, 50);
             };
             
