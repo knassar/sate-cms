@@ -142,6 +142,18 @@ function Deploy(Sate) {
                         }
                     },
                     function() {
+                        Sate.Log.logAction("Writing Apache config", 0);
+                        var htaccess = [];
+                        for (var error in self.site.errorPages) {
+                            if (self.site.errorPages.hasOwnProperty(error)) {
+                                var code = error.replace('error', '');
+                                htaccess.push('ErrorDocument '+code+'     /'+error+'.html');
+                            }
+                        }
+                        var target = path.join(self.args.targetPath, '.htaccess');
+                        fs.writeFile(target, htaccess.join('\n'), {encoding: self.site.config.encoding}, this);
+                    },
+                    function() {
                         Sate.Log.logAction("Compiling Stylesheets", 0);
                         styleCompositor.execute(self.site, self.args.sitePath, self.args.targetPath, this);
                     },
