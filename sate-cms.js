@@ -27,6 +27,7 @@
                 Normal: 'normal',
                 Verbose: 'verbose'
             },
+            executingCommand: null,
             nodeModInstallDir: __dirname + '/node_modules/',
             pluginConfig: {},            
             configForPlugin: function(pluginType) {
@@ -59,6 +60,7 @@
             } else if (args[0].length > 0) {
                 if (Sate.Command.hasOwnProperty(args[0])) {
                     this.command = Sate.Command[args[0]];
+                    Sate.executingCommand = args[0];
                     processArgv.shift();
                 } else {
                     Sate.Command.help(null, Sate);

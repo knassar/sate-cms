@@ -81,7 +81,6 @@ function Deploy(Sate) {
                         this.apply();
                     },
                     function(err) {
-                        self.site.compileStrategy = Sate.Website.CompileStrategy.Deploy;
                         self.site.compile(true, this);
                     },
                     function() {

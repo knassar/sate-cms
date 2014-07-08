@@ -51,7 +51,7 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, website, Sate, c
                     page['plugin-'+pluginType] = plugin.getRenderer();
                 }
                 plugin.resovled = true;
-                if (website.compileStrategy == Sate.Website.CompileStrategy.Deploy) {
+                if (Sate.executingCommand == 'deploy') {
                     page.addStylesheet(deployPluginStyleSheetURL);
                     page.addScript(deployPluginScriptURL);
                 }

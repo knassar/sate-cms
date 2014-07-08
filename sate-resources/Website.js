@@ -1,8 +1,3 @@
-var CompileStrategy = {
-    Develop: 'develop',
-    Deploy: 'deploy'
-};
-
 function Website(args, Sate) {
         var fs = require('fs'),
         path = require('path'),
@@ -151,9 +146,6 @@ function Website(args, Sate) {
             website.json.templates
             );
         website.contentPath = path.join(website.sitePath, website.config.contentSources);
-        if (!website.compileStrategy) {
-            website.compileStrategy = CompileStrategy.Develop;
-        }
     };
     
     var loadWebsiteJSON = function(sitePath, complete, error) {
@@ -375,7 +367,5 @@ function Website(args, Sate) {
     );
     return website;
 }
-
-Website.CompileStrategy = CompileStrategy;
 
 module.exports = Website;
