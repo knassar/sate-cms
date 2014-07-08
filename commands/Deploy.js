@@ -4,6 +4,10 @@ function Deploy(Sate) {
         fs = require('fs'),
         path = require('path'),
         ncp = require(Sate.nodeModInstallDir+'ncp'),
+        StyleCompositor = require(__dirname+'/../sate-resources/StyleCompositor.js'),
+        styleCompositor = new StyleCompositor(Sate),
+        ScriptCompositor = require(__dirname+'/../sate-resources/ScriptCompositor.js'),
+        scriptCompositor = new ScriptCompositor(Sate),
         Command = require(__dirname+'/command');
     
     var cleanDir = function(target) {
@@ -45,7 +49,7 @@ function Deploy(Sate) {
             targetPagePaths: {},
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Deploy"] );
-                this.site = new Sate.Website(this.args, Sate);                
+                this.site = new Sate.Website(this.args, Sate);
                 self = this;
                 flow.exec(
                     function() {
@@ -77,20 +81,28 @@ function Deploy(Sate) {
                         this.apply();
                     },
                     function(err) {
+                        self.site.compileStrategy = Sate.Website.CompileStrategy.Deploy;
                         self.site.compile(true, this);
                     },
                     function() {
+                        var sourcePathMask = fs.realpathSync(self.args.sitePath);
+
                         Sate.Log.logAction("Copying static files and directories", 0);
                         ncp(self.args.sitePath,
                             self.args.targetPath,
                             {
                                 clobber: self.args.overwrite,
                                 filter: function(filename) {
-                                    return (
-                                        !(/sate\-cms$/).test(filename) && 
-                                        !(/website\.json$/).test(filename) && 
-                                        !(/\.html$/).test(filename)
-                                        );
+                                    var filename = filename.replace(sourcePathMask, '');
+                                    var incl = (
+                                        filename == '' ||
+                                        (/\.ico$/mi).test(filename)||
+                                        (/^\/styles\/?.*/mi).test(filename)||
+                                        (/^\/scripts\/?.*/mi).test(filename)||
+                                        (/^\/images\/?.*/mi).test(filename)||
+                                        (/^\/sate-gallery-thumbs\/?.*/mi).test(filename)
+                                    );
+                                    return incl;
                                 }
                             },
                             this);
@@ -115,6 +127,27 @@ function Deploy(Sate) {
                                 fs.writeFile(target, html, {encoding: self.site.config.encoding}, this.MULTI(url));
                             }
                         }
+                    },
+                    function() {
+                        Sate.Log.logAction("Generating Error pages", 0);
+                        for (var error in self.site.errorPages) {
+                            if (self.site.errorPages.hasOwnProperty(error)) {
+                                var url = error + '.html';
+                                Sate.Log.logAction(url, 1);
+                                var page = self.site.errorPages[error];
+                                var target = path.join(self.args.targetPath, url);
+                                var html = page.render();
+                                fs.writeFile(target, html, {encoding: self.site.config.encoding}, this.MULTI(url));
+                            }
+                        }
+                    },
+                    function() {
+                        Sate.Log.logAction("Compiling Stylesheets", 0);
+                        styleCompositor.execute(self.site, self.args.sitePath, self.args.targetPath, this);
+                    },
+                    function() {
+                        Sate.Log.logAction("Compiling Sate Plugin Scripts", 0);
+                        scriptCompositor.execute(self.site, self.args.sitePath, self.args.targetPath, this);
                     },
                     function() {
                         Sate.Log.logBox(["Deploy complete", "Generated website at: "+fs.realpathSync(self.args.targetPath)]);

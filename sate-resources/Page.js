@@ -1,5 +1,5 @@
 function Page(id, props, parent, website, Sate) {
-        var fs = require('fs'),
+    var fs = require('fs'),
         path = require('path'),
         util = require('util'),
         flow = require(Sate.nodeModInstallDir+'flow'),
@@ -340,7 +340,7 @@ function Page(id, props, parent, website, Sate) {
         });
     };
     newPage.resolvePlugins = function(withMetrics, complete) {
-        pluginsResolver.resolve(this, complete);
+        pluginsResolver.resolve(this, website, complete);
     };
     newPage.pluginById = function(pluginId) {
         return this.pluginsById[pluginId];

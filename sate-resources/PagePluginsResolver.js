@@ -1,7 +1,24 @@
 var pluginClassesByType = {};
 var pluginTemplatesByType = {};
 
-var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) {
+var deployPluginStyleSheetURL = "/styles/sate-plugins.css";
+var deployPluginScriptURL = "/scripts/sate-plugins.js";
+
+var initializePluginInDir = function(pluginType, pluginsDir, Sate) {
+    var path = require('path');
+    
+    var plugin;
+    try {
+        PluginClass = require(path.join(pluginsDir, pluginType, 'plugin.js'));
+        plugin = new PluginClass(Sate);
+    }
+    catch (err) {
+        Sate.Log.logError('could not import plugin '+pluginType, 2);
+    }
+    return plugin;
+};
+
+var resolvePlugin = function(pluginData, resolvedPlugins, page, website, Sate, complete) {
 
     var fs = require('fs'),
         path = require('path'),
@@ -34,11 +51,17 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) 
                     page['plugin-'+pluginType] = plugin.getRenderer();
                 }
                 plugin.resovled = true;
-                for (var s=0; s < plugin.stylesheets.length; s++) {
-                    page.addStylesheet(plugin.stylesheets[s]);
+                if (website.compileStrategy == Sate.Website.CompileStrategy.Deploy) {
+                    page.addStylesheet(deployPluginStyleSheetURL);
+                    page.addScript(deployPluginScriptURL);
                 }
-                for (var s=0; s < plugin.scripts.length; s++) {
-                    page.addScript(plugin.scripts[s]);
+                else {
+                    for (var s=0; s < plugin.stylesheets.length; s++) {
+                        page.addStylesheet(plugin.stylesheets[s]);
+                    }
+                    for (var s=0; s < plugin.scripts.length; s++) {
+                        page.addScript(plugin.scripts[s]);
+                    }
                 }
                 if (plugin.id) {
                     page.pluginsById[plugin.id] = plugin;
@@ -96,13 +119,13 @@ function PagePluginsResolver(Sate) {
     var flow = require(Sate.nodeModInstallDir+'flow');
 
     var resolver = this;
-    resolver.resolve = function(page, complete) {
+    resolver.resolve = function(page, website, complete) {
         flow.exec(
             function() {
                 var resolvedPlugins = [];
                 var count = 0;
                 for (var i=0; i < page.plugins.length; i++) {
-                    resolvePlugin(page.plugins[i], resolvedPlugins, page, Sate, this.MULTI(page.plugins[i].type));
+                    resolvePlugin(page.plugins[i], resolvedPlugins, page, website, Sate, this.MULTI(page.plugins[i].type));
                     count++;
                 }
                 page.plugins = resolvedPlugins;
@@ -115,6 +138,38 @@ function PagePluginsResolver(Sate) {
             }
         );
     };
+    resolver.allInstalledPlugins = function(website, complete) {
+        var fs = require('fs'),
+            path = require('path'),
+            flow = require(Sate.nodeModInstallDir+'flow');
+
+        var pluginsDir = fs.realpathSync(path.join(website.sateSources, 'plugins'));
+        var files;
+        var plugins = [];
+        try {
+            files = fs.readdirSync(pluginsDir, this);
+
+                
+            files.forEach(function(filename) {
+                var stats = fs.statSync(path.join(pluginsDir, filename));
+                if (stats.isDirectory()) {
+                    var plugin = initializePluginInDir(filename, pluginsDir, Sate);
+                    if (plugin) {
+                        plugins.push(plugin);
+                    }
+                }
+            });
+        }
+        catch (err) {
+            Sate.Log.logError("couldn't load plugins", 2);
+        }
+        
+        complete(plugins);
+    };
     return resolver;
 }
+
+PagePluginsResolver.deployPluginStyleSheetURL = deployPluginStyleSheetURL;
+PagePluginsResolver.deployPluginScriptURL = deployPluginScriptURL;
+
 module.exports = PagePluginsResolver;
