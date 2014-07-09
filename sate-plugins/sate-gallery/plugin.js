@@ -319,6 +319,9 @@ module.exports = function(Sate) {
             if (obj.title) {
                 obj.galleryTitle = obj.title;
             }
+            else {
+                obj.galleryTitle = "";
+            }
             
             return obj;
         }
