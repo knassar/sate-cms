@@ -17,7 +17,7 @@ module.exports = function(Sate) {
         type: 'hello-world',
         
         // the version of the plugin code
-        version: '0.2.0',
+        version: '0.5.0',
         
         // default config properties go here
         language: "english",
@@ -35,10 +35,14 @@ module.exports = function(Sate) {
             // completion callback
             complete.apply();
         },
-        // your templates go here. They will be loaded automatically before compile is called
-        templates: {'main': __dirname+'/hello-world.tpl'},
+        
+        // these resource paths must be relative paths to the plugin's directory
+        // for example: 'some-stylesheet.css'
+        
+        // your templates go here. They will be loaded automatically before compile is called. The primary template must be named 'main'.
+        templates: {'main': 'hello-world.tpl'},
 
-        // list any client-side stylesheet or script dependencies here... they will be added to the page
+        // list any client-side stylesheet or script dependencies here... they will be added to the page.
         stylesheets: [],
         scripts: [],
 
@@ -50,6 +54,7 @@ module.exports = function(Sate) {
             var obj = this.super.objectToRender(config, page);
             
             if (!obj) {
+                // if we didn't want to have a default behavior, we would just return false here
                 obj = {};
             }
 
@@ -73,6 +78,7 @@ module.exports = function(Sate) {
                     obj.hello = "Hello World!";
             }
             
+            // ensure that and user-specified classes are merged into the default class array
             this.composeClasses(obj);
             
             // return the object for the template render

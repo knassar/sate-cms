@@ -8,7 +8,7 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-breadcrumbs',
-        version: '0.4.0',
+        version: '0.5.0',
         headingTag: 'h2',
         separator: ':',
         minCrumbs: 1,
@@ -19,8 +19,8 @@ module.exports = function(Sate) {
             Sate.chain.inPlace(this, props);
             complete.apply();
         },
-        templates: {'main': __dirname+'/breadcrumbs.tpl'},
-        stylesheets: ['/sate-cms/plugins/sate-breadcrumbs/breadcrumbs.css'],
+        templates: {'main': 'breadcrumbs.tpl'},
+        stylesheets: ['breadcrumbs.css'],
         objectToRender: function(config, page) {
             var obj = this.super.objectToRender(config, page);
             if (!obj) {

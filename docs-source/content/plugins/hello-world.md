@@ -16,6 +16,8 @@
 
 Sate plugins encapsulate reusable data, configuration, templates and client resources in a "plug-and-play" package. Sate includes several useful default plugins, and additional plugins are easy to write and are registered with Sate simply by dropping them into the plugins directory of the Sate site.
 
+The Hello World plugin is provided as a template & tutorial to learn how to create your own.
+
 @content:
 
 <dl>

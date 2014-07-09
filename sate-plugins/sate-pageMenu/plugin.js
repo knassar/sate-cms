@@ -8,7 +8,7 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-pageMenu',
-        version: '0.2.0',
+        version: '0.5.0',
         mainTag: 'ul',
         items: [],
         classes: [],
@@ -24,13 +24,13 @@ module.exports = function(Sate) {
             complete.apply();
         },
         templates: {
-            'menu-node': __dirname+'/menu-node.tpl',
-            'main': __dirname+'/pageMenu.tpl'
+            'menu-node': 'menu-node.tpl',
+            'main': 'pageMenu.tpl'
         },
         stylesheets: [
-            '/sate-cms/plugins/sate-pageMenu/pageMenu.css',
-            '/sate-cms/plugins/sate-pageMenu/top-menu.css',
-            '/sate-cms/plugins/sate-pageMenu/side-menu.css'
+            'pageMenu.css',
+            'top-menu.css',
+            'side-menu.css'
         ],
         setItemActiveState: function(item, page) {
             item.active = (item.url == page.url);

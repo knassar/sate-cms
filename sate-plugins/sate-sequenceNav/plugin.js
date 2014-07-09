@@ -8,7 +8,7 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-sequenceNav',
-        version: '0.2.0',
+        version: '0.4.0',
         previousPrompt: "previous: ",
         nextPrompt: "next: ",
         compile: function(props, page, Sate, complete) {
@@ -17,8 +17,8 @@ module.exports = function(Sate) {
             Sate.chain.inPlace(this, props);
             complete.apply();
         },
-        templates: {'main': __dirname+'/sequenceNav.tpl'},
-        stylesheets: ['/sate-cms/plugins/sate-sequenceNav/sequence-nav.css'],
+        templates: {'main': 'sequenceNav.tpl'},
+        stylesheets: ['sequence-nav.css'],
         closestIndexPage: function(page) {
             if (page.parent) {
                 do {

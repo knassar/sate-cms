@@ -29,13 +29,14 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, website, Sate, c
     } else {
         throw new Error("cannot resolve plugin declared without 'type' at index: "+idx);
     }
-    
+    var pluginPath = path.join(page.sateSources, 'plugins', pluginType);
+
     var PluginClass;
     if (pluginClassesByType[pluginType]) {
         PluginClass = pluginClassesByType[pluginType];
     }
     else {
-        PluginClass = require(fs.realpathSync(path.join(page.sateSources, 'plugins', pluginType, 'plugin.js')));
+        PluginClass = require(fs.realpathSync(path.join(pluginPath, 'plugin.js')));
         pluginClassesByType[pluginType] = PluginClass;
     }
 
@@ -57,10 +58,10 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, website, Sate, c
                 }
                 else {
                     for (var s=0; s < plugin.stylesheets.length; s++) {
-                        page.addStylesheet(plugin.stylesheets[s]);
+                        page.addStylesheet('/'+path.join(pluginPath, plugin.stylesheets[s]));
                     }
                     for (var s=0; s < plugin.scripts.length; s++) {
-                        page.addScript(plugin.scripts[s]);
+                        page.addScript('/'+path.join(pluginPath, plugin.scripts[s]));
                     }
                 }
                 if (plugin.id) {
@@ -83,7 +84,8 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, website, Sate, c
         var templates = {};
     
         var loadPluginTemplate = function(plugin, t, page, loadedTemplate) {
-            fs.readFile(plugin.templates[t], {encoding: page.encoding}, function(err, data) {
+            var templatePath = path.join(pluginPath, plugin.templates[t]);
+            fs.readFile(templatePath, {encoding: page.encoding}, function(err, data) {
                 templates[t] = data;
                 loadedTemplate.apply();
             });

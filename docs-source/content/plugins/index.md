@@ -1,11 +1,11 @@
 {
     "articleSort": [
-        "/plugins/hello-world", 
         "/plugins/menu", 
         "/plugins/breadcrumb-nav", 
         "/plugins/sequence-nav", 
         "/plugins/gallery", 
-        "/plugins/sate-powered"
+        "/plugins/sate-powered", 
+        "/plugins/hello-world"
     ],
     "plugins": [
         {
@@ -14,9 +14,6 @@
             "inherited": true,
             "parentLink": true,
             "items": [
-                {
-                    "url": "/plugins/hello-world"
-                },
                 {
                     "url": "/plugins/menu"
                 },
@@ -31,6 +28,9 @@
                 },
                 {
                     "url": "/plugins/sate-powered"
+                },
+                {
+                    "url": "/plugins/hello-world"
                 }
             ]
         }
@@ -39,5 +39,7 @@
 
 @intro:
 
-Sate has some modules.
+The core features of Sate are designed to manage the fundamentals of page templating and website structure. All the interesting detailed functionality that go on within and between pages are provided by plugins. The Sate Plugin architecture is as light-weight as possible, but provides enough power to do some pretty cool things.
+
+Below are some exampels.
 

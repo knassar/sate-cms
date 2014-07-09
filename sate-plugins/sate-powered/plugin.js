@@ -7,13 +7,13 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-powered',
-        version: '0.1.0',
+        version: '0.8.0',
         sateGithubUrl: "##",
         compile: function(props, page, Sate, complete) {
             complete.apply();
         },
-        templates: {'main': __dirname+'/powered-by-sate.tpl'},
-        stylesheets: ['/sate-cms/plugins/sate-powered/powered-by-sate.css'],
+        templates: {'main': 'powered-by-sate.tpl'},
+        stylesheets: ['powered-by-sate.css'],
 
         objectToRender: function(config, page) {
             this.composeClasses(this);

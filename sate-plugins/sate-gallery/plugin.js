@@ -250,7 +250,7 @@ module.exports = function(Sate) {
 
     var plg = new Plugin(Sate, {
         type: 'sate-gallery',
-        version: '0.8.0',
+        version: '0.8.2',
         thumbnail: SateGalleryPluginDefaultThumbnailParams,
         contentPath: '',
         thumbnailsPath: "gallery-thumbs",
@@ -268,9 +268,9 @@ module.exports = function(Sate) {
             }
             compileFlow(this, complete);
         },
-        templates: {'main': __dirname+'/gallery.tpl'},
-        stylesheets: ['/sate-cms/plugins/sate-gallery/sate-gallery.css'],
-        scripts: ['/sate-cms/plugins/sate-gallery/sate-gallery.js'],
+        templates: {'main': 'gallery.tpl'},
+        stylesheets: ['sate-gallery.css'],
+        scripts: ['sate-gallery.js'],
         objectToRender: function(config, page) {
             this.template = this.templates.main;
             var path = require('path');
