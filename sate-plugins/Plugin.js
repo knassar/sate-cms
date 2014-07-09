@@ -10,23 +10,29 @@ function Plugin(Sate, subobj) {
         compile: function(props, page, Sate, complete) {
             complete.apply();
         },
-        composeClasses: function() {
-            if (typeof this.classes == 'string') {
-                this.classes = [this.classes];
+        composeClasses: function(obj) {
+            var classes = [];
+            if (obj.classes) {
+                classes = obj.classes;
             }
-            else if (typeof this.classes == 'object' && !util.isArray(this.classes)) {
-                var classes = [];
-                for (var c in this.classes) {
-                    if (this.classes.hasOwnProperty(c)) {
-                        classes.push(this.classes[c]);
+            else if (this.classes) {
+                classes = this.classes;
+            }
+            
+            if (typeof classes == 'string') {
+                classes = [this.classes];
+            }
+            else if (classes == 'object' && !util.isArray(this.classes)) {
+                var cls = [];
+                for (var c in classes) {
+                    if (classes.hasOwnProperty(c)) {
+                        cls.push(classes[c]);
                     }
                 }
-                this.classes = classes;
+                classes = cls;
             }
-            else if (!util.isArray(this.classes)) {
-                this.classes = [];
-            }
-            this.composedClasses = this.classes.join(' ') + ' plugin-' + this.type;
+
+            obj.composedClasses = classes.join(' ') + ' plugin-' + this.type;
         },
         templates: [],
         stylesheets: [],

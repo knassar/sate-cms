@@ -26,10 +26,9 @@ module.exports = function(Sate) {
             if (!obj) {
                 obj = {};
             }
-            if (util.isArray(obj.classes)) {
-                obj.classes.push('plugin-sate-breadcrumbs');
-                obj.classes = obj.classes.join(' ');
-            }
+
+            this.composeClasses(obj);
+        
             obj.crumbs = [];
             var p = page;
             while (p.parent && !p.parent.isRoot) {

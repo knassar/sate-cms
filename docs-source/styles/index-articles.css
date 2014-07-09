@@ -12,7 +12,7 @@
     margin-bottom: 2rem;
 }
 
-#pageBody.index .intro + .content > .articles:first-child,
+#pageBody.index .articles:first-child,
 #pageBody.index .articles li.article-intro + li.article-intro 
 {
     border-top: #aaa 1px solid;
@@ -40,11 +40,8 @@
     padding: 0 0.5rem;
 }
 
-#pageBody.index .articles li.article-intro .details .date {
-    display: inline-block;
-    width: 48%;
-    text-align: right;
-    padding: 0 0.5rem;
+#pageBody.index .articles li.article-intro .details {
+    display: none;
 }
 
 #pageBody.index .articles li.article-intro a.read-more {

@@ -36,15 +36,23 @@
             }
             {{/plugin-sate-breadcrumbs}}
         
-            {{#date}}
-                <div class="date">{{>longDate}}</div>
-            {{/date}}
-            <div class="intro">
-            {{>intro}}
-            </div>
-            <div class="content">
-            {{>content}}
-            </div>
+            {{#showStats}}
+                {{#date}}
+                    <div class="date">{{>longDate}}</div>
+                {{/date}}
+            {{/showStats}}
+
+            {{#hasIntro}}
+                <div class="intro">
+                {{>intro}}
+                </div>
+            {{/hasIntro}}
+
+            {{#hasContent}}
+                <div class="content">
+                {{>content}}
+                </div>
+            {{/hasContent}}
         </div>
         <div id="footer">
             <div id="copyright">Copyright <span class="copyright-symbol">&copy;</span>2013</div>

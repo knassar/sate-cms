@@ -43,7 +43,7 @@
 #pageBody.index .articles li.article-intro .details .date {
     display: inline-block;
     width: 48%;
-    text-align: right;
+    text-align: left;
     padding: 0 0.5rem;
 }
 

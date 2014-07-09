@@ -16,6 +16,7 @@ module.exports = function(Sate) {
         stylesheets: ['/sate-cms/plugins/sate-powered/powered-by-sate.css'],
 
         objectToRender: function(config, page) {
+            this.composeClasses(this);
             return this;
         }
     });

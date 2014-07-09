@@ -37,10 +37,6 @@ module.exports = function(Sate) {
             if (!obj) {
                 obj = {};
             }
-            if (util.isArray(obj.classes)) {
-                obj.classes.push('plugin-sate-sequenceNav');
-                obj.classes = obj.classes.join(' ');
-            }
             var seq = obj.sequence;
             if (!seq) {
                 var index = this.closestIndexPage(page);
@@ -71,6 +67,9 @@ module.exports = function(Sate) {
                     };
                 }
             }
+            
+            this.composeClasses(obj);
+            
             return obj;
         }
     });

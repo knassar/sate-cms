@@ -12,11 +12,65 @@ $(function() {
                 $imgA = $viewer.find('img.hero-a'),
                 $imgB = $viewer.find('img.hero-b'),
                 $galleryTitle = $viewer.find('#galleryTitle'),
+                timer = null,
+                loopSpd = 10,
+                loopQueue = [],
+                scheduled = {},
+                schedCount = 0,
                 viewingIndex = -1;
             
             var imgs = [];
             var transition = false;
             var currentTitle = "";
+            
+            var enqueue = function(fn) {
+                loopQueue.push(fn);
+                startTimer();
+            };
+
+            var schedule = function(key, fn, time) {
+                scheduled[key] = {
+                    fn: fn,
+                    time: time
+                };
+                schedCount++;
+                startTimer();
+            };
+            
+            var unschedule = function(key) {
+                schedCount--;
+                delete scheduled[key];
+            };
+            
+            var tic = function() {
+                var fn = loopQueue.pop();
+                if (fn) {
+                    fn.apply();
+                }
+                for (var s in scheduled) {
+                    if (scheduled.hasOwnProperty(s) && typeof scheduled[s].fn == 'function') {
+                        scheduled[s].time -= loopSpd;
+                        if (scheduled[s].time <= 0) {
+                            scheduled[s].fn.apply();
+                            unschedule(s);
+                        }
+                    }
+                }
+                stopTimer();
+            };
+
+            var startTimer = function() {
+                if (!timer) {
+                    timer = setInterval(tic, loopSpd);
+                }
+            };
+
+            var stopTimer = function(force) {
+                if (force || loopQueue.length + schedCount == 0) {
+                    clearInterval(timer);
+                    timer = null;
+                }
+            };
 
             $imgs.each(function(idx, el) {
                 $(el).data('img-idx', idx);
@@ -42,17 +96,18 @@ $(function() {
                 $viewer.css({display: 'block'});
                 adjustNav();
                 $(window).on('keydown.sate-gallery', keyNav);
-                setTimeout(function() {
+                enqueue(function() {
                     $viewer.css({opacity: 1});
-                }, 100);
+                }, 10);
             };
             
             var hideViewer = function() {
                 $viewer.css({opacity: 0});
                 $(window).off('keydown.sate-gallery');
-                setTimeout(function() {
+                enqueue(function() {
                     $viewer.css({display: 'none'});
-                }, 300);
+                    stopTimer(true);
+                }, 30);
             };
             
             var next = function() {
@@ -88,7 +143,7 @@ $(function() {
             };
 
             var repositionImg = function($img) {
-                setTimeout(function() {
+                enqueue(function() {
                     var w = $img.width(),
                         h = $img.height(),
                         vW = $imgCarrier.width(),
@@ -105,13 +160,13 @@ $(function() {
                     if (offsetH) {
                         $img.css({top: (vH - h) / 2, height: h});
                     }
-                    setTimeout(function() {
+                    enqueue(function() {
                         transition = false;
-                    }, 250);
-                }, 50);
+                    }, 24);
+                }, 5);
             };
             
-            var viewHero = function(heroSRC) {
+           var viewHero = function(heroSRC) {
                 showViewer();
                 if ($imgA.hasClass('showing')) {
                     $imgB.removeAttr('style').css({opacity:1}).attr('src', heroSRC).addClass('showing');
@@ -137,27 +192,25 @@ $(function() {
                 currentTitle = title;
                 if (showingTitle) {
                     hideTitle();
-                    setTimeout(function() {
+                    schedule(function() {
                         showTitle(title);
-                    }, 250);
+                    }, 300);
                     return;
                 }
                 else {
                     $galleryTitle.text(currentTitle);
                     $galleryTitle.css({opacity:1});
-                    setTimeout(function() {
+                    schedule(function() {
                         showingTitle = true;
-                    }, 250);
-                    clearInterval(titleFadeOutInterval);
-                    titleFadeOutInterval = setInterval(hideTitle, 1500);
+                    }, 300);
+                    schedule('hideTitle', hideTitle, 1500);
                 }
             };
             
             var hideTitle = function() {
                 $galleryTitle.css({opacity:0});
-                setTimeout(function() {
-                    clearInterval(titleFadeOutInterval);
-                    titleFadeOutInterval = null;
+                unschedule('hideTitle');
+                schedule(function() {
                     showingTitle = false;
                 }, 250);
             };
@@ -179,13 +232,13 @@ $(function() {
                 }
             });
             $next.on('click', function() {
-                setTimeout(next, 10);
+                enqueue(next);
             });
             $prev.on('click', function() {
-                setTimeout(prev, 10);
+                enqueue(prev);
             });
             $close.on('click', function() {
-                setTimeout(hideViewer, 10);
+                enqueue(hideViewer);
             });
             $(window).on('click.sate-gallery', function(event) {
                 if ($(event.target).closest('#sateGalleryHeroViewer').length === 0) {

@@ -72,6 +72,9 @@ module.exports = function(Sate) {
                 default:
                     obj.hello = "Hello World!";
             }
+            
+            this.composeClasses(obj);
+            
             // return the object for the template render
             return obj;
         }

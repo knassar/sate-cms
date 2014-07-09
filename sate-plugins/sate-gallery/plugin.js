@@ -286,9 +286,7 @@ module.exports = function(Sate) {
                 };
             }
 
-            if (obj.composeClasses) {
-                obj.composeClasses();
-            }
+            this.composeClasses(obj);
 
             var thumbBaseURL = thumbnailBaseURL(obj);
 

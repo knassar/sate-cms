@@ -158,8 +158,8 @@ module.exports = function(Sate) {
                 this.findRelatedMenuItems(obj, page, config);
             }
 
-            obj.composeClasses();
-            
+            this.composeClasses(obj);
+
             var website = page.rootPage().website;
             if (obj.parentLink && page.parent) {
                 obj.parent = {
