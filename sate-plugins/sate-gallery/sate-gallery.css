@@ -73,7 +73,8 @@ ul.sate-gallery > li.no-images {
 #sateGalleryHeroViewer,
 #sateGalleryHeroViewer img,
 #sateGalleryHeroViewer a.prev,
-#sateGalleryHeroViewer a.next
+#sateGalleryHeroViewer a.next,
+#sateGalleryHeroViewer #galleryTitle
 {
     -webkit-transition: opacity 0.25s, width 0.25s, height 0.25s, top 0.25s, left 0.25s;
     -moz-transition: opacity 0.25s, width 0.25s, height 0.25s, top 0.25s, left 0.25s;
@@ -111,4 +112,14 @@ ul.sate-gallery > li.no-images {
     left: 20px;
 }
 
-
+#sateGalleryHeroViewer #galleryTitle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    font-size: 36px;
+    padding: 1em 2em;
+    text-align: left;
+    color: white;
+    text-shadow: 0 0 2px black;
+}

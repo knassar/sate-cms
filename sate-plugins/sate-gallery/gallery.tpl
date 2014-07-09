@@ -1,4 +1,4 @@
-<ul class="sate-gallery {{composedClasses}}">
+<ul class="sate-gallery {{composedClasses}}"{{#galleryTitle}} title="{{galleryTitle}}"{{/galleryTitle}}>
     {{#images}}
     <li class="thumbnail">
         <img data-hero-src="{{heroSrc}}" src="{{thumbSrc}}" alt="{{heroSrc}}"/>

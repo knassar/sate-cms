@@ -315,6 +315,11 @@ module.exports = function(Sate) {
                     });
                 }
             }
+            
+            if (obj.title) {
+                obj.galleryTitle = obj.title;
+            }
+            
             return obj;
         }
     });

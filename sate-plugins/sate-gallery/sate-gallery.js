@@ -2,7 +2,7 @@ $(function() {
     if (!Sate) var Sate = {};
     (function() {
         Sate.Gallery = (function() {
-            var $viewer = $('<div id="sateGalleryHeroViewer"><div class="bg"></div><div class="images"><img class="hero-a"/><img class="hero-b"/></div><a class="nav close">&times; close</a><a class="nav prev">&lsaquo; previous</a><a class="nav next">next &rsaquo;</a></div>').appendTo($('body')),
+            var $viewer = $('<div id="sateGalleryHeroViewer"><div class="bg"></div><div class="images"><img class="hero-a"/><img class="hero-b"/></div><a class="nav close">&times; close</a><a class="nav prev">&lsaquo; previous</a><a class="nav next">next &rsaquo;</a><div id="galleryTitle"></div></div>').appendTo($('body')),
                 $galleries = $('ul.sate-gallery'),
                 $imgCarrier = $viewer.children('div.images'),
                 $imgs = $galleries.find('li.thumbnail > img'),
@@ -11,10 +11,12 @@ $(function() {
                 $close = $viewer.find('a.close'),
                 $imgA = $viewer.find('img.hero-a'),
                 $imgB = $viewer.find('img.hero-b'),
+                $galleryTitle = $viewer.find('#galleryTitle'),
                 viewingIndex = -1;
             
             var imgs = [];
             var transition = false;
+            var currentTitle = "";
 
             $imgs.each(function(idx, el) {
                 $(el).data('img-idx', idx);
@@ -122,12 +124,51 @@ $(function() {
                 }
             };
 
+            var setGalleryTitleForIndex = function(idx) {
+                var title = $($imgs[idx]).parents('ul.sate-gallery').attr('title');
+                if (title != currentTitle) {
+                    showTitle(title);
+                }
+            };
+
+            var showingTitle = false;
+            var titleFadeOutInterval;
+            var showTitle = function(title) {
+                currentTitle = title;
+                if (showingTitle) {
+                    hideTitle();
+                    setTimeout(function() {
+                        showTitle(title);
+                    }, 250);
+                    return;
+                }
+                else {
+                    $galleryTitle.text(currentTitle);
+                    $galleryTitle.css({opacity:1});
+                    setTimeout(function() {
+                        showingTitle = true;
+                    }, 250);
+                    clearInterval(titleFadeOutInterval);
+                    titleFadeOutInterval = setInterval(hideTitle, 1500);
+                }
+            };
+            
+            var hideTitle = function() {
+                $galleryTitle.css({opacity:0});
+                setTimeout(function() {
+                    clearInterval(titleFadeOutInterval);
+                    titleFadeOutInterval = null;
+                    showingTitle = false;
+                }, 250);
+            };
+
             var viewByIndex = function(idx) {
                 var heroSRC = imgs[idx].src;
                 if (heroSRC) {
                     viewingIndex = idx;
                     viewHero(heroSRC);
                 }
+                setGalleryTitleForIndex(idx);
             };
 
             $galleries.on('click.sate-gallery', function(event) {
