@@ -75,10 +75,11 @@ function StyleCompositor(Sate) {
                 function(plugins) {
                     plugins.forEach(function(plugin) {
                         if (plugin.stylesheets && plugin.stylesheets.length > 0) {
+                            var pluginPath = pluginsResolver.resourcesDirForPlugin(website, plugin);
                             self.pluginStylesheets.push('/** '+plugin.type+' **/');
                             plugin.stylesheets.forEach(function(style) {
                                 self.pluginStylesheets.push('/** '+style+' **/');
-                                var css = fs.readFileSync(path.join(sitePath, style), self.enc);
+                                var css = fs.readFileSync(path.join(pluginPath, style), self.enc);
                                 self.pluginStylesheets.push(css);
                             });
                         }

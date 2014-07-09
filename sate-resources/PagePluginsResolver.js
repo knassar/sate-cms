@@ -168,6 +168,12 @@ function PagePluginsResolver(Sate) {
         
         complete(plugins);
     };
+    resolver.resourcesDirForPlugin = function(website, plugin) {
+        var fs = require('fs'),
+            path = require('path');
+
+        return fs.realpathSync(path.join(website.sateSources, 'plugins', plugin.type));
+    }
     return resolver;
 }
 

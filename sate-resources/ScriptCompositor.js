@@ -19,10 +19,11 @@ function ScriptCompositor(Sate) {
                 function(plugins) {
                     plugins.forEach(function(plugin) {
                         if (plugin.scripts && plugin.scripts.length > 0) {
+                            var pluginPath = pluginsResolver.resourcesDirForPlugin(website, plugin);
                             self.pluginScripts.push('/** '+plugin.type+' **/');
                             plugin.scripts.forEach(function(script) {
                                 self.pluginScripts.push('/** '+script+' **/;');
-                                var js = fs.readFileSync(path.join(sitePath, script), enc);
+                                var js = fs.readFileSync(path.join(pluginPath, script), enc);
                                 self.pluginScripts.push(js);
                             });
                         }
