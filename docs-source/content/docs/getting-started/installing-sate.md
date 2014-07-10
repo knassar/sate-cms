@@ -10,7 +10,7 @@ Currently, Sate will run on any computer that is capable of running Node.js, **e
 
 ### 1. Install Node.js & NPM
 
-If you don't already have [Node.js](http://nodejs.org) installed, you'll need it to run Sate. You can also install Node.js using various package managers like [homebrew](https://github.com/Homebrew/homebrew).
+If you don't already have [Node.js](http://nodejs.org) installed, you'll need it to run Sate. You can install Node.js using various package managers like [homebrew](https://github.com/Homebrew/homebrew).
 
 You'll also need to install [NPM](https://www.npmjs.org), the Node.js Package Manager.
 

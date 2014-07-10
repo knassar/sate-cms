@@ -24,7 +24,7 @@ This file contains the site-level configuration. Here's an example of a Site web
     },
     "pageDefaults": {
         "title": "Sate",
-        "classNames": "sate-docs",
+        "classes": "sate-docs",
         "subtitle": "Just Enough CMS"
     }
 }
