@@ -41,7 +41,7 @@ Next, lets look in the `content` directory that Sate has created for your site. 
 
 When Sate reads in the `website.json` file, it will start building a site map from the `config.contentSources` path. Based on the file path of a given page, Sate can infer the parser to use (HTML or Markdown), the page type (Index or Article), the URL, and the Page Title.
 
-Sate looks for an `index` page at each directory level. Each index file creates an Index page. Any files which are not named `index` will be used to create an Article page. Sate uses the folder and file names of these content files to construct SEO-friendly URLs:
+Sate looks for an `index` page at each directory level. Each index file creates an Index page. Any files which are not named `index` will be used to create an Article page. Sate uses the folder and file names of these content files to construct pretty URLs:
 
   * `./content/index.*` <span class="arrow r"></span> `/`
   * `./content/sub-directory/index.*` <span class="arrow r"></span> `/sub-directory`

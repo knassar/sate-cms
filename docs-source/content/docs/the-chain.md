@@ -31,11 +31,4 @@ There are several variations on this basic Chain of inheritance which apply to s
 </ol>
 
 
-### The Menu Chain
-
-<ol class="the-chain-diagram">
-    <li><span>website.json page menu</span></li>
-    <li><span>page content file's pageData</span></li>
-</ol>
-
 {{{plugin-sate-sequenceNav}}}
