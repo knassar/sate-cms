@@ -397,6 +397,9 @@ function Page(id, props, parent, website, Sate) {
         this.mergeStyles();
         this.mergeScripts();
         this.classNames = this.classNamesString();
+        if (Sate.executingCommand == 'deploy') {
+            this.deployRevision = '?v='+ new Date().getTime();
+        }
         var html = Mustache.render(this.templates[this.template], this, this.compiledPartials);
         return html;
     };
