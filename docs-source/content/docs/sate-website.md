@@ -65,7 +65,7 @@ Sate content files must conform to a very specific, but very light-weight struct
 
 The following simple rules must be adhered to:
 
- 1. If a page data JSON block is included in the file, it must occur at the beginning of the file, and must be valid JSON.
+ 1. If a page data `JSON` block is included in the file, it must occur at the beginning of the file, and must be valid `JSON`.
  2. All section name markers must begin on a new line, and must be followed by a newline character.
 
 ### Standard Sections
@@ -149,4 +149,11 @@ Because `@section:` markers must always appear at the beginning of a line, if yo
 
  @thisIsNotASectionMarker:
 
-{{{plugin-sate-sequenceNav}}}
+{{#plugin-sate-sequenceNav}}
+{
+    "prev": {
+        "url": "/docs/getting-started/sate-basics",
+        "name": "Getting Started: Sate Basics"
+    }
+}
+{{/plugin-sate-sequenceNav}}

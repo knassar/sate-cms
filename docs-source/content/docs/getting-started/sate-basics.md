@@ -8,7 +8,9 @@ The first thing to know is that the development web server started by the `devel
 
 Open the `website.json` file in your favorite editor and take a look at its structure. This file acts as the high-level "manifest" for your Sate website. The `website.json` file contains site-wide configuration like the site Title, and defines the path to the site's root page.
 
-For now, find the value under the key `pageDefaults.title` and change the string "Your New Sate Site" to the name of your own website. Save the file, and reload the browser page. You should see the new page title show up as the page title.
+For now, find the value under the key `pageDefaults.title`. You'll see that Sate has tried to set this to a reasonable site name based on the directory you had it create. You'll see this inference pattern used throughout Sate. The logic used to convert filenames and directories into user-facing names is described under [Page Data: `name`](/docs/page-data#name).
+
+If the website title Sate chose isn't to your liking, go ahead and change the value of `pageDefaults.title` to a value you like. Save the file, and reload the browser page. You should see the new page title show up as the page title.
 
 While the `website.json` gives you a convenient place to do site-global configuration, most of the time you will set it up once, then not really touch it again. It primarily acts as a fixed entry point for Sate to find your website content.
 
@@ -61,5 +63,10 @@ Sate also infers as much as it can about each page simply from information it ca
 
 It's important to note that these automatic inferences can be [overridden for any given page](/docs/page-data).
 
-{{{plugin-sate-sequenceNav}}}
+{{#plugin-sate-sequenceNav}}
+{
+    "next": "/docs/sate-website"
+}
+{{/plugin-sate-sequenceNav}}
+
 

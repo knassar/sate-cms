@@ -35,7 +35,7 @@ When using Sate types (such as Sate.PageType.Index), wrap the value in quotes:
 
 You can set any data you wish in the page data block for use in page-level templates. However, there are several properties which have special meaning to Sate, and you should avoid any naming collisions. The following properties hold special meaning to Sate at the page level:
 
-### `parser` <span class="type sate">Sate.Parser</span>
+### <a name="parser"></a>`parser` <span class="type sate">Sate.Parser</span>
 
 A supported `Sate.Parser` type with which to parse the page content. Supported values are:
 
@@ -44,7 +44,7 @@ A supported `Sate.Parser` type with which to parse the page content. Supported v
 
 In the absence of an explicit declaration, Sate attempts to infer the parser from the file extension, then defaults to HTML if necessary.
 
-### `type` <span class="type sate">Sate.PageType</span>
+### <a name="type"></a>`type` <span class="type sate">Sate.PageType</span>
 
 A supported `Sate.PageType` to use for page content inference. Supported values are:
 
@@ -56,7 +56,7 @@ In the absence of an explicit declaration, Sate attempts to infer the type from 
 The `type` property is used primarily to differentiate Index pages from Articles pages for the purpose of auto-generating Index page digests. When a page is typed as Sate.PageType.Index but defines its content block explicitly, the page type currently has no effect.
 
 
-### `indexSort` <span class="type sate">Sate.IndexSort</span> | <span class="type array">Array</span>
+### <a name="indexSort"></a>`indexSort` <span class="type sate">Sate.IndexSort</span> | <span class="type array">Array</span>
 
 A supported `Sate.IndexSort` or an Array of URLs to use for sorting auto-digest article headings in Index pages. Supported values are:
 
@@ -68,25 +68,25 @@ In the absence of an explicit declaration, the default `Sate.IndexSort.DateDesce
 To specify an explicit order manually, assign an Array of the page URLs in the desired order.
 
 
-### `template` <span class="type string">String</span>
+### <a name="template"></a>`template` <span class="type string">String</span>
 
 The name of the root template to use for the page. Defaults to `html`
 
 
-### `classNames` <span class="type array">Array</span> | <span class="type string">String</span>
+### <a name="classNames"></a>`classNames` <span class="type array">Array</span> | <span class="type string">String</span>
 
 A String or Array of Strings which will be concatenated to the `class` HTML attribute of the page body.
 
 
-### `title` <span class="type string">String</span>
+### <a name="title"></a>`title` <span class="type string">String</span>
 
 A String to use as the content for the `title` tag in the HTML head.
 
-### `subtitle` <span class="type string">String</span>
+### <a name="subtitle"></a>`subtitle` <span class="type string">String</span>
 
 A String to append to the content for the `title` tag in the HTML head.
 
-### `name` <span class="type string">String</span>
+### <a name="name"></a>`name` <span class="type string">String</span>
 
 A String to use as the Page name in Menus, navigation, and as the primary heading of the page. In the absence of an explicit declaration, Sate will infer the page name in the following way:
 
@@ -97,24 +97,24 @@ A String to use as the Page name in Menus, navigation, and as the primary headin
  3. Capitalize the first word and all subsequent words except `the`, `of`, `and`, `in`, and `from`
 
 
-### `date` <span class="type date">Date</span>
+### <a name="date"></a>`date` <span class="type date">Date</span>
 
 A String representing a date to be passed to the JavaScript Date() constructor. In the absence of an explicit declaration, Sate will use the filesystem `modified` date.
 
 This date is used for the sorting of Index page article digests.
 
 
-### `created` <span class="type date">Date</span>
+### <a name="created"></a>`created` <span class="type date">Date</span>
 
 A String representing a date to be passed to the JavaScript Date() constructor. In the absence of an explicit declaration, Sate will use the filesystem `created` date.
 
 
-### `modified` <span class="type date">Date</span>
+### <a name="modified"></a>`modified` <span class="type date">Date</span>
 
 A String representing a date to be passed to the JavaScript Date() constructor. In the absence of an explicit declaration, Sate will use the filesystem `modified` date.
 
 
-### `extraStyles` <span class="type array">Array</span>
+### <a name="extraStyles"></a>`extraStyles` <span class="type array">Array</span>
 
 An Array of additional stylesheets to include in the page header.
 
@@ -124,16 +124,20 @@ Each entry in the Array must uniquely identify a Stylesheet. Valid entries in th
  * An Object containing the key `href` whose value is the above URL, and optionally a `media` key whose value is the media attribute for the `link` tag
 
 
-### `extraScripts` <span class="type array">Array</span>
+### <a name="extraScripts"></a>`extraScripts` <span class="type array">Array</span>
 
 An Array of additional script files to include in the page.
 
 Each entry in the Array must be a String representing the root-relative URL of the Script file.
 
 
-### `plugins` <span class="type array">Array</span>
+### <a name="plugins"></a>`plugins` <span class="type array">Array</span>
 
 An Array of plugin config objects to be compiled and used for the page. Each object must at minimum contain a `type` key identifying the Sate.Plugin-conforming plugin. Additional plugin configuration options are defined by the individual plugins.
 
-{{{plugin-sate-sequenceNav}}}
+{{#plugin-sate-sequenceNav}}
+{
+    "next": "/plugins"
+}
+{{/plugin-sate-sequenceNav}}
 
