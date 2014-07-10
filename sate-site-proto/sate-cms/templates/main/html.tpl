@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="{{{href}}}{{deployRevision}}" type="text/css" media="{{media}}" charset="utf-8">
         {{/styles}}
     </head>
-    <body id="{{id}}" class="{{classNames}}">
+    <body id="{{id}}" class="{{classes}}">
         {{>masthead}}
 
         {{#plugin-sate-pageMenu}}

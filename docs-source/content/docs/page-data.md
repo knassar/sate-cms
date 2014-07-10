@@ -48,8 +48,8 @@ In the absence of an explicit declaration, Sate attempts to infer the parser fro
 
 A supported `Sate.PageType` to use for page content inference. Supported values are:
 
- * `Sate.PageType.Index`
  * `Sate.PageType.Article`
+ * `Sate.PageType.Index`
 
 In the absence of an explicit declaration, Sate attempts to infer the type from the file name, inferring files named `index.*` as Sate.PageType.Index, and all others as Sate.PageType.Article.
 
@@ -73,9 +73,9 @@ To specify an explicit order manually, assign an Array of the page URLs in the d
 The name of the root template to use for the page. Defaults to `html`
 
 
-### <a name="classNames"></a>`classNames` <span class="type array">Array</span> | <span class="type string">String</span>
+### <a name="classes"></a>`classes` <span class="type array">Array</span> | <span class="type string">String</span>
 
-A String or Array of Strings which will be concatenated to the `class` HTML attribute of the page body.
+A String or Array of Strings which will be concatenated together to form the `class` HTML attribute of the page body.
 
 
 ### <a name="title"></a>`title` <span class="type string">String</span>
@@ -121,7 +121,9 @@ An Array of additional stylesheets to include in the page header.
 Each entry in the Array must uniquely identify a Stylesheet. Valid entries in the `extraStyles` Array are:
 
  * A String representing the root-relative URL of the stylesheet
- * An Object containing the key `href` whose value is the above URL, and optionally a `media` key whose value is the media attribute for the `link` tag
+ * An Object containing:
+   * the key `href` whose value is the above URL
+   * optionally a `media` key whose value is the media attribute for the `link` tag
 
 
 ### <a name="extraScripts"></a>`extraScripts` <span class="type array">Array</span>

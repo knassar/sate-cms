@@ -20,7 +20,7 @@ function Website(args, Sate) {
             indexSort: "Sate.IndexSort.DateDescending",
             type: Sate.PageType.Article,
             parser: Sate.Parser.HTML,
-            classNames: [],
+            classes: [],
             extraStyles: [],
             extraScripts: [],
             template: 'html',

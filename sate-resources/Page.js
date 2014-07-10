@@ -83,7 +83,7 @@ function Page(id, props, parent, website, Sate) {
             subPages: {},
             encoding: website.config.encoding,
             contentPath: website.contentPath,
-            classNames: [],
+            classes: [],
             extraStyles: [],
             extraScripts: [],
             parser: Sate.Parser.HTML,
@@ -244,13 +244,13 @@ function Page(id, props, parent, website, Sate) {
     newPage.hasSubpages = function() {
         return this.subPages.length > 0;
     };
-    newPage.classNamesString = function() {
-        if (this.classNames.filter) {
-            return this.classNames.filter(function (e, i, arr) {
+    newPage.classesString = function() {
+        if (this.classes.filter) {
+            return this.classes.filter(function (e, i, arr) {
                 return arr.lastIndexOf(e) === i;
             }).join(' ');
-        } else if (typeof this.classNames == 'string') {
-            return this.classNames;
+        } else if (typeof this.classes == 'string') {
+            return this.classes;
         }
     };
     newPage.addStylesheet = function(href, options) {
@@ -396,7 +396,7 @@ function Page(id, props, parent, website, Sate) {
     newPage.render = function() {
         this.mergeStyles();
         this.mergeScripts();
-        this.classNames = this.classNamesString();
+        this.classes = this.classesString();
         if (Sate.executingCommand == 'deploy') {
             this.deployRevision = '?v='+ new Date().getTime();
         }

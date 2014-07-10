@@ -8,7 +8,7 @@
     },
     "pageDefaults": {
         "title": "Sate",
-        "classNames": "sate-docs",
+        "classes": "sate-docs",
         "subtitle": "Just Enough CMS"
     }
 }
