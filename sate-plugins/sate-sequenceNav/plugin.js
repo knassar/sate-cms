@@ -44,6 +44,7 @@ module.exports = function(Sate) {
                     seq = index.articles;
                 }
             }
+            var website = page.rootPage().website;
             if (seq) {
                 currPageIdx = -1;
                 for (var i=0; i < seq.length; i++) {
@@ -52,19 +53,44 @@ module.exports = function(Sate) {
                         break;
                     }
                 }
-                if (currPageIdx > 0) {
+                if (currPageIdx > 0 && !obj.prev) {
                     obj.prev = {
-                        prompt: this.previousPrompt,
                         name: seq[currPageIdx-1].name,
                         url: seq[currPageIdx-1].url
                     };
                 }
-                if (currPageIdx < seq.length -1) {
+                else if (typeof obj.prev == 'string') {
+                    var prevPage = website.pageForPath(obj.prev);
+                    obj.prev = {
+                        name: prevPage.name,
+                        url: prevPage.url
+                    }
+                }
+                
+                if (typeof obj.prev == 'object') {
+                    obj.prev = Sate.chain({
+                        prompt: this.previousPrompt
+                    }, obj.prev);
+                }
+
+                if (currPageIdx < seq.length -1 && !obj.next) {
                     obj.next = {
-                        prompt: this.nextPrompt,
                         name: seq[currPageIdx+1].name,
                         url: seq[currPageIdx+1].url
                     };
+                }
+                else if (typeof obj.next == 'string') {
+                    var nextPage = website.pageForPath(obj.next);
+                    obj.next = {
+                        name: nextPage.name,
+                        url: nextPage.url
+                    }
+                }
+
+                if (typeof obj.next == 'object') {
+                    obj.next = Sate.chain({
+                        prompt: this.nextPrompt
+                    }, obj.next);
                 }
             }
             
