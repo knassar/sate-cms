@@ -16,20 +16,20 @@
     <body id="{{id}}" class="{{classes}}">
         {{>masthead}}
 
-        {{#plugin-sate-pageMenu}}
+        {{#plugin-sate-menu}}
         {
             "id": "siteMenu",
             "inherited": true,
             "classes": ["top-menu"]
         }
-        {{/plugin-sate-pageMenu}}
+        {{/plugin-sate-menu}}
 
-        {{#plugin-sate-pageMenu}}
+        {{#plugin-sate-menu}}
         {
             "id": "pageMenu",
             "classes": ["side-menu"]
         }
-        {{/plugin-sate-pageMenu}}
+        {{/plugin-sate-menu}}
 
         <div id="pageBody" class="{{type}}">
             {{#plugin-sate-breadcrumbs}}

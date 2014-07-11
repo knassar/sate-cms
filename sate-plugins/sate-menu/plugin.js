@@ -1,13 +1,13 @@
 /**
 * Sate Page Menu plugin
-* Use like: {{plugin-sate-pageMenu}}
+* Use like: {{plugin-sate-menu}}
 */
 module.exports = function(Sate) {
     var Plugin = require(__dirname+'/../Plugin'),
         util = require('util');
 
     var plg = new Plugin(Sate, {
-        type: 'sate-pageMenu',
+        type: 'sate-menu',
         version: '0.5.0',
         mainTag: 'ul',
         items: [],
@@ -25,10 +25,10 @@ module.exports = function(Sate) {
         },
         templates: {
             'menu-node': 'menu-node.tpl',
-            'main': 'pageMenu.tpl'
+            'main': 'main.tpl'
         },
         stylesheets: [
-            'pageMenu.css',
+            'menu.css',
             'top-menu.css',
             'side-menu.css'
         ],
@@ -36,69 +36,66 @@ module.exports = function(Sate) {
             item.active = (item.url == page.url);
             item.activeDescendant = (page.url.indexOf(item.url + "/") == 0);
         },
-        populateMenu: function(obj, page, website, sub) {
-            for (var u in obj.items) {
-                if (obj.items.hasOwnProperty(u)) {
-                    if (!obj.items[u].classes) {
-                        obj.items[u].classes = [];
+        populateMenu: function(obj, page, sub) {
+            var website = Sate.currentSite;
+            if (util.isArray(obj.items)) {
+                obj.items = obj.items.map(function(item) {
+                    return Sate.pageDescriptor(item);
+                })
+
+                obj.items.forEach(function(item) {
+                    if (!item.classes) {
+                        item.classes = [];
                     }
-                    
-                    if (!obj.items[u].name && obj.items[u].url) {
-                        var thisPage = website.pageForPath(obj.items[u].url);
-                        if (!thisPage) {
-                        }
-                        obj.items[u].name = website.pageForPath(obj.items[u].url).name;
+                
+                    if (item.name && !item.url) {
+                        item.subtitle = true;
                     }
-                    else if (obj.items[u].name && !obj.items[u].url) {
-                        obj.items[u].subtitle = true;
+                
+                    if (item.url) {
+                        var menuPage = website.pageForPath(item.url);
                     }
-                    
-                    if (obj.items[u].url) {
-                        var menuPage = website.pageForPath(obj.items[u].url);
+                
+                    if (item.items) {
+                        this.populateMenu(item, page, true);
+                        item.hasSubItems = item.items.length > 0;
                     }
-                    
-                    if (obj.items[u].items) {
-                        this.populateMenu(obj.items[u], page, website, true);
-                        obj.items[u].hasSubItems = obj.items[u].items.length > 0;
-                    }
-                    else if (obj.items[u].includeSublevel) {
-                        var thisPage = website.pageForPath(obj.items[u].url);
+                    else if (item.includeSublevel) {
+                        var thisPage = website.pageForPath(item.url);
                         if (thisPage && thisPage.type == Sate.PageType.Index) {
                             var base = "/";
                             if (!thisPage.isRoot) {
                                 base = thisPage.url + "/";
                             }
-                            obj.items[u].items = [];
+                            item.items = [];
                             for (var i = 0; i < thisPage.articles.length; i++) {
-                                obj.items[u].items.push({"url": base + thisPage.articles[i].id});
+                                item.items.push({"url": base + thisPage.articles[i].id});
                             }
                         }
                         else if (menuPage.subPages) {
                             var items = [];
                             for (p in menuPage.subPages) {
                                 if (menuPage.subPages.hasOwnProperty(p)) {
-                                    items.push({
-                                        "url": menuPage.subPages[p].url
-                                    });
+                                    items.push(menuPage.subPages[p].descriptor);
                                 }
                             }
-                            obj.items[u].items = items;
+                            item.items = items;
                         }
-                        this.populateMenu(obj.items[u], page, website);
-                        obj.items[u].hasSubItems = obj.items[u].items.length > 0;
+                        this.populateMenu(item, page);
+                        item.hasSubItems = item.items.length > 0;
                     }
                     else {
-                        obj.items[u].hasSubItems = false;
+                        item.hasSubItems = false;
                     }
 
                     if (!sub) {
-                        this.setItemActiveState(obj.items[u], page);
+                        this.setItemActiveState(item, page);
                     }
                     else {
-                        obj.items[u].active = false;
-                        obj.items[u].activeDescendant = false;
+                        item.active = false;
+                        item.activeDescendant = false;
                     }
-                }
+                }, this);
             }
         },
         pluginDataFromPage: function(page, config) {
@@ -160,14 +157,10 @@ module.exports = function(Sate) {
 
             this.composeClasses(obj);
 
-            var website = page.rootPage().website;
             if (obj.parentLink && page.parent) {
-                obj.parent = {
-                    "url": page.parent.url,
-                    "name": website.pageForPath(page.parent.url).name
-                };
+                obj.parent = page.parent.descriptor();
             }
-            this.populateMenu(obj, page, website);
+            this.populateMenu(obj, page);
             if (util.isArray(obj.items) && obj.items.length > 0) {
 
             }

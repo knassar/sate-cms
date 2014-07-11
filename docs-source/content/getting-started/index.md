@@ -1,13 +1,13 @@
 {
     "name": "Getting Started with Sate",
     "articleSort": [
-        "/docs/getting-started/installing-sate",
-        "/docs/getting-started/creating",
-        "/docs/getting-started/sate-basics"
+        "/getting-started/installing-sate",
+        "/getting-started/creating",
+        "/getting-started/sate-basics"
     ],
     "plugins": [
         {
-            "type": "sate-pageMenu",
+            "type": "sate-menu",
             "id": "pageMenu",
             "inherited": true,
             "parentLink": true

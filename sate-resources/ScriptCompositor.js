@@ -8,18 +8,18 @@ function ScriptCompositor(Sate) {
             
     var compositor = {
         pluginScripts: [],
-        execute: function(website, sitePath, targetPath, complete) {
+        execute: function(sitePath, targetPath, complete) {
             var self = this;
-            var enc = {encoding: website.config.encoding};
+            var enc = {encoding: Sate.currentSite.config.encoding};
             var lines;
             flow.exec(
                 function() {
-                    pluginsResolver.allInstalledPlugins(website, this);
+                    pluginsResolver.allInstalledPlugins(this);
                 },
                 function(plugins) {
                     plugins.forEach(function(plugin) {
                         if (plugin.scripts && plugin.scripts.length > 0) {
-                            var pluginPath = pluginsResolver.resourcesDirForPlugin(website, plugin);
+                            var pluginPath = pluginsResolver.resourcesDirForPlugin(plugin);
                             self.pluginScripts.push('/** '+plugin.type+' **/');
                             plugin.scripts.forEach(function(script) {
                                 self.pluginScripts.push('/** '+script+' **/;');

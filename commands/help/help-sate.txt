@@ -9,6 +9,7 @@ Sate has the following commands:
     help [command]          Show help for any command.
                             
     create                  Generate a prototype Sate website scaffold in the desired directory
+    (alias: new)
                             
     update                  Update Sate plugins and support files in the target directory
                             
@@ -16,15 +17,12 @@ Sate has the following commands:
                             by re-evaluating all website sources on each request. This is 
                             useful when developing site content.
                             
-    run                     Starts a web-server which serves website page requests. This 
-                            differs from 'develop' in that the website sources are evaluated
-                            only once at server-start time.
-                            
     deploy                  Evaluates all website sources and generates the entire website as
-                            static pages, for serving from Apache, Nginx, or other web server
+    (alias: build)          static pages, for serving from Apache, Nginx, or other web server
                             Use this in production for highest performance.
                             
-    analyze                 Evaluate all website sources just as 'run' or 'deploy' without 
+    analyze                 ** Unimplemented **
+                            Evaluate all website sources just as 'run' or 'deploy' without 
                             producing any artifacts or server processes.
                             Returns a report on any fatal or non-fatal issues found, such as 
                             un-parseable config or missing page content.

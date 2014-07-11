@@ -152,7 +152,7 @@ Because `@section:` markers must always appear at the beginning of a line, if yo
 {{#plugin-sate-sequenceNav}}
 {
     "prev": {
-        "url": "/docs/getting-started/sate-basics",
+        "url": "/getting-started/sate-basics",
         "name": "Getting Started: Sate Basics"
     }
 }

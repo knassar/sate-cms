@@ -47,6 +47,7 @@ function Update(Sate) {
         (new Command(Sate)),
         {
             _super: (new Command(Sate)),
+            commandName: 'update',
             args: {
                 force: false,
                 addMissing: false
@@ -132,8 +133,10 @@ function Update(Sate) {
     return cmd;
 }
 
-module.exports = function(args, Sate) {
+var exec = function(args, Sate) {
     var cmd = new Update(Sate);
     cmd.captureFlags(args);
     cmd.execute();
 };
+exec.commandName = 'update';
+module.exports = exec;

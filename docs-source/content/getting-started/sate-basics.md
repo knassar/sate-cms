@@ -22,7 +22,7 @@ The boilerplate that Sate generates when you use the `create` directive includes
 
 This directory contains several key pieces of the Sate website. Under `sate-cms`, you'll find the following directories:
 
- * `error`: Template file for 404 errors
+ * `error`: Template files for errors such as 404, etc.
  * `templates`: The default templates used by Sate. You may modify these or add any site-wide templates to this subdirectory
  * `plugins`: This directory contains all the standard [Sate plugins](/plugins). To install a new plugin for your site, simply copy it into this directory. If you choose not to use a plugin on your site, you can simply delete the folder for that plugin. When new versions of Sate are relased, you can non-destructively update the plugins you've installed or re-install plugins you've removed by using the [Update](/docs/using-sate) directive.
  
@@ -31,9 +31,17 @@ This directory contains several key pieces of the Sate website. Under `sate-cms`
 
 The `styles` and `scripts` directories are for your stylesheets and javascript files respectively. These are not considered "content" and thus are not contained in the `content` directory. When you generate a Sate website with the `deploy` directive, Sate will merge the contents of these directories with the stylesheets and scripts provided by any Sate plugins your site uses and copy them to the build target.
 
+### `images`
+
+The `images` directory contains all the images for your website, in any sub-directory structure you like.
+
 ### `content`
 
 The `content` directory contains the content and structure of your website. Sate considers images to be content, so the `images` directory is contained here. If you wish to change the name of the `content` directory, it is important to tell Sate how to find the new content directory. Do this by setting the `config.contentSources` key in your `website.json` file.
+
+### URLs and Content
+
+Even though Sate expects all content sources to be in the directory `content`, you should treat all URLs internal to your website as if the `content` directory does not exist. URLs for styles, scripts, and images should all be root-relative (`/stlyes/foo.css`), and content URLs should be root-relative to the `content` directory (`/about/me`).
 
 ## Editing Content
 
@@ -65,7 +73,7 @@ It's important to note that these automatic inferences can be [overridden for an
 
 {{#plugin-sate-sequenceNav}}
 {
-    "next": "/docs/sate-website"
+    "next": "/docs"
 }
 {{/plugin-sate-sequenceNav}}
 

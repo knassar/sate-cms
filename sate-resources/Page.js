@@ -1,4 +1,4 @@
-function Page(id, props, parent, website, Sate) {
+function Page(id, props, parent, Sate) {
     var fs = require('fs'),
         path = require('path'),
         util = require('util'),
@@ -12,13 +12,13 @@ function Page(id, props, parent, website, Sate) {
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
         pluginsResolver = new PagePluginsResolver(Sate);
         
-    var loadPartial = function(page, website, t, stepDone) {
-        var data = fs.readFileSync(path.join(website.sateSources, 'templates', page.partials[t]), {encoding: website.config.encoding});
+    var loadPartial = function(page, t, stepDone) {
+        var data = fs.readFileSync(path.join(Sate.currentSite.sateSources, 'templates', page.partials[t]), {encoding: Sate.currentSite.config.encoding});
         
         if (data) {
             // @TODO: compile the templates for better performance
             page.compiledPartials[t] = data;
-            website.compiledPartials[t] = data;
+            Sate.currentSite.compiledPartials[t] = data;
             stepDone(t);
         } else {
             stepDone(t);
@@ -41,16 +41,16 @@ function Page(id, props, parent, website, Sate) {
         dataResolver.resolve(page);
     };
 
-    var initialize = function(page, website, Sate) {
+    var initialize = function(page, Sate) {
         resolvePage(page);
         
         var extension = (page.contentExtension) ? '.'+page.contentExtension : Sate.Parser.extensionForParser(page.parser);
         
         if (page.isRoot) {
             if (!page.url) {
-                page.url = website.config.rootPageUrl;
+                page.url = Sate.currentSite.config.rootPageUrl;
             }
-            page.resolvedContentPath = path.join(website.contentPath, 'index' + extension);
+            page.resolvedContentPath = path.join(Sate.currentSite.contentPath, 'index' + extension);
         } else if (page.type == Sate.PageType.Error && page.contentPath) {
             page.url = page.contentPath.replace(/^\.\//, '').replace(/\.html$/, '');
             page.resolvedContentPath = page.contentPath;
@@ -59,9 +59,9 @@ function Page(id, props, parent, website, Sate) {
                 page.url = [page.parentUrl, page.id].join('/').replace(/[\/]+/g, '/');
             }
             if (page.type === Sate.PageType.Index) {
-                page.resolvedContentPath = path.join(website.contentPath, page.url + '/index' + extension);
+                page.resolvedContentPath = path.join(Sate.currentSite.contentPath, page.url + '/index' + extension);
             } else {
-                page.resolvedContentPath = path.join(website.contentPath, page.url + extension);
+                page.resolvedContentPath = path.join(Sate.currentSite.contentPath, page.url + extension);
             }
         }
 
@@ -81,8 +81,8 @@ function Page(id, props, parent, website, Sate) {
             indexSort: Sate.IndexSort.DateDescending,
             type: Sate.PageType.Empty,
             subPages: {},
-            encoding: website.config.encoding,
-            contentPath: website.contentPath,
+            encoding: Sate.currentSite.config.encoding,
+            contentPath: Sate.currentSite.contentPath,
             classes: [],
             extraStyles: [],
             extraScripts: [],
@@ -106,14 +106,14 @@ function Page(id, props, parent, website, Sate) {
             partials: {},
             compiledPartials: {}
         },
-        website.pageDefaults,
+        Sate.currentSite.pageDefaults,
         props, 
         {
             id: id,
-            templates: website.compiledTemplates,
-            compiledPartials: website.compiledPartials,
-            sitePath: website.sitePath,
-            sateSources: website.sateSources,
+            templates: Sate.currentSite.compiledTemplates,
+            compiledPartials: Sate.currentSite.compiledPartials,
+            sitePath: Sate.currentSite.sitePath,
+            sateSources: Sate.currentSite.sateSources,
             parentUrl: (parent) ? parent.url : null,
             compiled: false,
             pluginsById: {},
@@ -122,7 +122,7 @@ function Page(id, props, parent, website, Sate) {
             styleIds: [],
             scriptIds: [],
             typeOf: 'Sate.Page',
-            isRoot: (id == website.config.rootPage)
+            isRoot: (id == Sate.currentSite.config.rootPage)
         });
 
     newPage.compile = function(withMetrics, complete) {
@@ -131,12 +131,12 @@ function Page(id, props, parent, website, Sate) {
             function() {
                 var count = 0;
                 for (var t in self.partials) {
-                    if (self.partials.hasOwnProperty(t) && !website.compiledPartials.hasOwnProperty(t)) {
+                    if (self.partials.hasOwnProperty(t) && !Sate.currentSite.compiledPartials.hasOwnProperty(t)) {
                         count++;
                         Sate.Log.logAction("loading partial "+t, 1);
-                        loadPartial(self, website, t, this.MULTI(t));
+                        loadPartial(self, t, this.MULTI(t));
                     } else {
-                        self.compiledPartials[t] = website.compiledPartials[t];
+                        self.compiledPartials[t] = Sate.currentSite.compiledPartials[t];
                     }
                 }
                 if (count === 0) {
@@ -200,7 +200,7 @@ function Page(id, props, parent, website, Sate) {
                 var count = 0;
                 for (var p in self.articles) {
                     if (self.articles.hasOwnProperty(p)) {
-                        var subPage = website.pageForPath(self.articles[p]);
+                        var subPage = Sate.currentSite.pageForPath(self.articles[p]);
                         subPage.resolvePlugins(withMetrics, this.MULTI(p));
                         count++;
                     }
@@ -213,7 +213,7 @@ function Page(id, props, parent, website, Sate) {
                 var composedArticles = [];
                 for (var p in self.articles) {
                     if (self.articles.hasOwnProperty(p)) {
-                        var subPage = website.pageForPath(self.articles[p]);
+                        var subPage = Sate.currentSite.pageForPath(self.articles[p]);
                         composeArticleIntroForIndexPage(self, subPage);
                         composedArticles.push(subPage);
                     }
@@ -340,7 +340,7 @@ function Page(id, props, parent, website, Sate) {
         });
     };
     newPage.resolvePlugins = function(withMetrics, complete) {
-        pluginsResolver.resolve(this, website, complete);
+        pluginsResolver.resolve(this, complete);
     };
     newPage.pluginById = function(pluginId) {
         return this.pluginsById[pluginId];
@@ -386,6 +386,12 @@ function Page(id, props, parent, website, Sate) {
         }
         return p;
     };
+    newPage.descriptor = function() {
+        return {
+            url: this.url,
+            name: this.name
+        };
+    };
     newPage.rootPage = function() {
         var p = this;
         while (!p.isRoot && p.parent) {
@@ -404,7 +410,22 @@ function Page(id, props, parent, website, Sate) {
         return html;
     };
     
-    initialize(newPage, website, Sate);
+    initialize(newPage, Sate);
+
+    Sate.pageDescriptor = function(descr) {
+        var descriptor;
+        if (typeof descr == 'string') {
+            descriptor = {url: descr};
+        }
+        else if (typeof descr == 'object') {
+            descriptor = Sate.chain({}, descr);
+        }
+        if (descriptor && descriptor.url && !descriptor.name) {
+            descriptor.name = Sate.currentSite.pageForPath(descriptor.url).name;
+        }
+        return descriptor;
+    };
+
     return newPage;
 }
 

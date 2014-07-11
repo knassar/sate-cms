@@ -7,6 +7,7 @@ function Develop(Sate) {
         (new Command(Sate)),
         {
             _super: (new Command(Sate)),
+            commandName: 'develop',
             args: {
                 port: 3000,
                 logLevel: Sate.LogLevel.Normal
@@ -35,8 +36,10 @@ function Develop(Sate) {
     return cmd;
 }
 
-module.exports = function(args, Sate) {
+var exec = function(args, Sate) {
     var cmd = new Develop(Sate);
     cmd.captureFlags(args);
     cmd.execute();
 };
+exec.commandName = 'develop';
+module.exports = exec;

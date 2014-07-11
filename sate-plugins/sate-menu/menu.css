@@ -1,23 +1,23 @@
-.plugin-sate-pageMenu,
-.plugin-sate-pageMenu ul
+.plugin-sate-menu,
+.plugin-sate-menu ul
 {
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.plugin-sate-pageMenu li.active a
+.plugin-sate-menu li.active a
 {
     font-weight: bold;
     color: black;
 }
 
-.plugin-sate-pageMenu li a 
+.plugin-sate-menu li a 
 {
     text-decoration: none;
 }
 
-.plugin-sate-pageMenu li
+.plugin-sate-menu li
 {
     margin: 0;
     padding: 0;

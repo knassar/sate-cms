@@ -1,36 +1,36 @@
-.plugin-sate-pageMenu.top-menu,
-.plugin-sate-pageMenu.top-menu ul
+.plugin-sate-menu.top-menu,
+.plugin-sate-menu.top-menu ul
 {
     background-color: white;
     padding: 0.5em 1em;
     box-shadow: #bbb 0 2px 5px;
 }
 
-.plugin-sate-pageMenu.top-menu li a 
+.plugin-sate-menu.top-menu li a 
 {
     color: black;
     text-decoration: none;
     line-height: 1em;
 }
 
-.plugin-sate-pageMenu.top-menu li a:hover 
+.plugin-sate-menu.top-menu li a:hover 
 {
     color: #c90;
 }
 
-.plugin-sate-pageMenu.top-menu > li.active > a 
+.plugin-sate-menu.top-menu > li.active > a 
 {
     font-weight: bold;
 	color: #c90;
 }
 
-.plugin-sate-pageMenu.top-menu > li:hover > ul 
+.plugin-sate-menu.top-menu > li:hover > ul 
 {
     background-color: white;
     box-shadow: #999 0px 4px 5px;
 }
 
-.plugin-sate-pageMenu.top-menu > li:hover > ul::before 
+.plugin-sate-menu.top-menu > li:hover > ul::before 
 {
     content: "";
     position: absolute;
@@ -40,7 +40,7 @@
     left: 0;
 }
 
-.plugin-sate-pageMenu.side-menu 
+.plugin-sate-menu.side-menu 
 {
     float: left;
     min-width: 12em;

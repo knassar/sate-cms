@@ -1,7 +1,6 @@
 {
     "name": "Documentation",
     "articleSort": [
-        "/docs/getting-started",
         "/docs/sate-website",
         "/docs/the-chain",
         "/docs/using-sate",
@@ -9,14 +8,11 @@
     ],
     "plugins": [
         {
-            "type": "sate-pageMenu",
+            "type": "sate-menu",
             "id": "pageMenu",
             "inherited": true,
             "parentLink": true,
             "items": [
-                {
-                    "url": "/docs/getting-started"
-                },
                 {
                     "url": "/docs/sate-website"
                 },

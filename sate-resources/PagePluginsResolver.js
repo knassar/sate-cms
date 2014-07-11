@@ -18,7 +18,7 @@ var initializePluginInDir = function(pluginType, pluginsDir, Sate) {
     return plugin;
 };
 
-var resolvePlugin = function(pluginData, resolvedPlugins, page, website, Sate, complete) {
+var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) {
 
     var fs = require('fs'),
         path = require('path'),
@@ -121,13 +121,13 @@ function PagePluginsResolver(Sate) {
     var flow = require(Sate.nodeModInstallDir+'flow');
 
     var resolver = this;
-    resolver.resolve = function(page, website, complete) {
+    resolver.resolve = function(page, complete) {
         flow.exec(
             function() {
                 var resolvedPlugins = [];
                 var count = 0;
                 for (var i=0; i < page.plugins.length; i++) {
-                    resolvePlugin(page.plugins[i], resolvedPlugins, page, website, Sate, this.MULTI(page.plugins[i].type));
+                    resolvePlugin(page.plugins[i], resolvedPlugins, page, Sate, this.MULTI(page.plugins[i].type));
                     count++;
                 }
                 page.plugins = resolvedPlugins;
@@ -140,12 +140,12 @@ function PagePluginsResolver(Sate) {
             }
         );
     };
-    resolver.allInstalledPlugins = function(website, complete) {
+    resolver.allInstalledPlugins = function(complete) {
         var fs = require('fs'),
             path = require('path'),
             flow = require(Sate.nodeModInstallDir+'flow');
 
-        var pluginsDir = fs.realpathSync(path.join(website.sateSources, 'plugins'));
+        var pluginsDir = fs.realpathSync(path.join(Sate.currentSite.sateSources, 'plugins'));
         var files;
         var plugins = [];
         try {
@@ -168,11 +168,11 @@ function PagePluginsResolver(Sate) {
         
         complete(plugins);
     };
-    resolver.resourcesDirForPlugin = function(website, plugin) {
+    resolver.resourcesDirForPlugin = function(plugin) {
         var fs = require('fs'),
             path = require('path');
 
-        return fs.realpathSync(path.join(website.sateSources, 'plugins', plugin.type));
+        return fs.realpathSync(path.join(Sate.currentSite.sateSources, 'plugins', plugin.type));
     }
     return resolver;
 }

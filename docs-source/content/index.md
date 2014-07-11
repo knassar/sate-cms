@@ -2,7 +2,7 @@
     "type": "Sate.PageType.Index",
     "plugins": [
         {
-            "type": "sate-pageMenu",
+            "type": "sate-menu",
             "id": "siteMenu",
             "inherited": true,
             "items": [
@@ -12,19 +12,21 @@
                 },
                 {
                     "includeSublevel": true,
+                    "url": "/getting-started"
+                },
+                {
+                    "includeSublevel": true,
                     "url": "/docs"
                 },
                 {
                     "includeSublevel": true,
                     "url": "/plugins"
                 },
-                {
-                    "url": "/about-sate"
-                }
+                "/about-sate"
             ]
         },
         {
-            "type": "sate-pageMenu",
+            "type": "sate-menu",
             "id": "pageMenu",
             "items": false
         },

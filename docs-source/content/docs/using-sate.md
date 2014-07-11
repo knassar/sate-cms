@@ -45,6 +45,14 @@ Sate supports the following directives:
     </tr>
     <tr>
         <td class="code">
+            [new](#create)
+        </td>
+        <td>
+            An alias for [`create`](#create).
+        </td>
+    </tr>
+    <tr>
+        <td class="code">
             [update](#update)
         </td>
         <td>
@@ -59,14 +67,14 @@ Sate supports the following directives:
             Starts a stateless webserver which serves website page requests by re-evaluating all website sources on each request. This is useful when developing site content, as individual pages can be tested by reloading the browser page with each tweak.
         </td>
     </tr>
-    <tr>
+    <!-- <tr>
         <td class="code">
             [run](#run)
         </td>
         <td>
             Starts a web-server which serves website page requests. This differs from 'develop' in that the website sources are evaluated only once at server-start time. The server must be restarted for source changes to have any affect. **This directive is experimental, and should not be used in a production environment**
         </td>
-    </tr>
+    </tr> -->
     <tr>
         <td class="code">
             [deploy](#deploy)
@@ -77,12 +85,20 @@ Sate supports the following directives:
     </tr>
     <tr>
         <td class="code">
+            [build](#deploy)
+        </td>
+        <td>
+            An alias for [`deploy`](#deploy)
+        </td>
+    </tr>
+    <!-- <tr>
+        <td class="code">
             [analyze](#analyze)
         </td>
         <td>
             Evaluate all website sources just as `run` or `deploy` without producing any artifacts or server processes. Returns a report on any fatal or non-fatal issues found, such as un-parseable config or missing page content.
         </td>
-    </tr>
+    </tr> -->
 </table>
 
 Each directive described above is invoked with required or optional arguments. These are described below:
@@ -150,7 +166,7 @@ The `docs` directive installs the Sate docs website and starts a webserver at `l
 </table>
 
 
-## <a name="create">Create</a>
+## <a name="create">Create</a> (alias `new`)
 
 The `create` directive installs a new Sate boilerplate website at the provided path. The following flags can be passed to the `create` directive:
 
@@ -303,8 +319,8 @@ The `develop` directive starts a stateless webserver which serves website page r
 </table>
 
 
-
-## <a name="run">Run</a> 
+<!--
+## <a name="run">Run</a>
 
 The `run` directive compiles the website and starts a webserver to serve page requests. This is an experimental feature and should not be relied on for production deployment.
 
@@ -348,10 +364,10 @@ The `run` directive compiles the website and starts a webserver to serve page re
     </tr>
 </table>
 
+ -->
 
 
-
-## <a name="deploy">Deploy</a>
+## <a name="deploy">Deploy</a> (alias `build`)
 
 The `deploy` directive compiles and saves the entire website into static HTML for serving from Apache, Nginix, or other webservers. Typically, you would follow this directive with an `scp` or `rsync` to your webserver.
 
@@ -417,7 +433,7 @@ The `deploy` directive compiles and saves the entire website into static HTML fo
 </table>
 
 
-## <a name="analyze">Analyze</a> 
+<!--## <a name="analyze">Analyze</a>
 
 The `analyze` directive compiles the website without creating any new resources, and emits an output log giving details about the site.
 
@@ -449,7 +465,7 @@ The `analyze` directive compiles the website without creating any new resources,
         </td>
     </tr>
 </table>
-}}
+}} -->
 
 {{{plugin-sate-sequenceNav}}}
 

@@ -24,8 +24,10 @@ function Help(Sate) {
     return cmd;
 }
 
-module.exports = function(args, Sate) {
+var exec = function(args, Sate) {
     var cmd = new Help(Sate);
     cmd.helpForWhat(args);
     cmd.execute();
 };
+exec.commandName = 'sate';
+module.exports = exec;

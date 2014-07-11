@@ -1,7 +1,7 @@
 {
     "plugins": [
         {
-            "type": "sate-pageMenu",
+            "type": "sate-menu",
             "id": "siteMenu",
             "inherited": true,
             "items": [
@@ -15,7 +15,7 @@
             ]
         },
         {
-            "type": "sate-pageMenu",
+            "type": "sate-menu",
             "id": "pageMenu",
             "items": false
         },

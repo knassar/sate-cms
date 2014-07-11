@@ -44,7 +44,6 @@ module.exports = function(Sate) {
                     seq = index.articles;
                 }
             }
-            var website = page.rootPage().website;
             if (seq) {
                 currPageIdx = -1;
                 for (var i=0; i < seq.length; i++) {
@@ -54,44 +53,25 @@ module.exports = function(Sate) {
                     }
                 }
                 if (currPageIdx > 0 && !obj.prev) {
-                    obj.prev = {
-                        name: seq[currPageIdx-1].name,
-                        url: seq[currPageIdx-1].url
-                    };
+                    obj.prev = seq[currPageIdx-1].descriptor();
                 }
-                else if (typeof obj.prev == 'string') {
-                    var prevPage = website.pageForPath(obj.prev);
-                    obj.prev = {
-                        name: prevPage.name,
-                        url: prevPage.url
-                    }
+                else {
+                    obj.prev = Sate.pageDescriptor(obj.prev);
                 }
-                
-                if (typeof obj.prev == 'object') {
-                    obj.prev = Sate.chain({
-                        prompt: this.previousPrompt
-                    }, obj.prev);
+                if (obj.prev) {
+                    obj.prev.prompt = this.previousPrompt;
                 }
 
                 if (currPageIdx < seq.length -1 && !obj.next) {
-                    obj.next = {
-                        name: seq[currPageIdx+1].name,
-                        url: seq[currPageIdx+1].url
-                    };
+                    obj.next = seq[currPageIdx+1].descriptor();
                 }
-                else if (typeof obj.next == 'string') {
-                    var nextPage = website.pageForPath(obj.next);
-                    obj.next = {
-                        name: nextPage.name,
-                        url: nextPage.url
-                    }
+                else {
+                    obj.next = Sate.pageDescriptor(obj.next);
                 }
-
-                if (typeof obj.next == 'object') {
-                    obj.next = Sate.chain({
-                        prompt: this.nextPrompt
-                    }, obj.next);
+                if (obj.next) {
+                    obj.next.prompt = this.nextPrompt;
                 }
+                
             }
             
             this.composeClasses(obj);

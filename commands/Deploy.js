@@ -33,6 +33,7 @@ function Deploy(Sate) {
         (new Command(Sate)),
         {
             _super: (new Command(Sate)),
+            commandName: 'deploy',
             args: {
                 targetPath: false,
                 overwrite: false,
@@ -170,8 +171,10 @@ function Deploy(Sate) {
 }
 
 
-module.exports = function(args, Sate) {
+var exec = function(args, Sate) {
     var cmd = new Deploy(Sate);
     cmd.captureFlags(args);
     cmd.execute();
 };
+exec.commandName = 'deploy';
+module.exports = exec;

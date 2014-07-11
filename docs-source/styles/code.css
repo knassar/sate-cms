@@ -66,10 +66,20 @@ pre
     background-color: #959;
 }
 
+.type.boolean {
+    background-color: #456;
+}
+
 .type.date {
     background-color: #995;
 }
 
 .type.sate {
     background-color: orange;
+}
+
+.type.page-descriptor {    
+    background-color: white;
+    border: blue 1px solid;
+    color: blue;
 }

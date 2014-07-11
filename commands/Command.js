@@ -1,16 +1,17 @@
 function Command(Sate) {
     var fs = require('fs'),
         path = require('path');
-        
+
     var cmd = {
         args: {
             encoding: 'utf-8',
             sitePath: './'
         },
+        commandName: 'sate',
         help: function(command) {
             if (command) {
                 try {
-                    console.log(fs.readFileSync(path.join(__dirname, 'help/help-'+command+'.txt'), {encoding: this.args.encoding}));
+                    console.log(fs.readFileSync(path.join(__dirname, 'help/help-'+Sate.Command[command].commandName+'.txt'), {encoding: this.args.encoding}));
                 } catch (err) {
                     this.help();
                 }

@@ -34,7 +34,7 @@ function Plugin(Sate, subobj) {
 
             obj.composedClasses = classes.join(' ') + ' plugin-' + this.type;
         },
-        templates: [],
+        templates: {},
         stylesheets: [],
         scripts: [],
         objectToRender: function(config, page) {

@@ -34,7 +34,7 @@ function Website(args, Sate) {
                     id: "article-intro-breadcrumbs"
                 },
                 {
-                    type: "sate-pageMenu"
+                    type: "sate-menu"
                 },
                 {
                     type: "sate-sequenceNav"
@@ -64,7 +64,7 @@ function Website(args, Sate) {
     };
 
     var indexPage = function(id, pageData, website, parent) {
-        var page = new Sate.Page(id, pageData, parent, website, Sate);
+        var page = new Sate.Page(id, pageData, parent, Sate);
         website.pageByPath[page.url] = page;
         if (page.subPages) {
             for (var p in page.subPages) {
@@ -365,6 +365,7 @@ function Website(args, Sate) {
             }
         }
     );
+    Sate.currentSite = website;
     return website;
 }
 

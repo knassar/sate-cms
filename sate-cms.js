@@ -8,7 +8,9 @@
                 run:    require(__dirname+'/commands/Run'),
                 analyze:require(__dirname+'/commands/Analyze'),
                 deploy: require(__dirname+'/commands/Deploy'),
+                // build : alias for 'deploy'
                 create: require(__dirname+'/commands/Create'),
+                // new : alias for 'create'
                 update: require(__dirname+'/commands/Update'),
                 docs:   require(__dirname+'/commands/Docs')
             },
@@ -45,6 +47,9 @@
             }
         };
         
+    Sate.Command.build = Sate.Command.deploy;
+    Sate.Command.new = Sate.Command.create;
+    
     var sateCMS = {
         command: Sate.Command.develop,
         processCommand: function(processArgv) {

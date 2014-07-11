@@ -42,8 +42,10 @@ function Analyze(Sate) {
         });
     return cmd;
 }
-module.exports = function(args, Sate) {
+var exec = function(args, Sate) {
     var cmd = new Analyze(Sate);
     cmd.captureFlags(args);
     cmd.execute();
 };
+exec.commandName = 'analyze';
+module.exports = exec;

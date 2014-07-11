@@ -139,8 +139,10 @@ function Create(Sate) {
 }
 
 
-module.exports = function(args, Sate) {
+var exec = function(args, Sate) {
     var cmd = new Create(Sate);
     cmd.captureFlags(args);
     cmd.execute();
 };
+exec.commandName = 'create';
+module.exports = exec;

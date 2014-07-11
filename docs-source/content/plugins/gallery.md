@@ -54,11 +54,14 @@ To configure this gallery, we've included the following JSON in this page's `plu
 
 Having given Sate enough information to identify this gallery, we reference the gallery images in the page `content` block by its `id`:
 
-    {{plugin-sate-gallery}}
+    {{#plugin-sate-gallery}}
     {
         "id": "demo-gallery"
     }
     {{/plugin-sate-gallery}}
+
+
+<%={{ }}=%>
 
 We can provide additional information in the `plugin-sate-gallery` tag to specialize the galleries:
 
@@ -74,16 +77,9 @@ You can also restrict the gallery instance to a single image within the original
 
 If you give a gallery a title, it will be displayed in the viewer for a moment any time the user opens the viewer on an image within the gallery instance, or any time the user navigates in the viewer to one of the images within the gallery instance.
 
-#### `classes` <span class="type array">Array</span>
-
-Specifies an array of Strings to use as the `class` attribute on the outer `HTML` tag of the gallery instance.
 
 
 
-
-
-
-<%={{ }}=%>
 
 {{{plugin-sate-sequenceNav}}}
     

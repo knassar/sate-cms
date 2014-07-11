@@ -7,6 +7,7 @@ function Run(Sate) {
         (new Command(Sate)),
         {
             _super: (new Command(Sate)),
+            commandName: 'run',
             args: {
                 port: 3000,
                 logLevel: Sate.LogLevel.Normal
@@ -36,8 +37,10 @@ function Run(Sate) {
 }
 
 
-module.exports = function(args, Sate) {
+var exec = function(args, Sate) {
     var cmd = new Run(Sate);
     cmd.captureFlags(args);
     cmd.execute();
 };
+exec.commandName = 'run';
+module.exports = exec;

@@ -3,6 +3,9 @@ create help:
 
     sate create [targetPath] [flags]
 
+    also:
+    sate new [targetPath] [flags]
+
 Bootstraps a Sate website at the location provided in targetPath, with a default website.json, and all default Sate plugins. Typically, you would follow up the create command with:
 
     cd [targetPath]
