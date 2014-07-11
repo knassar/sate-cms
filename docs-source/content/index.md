@@ -46,11 +46,8 @@
 
 ## What? *Another* Static Site Generator??
 
-OK. Yes. Another one. Why? Because I had an idea for a minimalist system that could replace my previous website tools, I wanted to do something fairly complicated in [node](nodejs.org) to keep my JavaScript chops up, and I needed a new way to set up and update my various websites.
+OK. Yes. Another one. Why? You can read more about it under [About Sate](/about-sate). But in case you just want to know what's cool about Sate, read on:
 
-Along the way, Sate has gotten more capable as I've accomodated additional features, but I'm very pleased with how little effort (and how little markup/code beyond the actual content) it takes to build quite a large and content-heavy website in Sate.
-
-I'm sure that the sentence "But *`x`* can do that..." will be tossed about. My simple response is that I'd rather know a system inside and out because I built it and have it reflect my personal vision, than to spend a lot of time learning a system that reflects someone else's.
 
 ## Basic principles
 
@@ -74,6 +71,7 @@ Design decisions in Sate have been driven by the following underlying philosophi
    * Breadcrumb navigation
    * Digest pages
    * Image galleries
+   * Plugin-based Extension
  * Content is stored on the filesystem in individual files, prime for SCM management. Sate is backing agnostic.
  * A Developer-friendly workflow:
    * Command-Line Interface

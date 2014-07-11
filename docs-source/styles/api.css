@@ -1,0 +1,36 @@
+@import url('code.css');
+
+
+.api-doc h3 + table,
+.api-doc h4 + table 
+{
+    float: left;
+    margin-right: 3em;
+    margin-bottom: 2em;
+}
+
+.api-doc h4,
+.api-doc h4 + table 
+{
+    margin-left: 6em;
+}
+
+.api-doc h3, h4 {
+    margin-top: 2em;
+    padding-top: 2em;
+    border-top: #ccc 1px solid;
+    clear: left;
+}
+
+.api-doc table td,
+.api-doc table th
+{
+    padding: 0 2em 0 0;
+}
+
+.api-doc table th
+{
+    font-size: 0.8em;
+    color: #999;
+    font-weight: normal;
+}

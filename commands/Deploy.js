@@ -59,13 +59,13 @@ function Deploy(Sate) {
                     function() {
                         var buildLbl = self.site.config.buildDirName;
                         if (!buildLbl) {
-                            buildLbl = self.args.sitePath.split('/').pop();
+                            buildLbl = 'sate-build-'+self.args.sitePath.split('/').pop();
                         }
                         if (!buildLbl) {
-                            buildLbl = self.site.pageDefualts.title.replace(/\s/g, '-');
+                            buildLbl = 'sate-build-'+self.site.pageDefualts.title.replace(/\s/g, '-');
                         }
                         if (self.args.targetPath === false) {
-                            self.args.targetPath = ['../sate-build', buildLbl].join('-');
+                            self.args.targetPath = '../' + buildLbl;
                         }
 
                         fs.readdir(self.args.targetPath, this);

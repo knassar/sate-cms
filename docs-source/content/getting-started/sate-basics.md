@@ -37,7 +37,7 @@ The `images` directory contains all the images for your website, in any sub-dire
 
 ### `content`
 
-The `content` directory contains the content and structure of your website. Sate considers images to be content, so the `images` directory is contained here. If you wish to change the name of the `content` directory, it is important to tell Sate how to find the new content directory. Do this by setting the `config.contentSources` key in your `website.json` file.
+The `content` directory contains the content and structure of your website. If you wish to change the name of the `content` directory, it is important to tell Sate how to find the new content directory. Do this by setting the `config.contentSources` key in your `website.json` file.
 
 ### URLs and Content
 

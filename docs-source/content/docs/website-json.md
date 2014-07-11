@@ -50,7 +50,7 @@ The following properties are defined in the `config` section.
 
 ### <a name="buildDirName"></a>`buildDirName` <span class="type string">String</span>
 
-If defined, this property is used in the pattern `sate-build-`**`buildDirName`** as the name of the target directory for the `sate deploy` command.
+If defined, this property is used as the name of the target directory for the `sate deploy` command.
 
 ### <a name="rootPage"></a>`rootPage` <span class="type string">String</span>
 

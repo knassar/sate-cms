@@ -94,6 +94,7 @@ function Website(args, Sate) {
                 website.errorPages[id] = errPage;
             }
         }
+        website.rootPage = website.siteMap[website.config.rootPage];
         success();
     };
 
@@ -189,6 +190,7 @@ function Website(args, Sate) {
                     setTimeout(action, 25);
                 }
             },
+            rootPage: null,
             parseJSON: function(withMetrics, complete) {
                 Sate.Log.logAction("reading website.json", 0);
                 loadWebsiteJSON(this.sitePath, complete);

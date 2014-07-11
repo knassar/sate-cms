@@ -78,7 +78,7 @@ function Page(id, props, parent, Sate) {
     var newPage = Sate.chain(
         {
             name: "untitled page",
-            indexSort: Sate.IndexSort.DateDescending,
+            articleSort: Sate.IndexSort.DateDescending,
             type: Sate.PageType.Empty,
             subPages: {},
             encoding: Sate.currentSite.config.encoding,

@@ -122,20 +122,14 @@ function PagePluginsResolver(Sate) {
 
     var resolver = this;
     resolver.resolve = function(page, complete) {
-        flow.exec(
-            function() {
-                var resolvedPlugins = [];
-                var count = 0;
-                for (var i=0; i < page.plugins.length; i++) {
-                    resolvePlugin(page.plugins[i], resolvedPlugins, page, Sate, this.MULTI(page.plugins[i].type));
-                    count++;
-                }
-                page.plugins = resolvedPlugins;
-                if (count == 0) {
-                    this.apply();
-                }
+        var resolvedPlugins = [];
+        flow.serialForEach(page.plugins,
+            function(plugin, idx) {
+                resolvePlugin(plugin, resolvedPlugins, page, Sate, this);
             },
+            function(error, newVal) {},
             function() {
+                page.plugins = resolvedPlugins;
                 complete.apply();
             }
         );

@@ -75,8 +75,16 @@ pre
     background-color: #995;
 }
 
+.type.function {
+    background-color: #599;
+}
+
 .type.sate {
     background-color: orange;
+}
+
+.type.null {
+    background-color: #555;
 }
 
 .type.page-descriptor {    

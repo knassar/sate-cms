@@ -1,6 +1,6 @@
 {
     "config": {
-        "buildDirName": "{{buildDirName}}",
+        "buildDirName": "sate-build-{{buildDirName}}",
         "rootPage": "home",
         "rootPageUrl": "/",
         "encoding": "utf-8"

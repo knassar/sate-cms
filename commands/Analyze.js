@@ -18,7 +18,7 @@ function Analyze(Sate) {
                 var numPages = 0;
                 site.eachPage(function() {
                     numPages++;
-                }, true);
+                });
                 console.log( " |    " + numPages + " pages" );
                 logBox(["Done",
                         "Time: "+ runTime + 'ms']);
