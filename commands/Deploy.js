@@ -155,11 +155,11 @@ function Deploy() {
                     },
                     function() {
                         Sate.Log.logAction("Compiling Stylesheets", 0);
-                        styleCompositor.execute(self.site, self.args.sitePath, self.args.targetPath, this);
+                        styleCompositor.execute(self.args.sitePath, self.args.targetPath, this);
                     },
                     function() {
                         Sate.Log.logAction("Compiling Sate Plugin Scripts", 0);
-                        scriptCompositor.execute(self.site, self.args.sitePath, self.args.targetPath, this);
+                        scriptCompositor.execute(self.args.sitePath, self.args.targetPath, this);
                     },
                     function() {
                         Sate.Log.logBox(["Deploy complete", "Generated website at: "+fs.realpathSync(self.args.targetPath)]);

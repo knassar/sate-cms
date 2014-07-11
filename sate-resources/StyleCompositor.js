@@ -58,9 +58,9 @@ function StyleCompositor() {
             return this.composedStyles.indexOf(url) > -1;
         },
         encoding: {},
-        execute: function(website, sitePath, targetPath, complete) {
+        execute: function(sitePath, targetPath, complete) {
             var self = this;
-            self.enc = {encoding: website.config.encoding};
+            self.enc = {encoding: Sate.currentSite.config.encoding};
             var lines;
             flow.exec(
                 function() {
@@ -70,12 +70,12 @@ function StyleCompositor() {
                 },
                 function() {
                     Sate.Log.logAction("Compiling Sate Plugin Stylesheets", 1);
-                    pluginsResolver.allInstalledPlugins(website, this);
+                    pluginsResolver.allInstalledPlugins(this);
                 },
                 function(plugins) {
                     plugins.forEach(function(plugin) {
                         if (plugin.stylesheets && plugin.stylesheets.length > 0) {
-                            var pluginPath = pluginsResolver.resourcesDirForPlugin(website, plugin);
+                            var pluginPath = pluginsResolver.resourcesDirForPlugin(plugin);
                             self.pluginStylesheets.push('/** '+plugin.type+' **/');
                             plugin.stylesheets.forEach(function(style) {
                                 self.pluginStylesheets.push('/** '+style+' **/');
