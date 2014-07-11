@@ -43,14 +43,5 @@ When the left-hand and right-hand property value types differ, the right-hand va
 
 ## Specialized Chaining Rules
 
-There are some variations on the basic Chain of inheritance which apply to specific properties.
+There are some variations on the basic Chain of inheritance which apply to specific properties. In these Docs, you'll see a Chain diagram when a specific variation of the Chain is used.
 
-### The Config Chain
-
-<ol class="the-chain-diagram">
-    <li><span>Sate Defaults</span></li>
-    <li><span>`config` in `website.json`</span></li>
-    <li><span>Sate command-line flags</span></li>
-</ol>
-
-{{{plugin-sate-sequenceNav}}}

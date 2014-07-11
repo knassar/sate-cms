@@ -114,6 +114,9 @@ A String representing a date to be passed to the JavaScript Date() constructor. 
 
 A String representing a date to be passed to the JavaScript Date() constructor. In the absence of an explicit declaration, Sate will use the filesystem `modified` date.
 
+### <a name="partials"></a>`partials` <span class="type object">Object</span>
+
+A dictionary object whose keys are the names of Mustache partials, and whose values are filepaths of the partial file, relative to the website's  `/sate-cms/templates` directory.
 
 ### <a name="extraStyles"></a>`extraStyles` <span class="type array">Array</span>
 

@@ -5,9 +5,7 @@
         "/plugins/breadcrumb-nav", 
         "/plugins/sequence-nav", 
         "/plugins/gallery", 
-        "/plugins/sate-powered", 
-        "/plugins/hello-world",
-        "/plugins/developing-plugins"
+        "/plugins/sate-powered"
     ],
     "plugins": [
         {

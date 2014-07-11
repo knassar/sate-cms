@@ -12,27 +12,11 @@ A website using Sate is structured in two parts:
 @content:
 ## The Sate website.json
 
-This file contains the site-level configuration. Here's an example of a Site website.json file:
-
-<pre class="json">
-{
-    "config": {
-        "rootPage": "home",
-        "rootPageUrl": "/",
-        "contentSources": "./content",
-        "encoding": "utf-8"
-    },
-    "pageDefaults": {
-        "title": "Sate",
-        "classes": "sate-docs",
-        "subtitle": "Just Enough CMS"
-    }
-}
-</pre>
+This file contains the site-level configuration. The [`website.json`](/docs/website-json) page provides an in-depth look at this file.
 
 ## The Sate site files
 
-Given the website.json above, Sate will scan the current directory for the `content` directory. Lets assume the content looks like this:
+Sate uses the `website.json` file to locate the content sources directory. Lets assume the content looks like this:
 
 <pre>
     ./content

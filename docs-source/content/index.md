@@ -22,6 +22,10 @@
                     "includeSublevel": true,
                     "url": "/plugins"
                 },
+                {
+                    "includeSublevel": true,
+                    "url": "/sate-apis"
+                },
                 "/about-sate"
             ]
         },
