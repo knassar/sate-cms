@@ -69,14 +69,14 @@ Design decisions in Sate have been driven by the following underlying philosophi
  * Directly edit markup, styles, and scripts as if you were hand-coding a site.
  * Automatic metadata inference lets you explicitly declare as little as possible about your website and pages.
  * Implicit Site-mapping allows you to focus on your content, instead of what the sitemap looks like.
- * "Template inversion" approach means individual pages have no repetitive "ceremony" necessary.
+ * "Template Inversion" approach means individual pages have no repetitive "ceremony" necessary.
  * Automatic modern CMS facilities such as:
-   * breadcrumb navigation
-   * digest pages
-   * image galleries
+   * Breadcrumb navigation
+   * Digest pages
+   * Image galleries
  * Content is stored on the filesystem in individual files, prime for SCM management. Sate is backing agnostic.
  * A Developer-friendly workflow:
    * Command-Line Interface
    * Edit & Refresh "develop" server for rapid iteration of site content
-   * deploy the entire site as static pages for high-performance
+   * Deploy the entire site as static pages for high-performance
 

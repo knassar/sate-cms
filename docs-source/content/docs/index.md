@@ -1,11 +1,12 @@
 {
     "name": "Documentation",
     "articleSort": [
-        "/docs/using-sate",
+        "/docs/sate-cli",
         "/docs/sate-website",
         "/docs/the-chain",
         "/docs/website-json",
-        "/docs/page-data"
+        "/docs/page-data",
+        "/docs/page-descriptors"
     ],
     "plugins": [
         {

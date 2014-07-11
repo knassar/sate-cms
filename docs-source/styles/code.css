@@ -48,6 +48,7 @@ pre
     border-radius: 0.25em;
     background-color: silver;
     color: white;
+    white-space: nowrap;
 }
 
 .type.string {

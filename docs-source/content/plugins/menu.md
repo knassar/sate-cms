@@ -106,7 +106,7 @@ The Menu plugin supports an additional feature for breaking up a long list of it
 
 
 
-[pagedescr]: /docs/page-data#pageDescriptors
+[pagedescr]: /docs/page-descriptors
 
 
 {{{plugin-sate-sequenceNav}}}

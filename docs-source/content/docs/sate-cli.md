@@ -1,3 +1,7 @@
+{
+    "name": "The Sate Command Line"
+}
+
 @intro:
 
 Sate is a Node.js command-line-application that is run with the following syntax:

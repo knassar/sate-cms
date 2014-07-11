@@ -21,6 +21,7 @@ You can declare page-level overrides of inferred values at two different levels:
     <li><span>`pageDefaults` in `website.json`</span></li>
     <li><span>Automatic Inference</span></li>
     <li><span>Page data block in content file</span></li>
+    <li><span>Referencing <a class="type page-descriptor" href="/docs/page-descriptors">Page Descriptor</a></span></li>
 </ol>
 
 The page data block defined at the top of the page content file must contain valid JSON.
@@ -141,42 +142,5 @@ Each entry in the Array must be a String representing the root-relative URL of t
 
 An Array of plugin config objects to be compiled and used for the page. Each object must at minimum contain a `type` key identifying the Sate.Plugin-conforming plugin. Additional plugin configuration options are defined by the individual plugins.
 
-
-## <a name="pageDescriptors"></a>Page Descriptors
-
-In various places within Sate, it is useful to make references to other pages within the Sate website. For example, several Sate Plugins generate references to other pages in your website. Sate has a standard representation of a page which is used in these cases, the Page Descriptor.
-
-Either of the following are valid Page Descriptors:
-
-### String Page Descriptor <span class="type string">String</span>
-
-When the Page Descriptor is a string, it must be the root-relative final URL of the target page:
-
-    "page": "/my/path/to/page"
-    
-
-### Object Page Descriptor <span class="type object">Object</span>
-
-There are cases where you may want to provide additional information to the page reference in the descriptor. For example, for a descriptor for a Menu plugin link, you may want the menu link to use a shortened version of the Page Name in the menu for brevity. In these cases, you can pass an object as the page descriptor:
-
-    "page": {
-        "url": "/my/path/to/page",
-        "name": "The Page"
-    }
-
-When using an object, you **must** provide the `url` key at a minimum, which must conform to the String Page Descriptor pattern above. Additional properties are valid, and will be passed along to the referencing object. 
-
-
-
-
-
-
-
-
-
-{{#plugin-sate-sequenceNav}}
-{
-    "next": "/plugins"
-}
-{{/plugin-sate-sequenceNav}}
+{{{plugin-sate-sequenceNav}}}
 

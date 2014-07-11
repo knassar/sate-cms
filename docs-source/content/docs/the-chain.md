@@ -45,3 +45,5 @@ When the left-hand and right-hand property value types differ, the right-hand va
 
 There are some variations on the basic Chain of inheritance which apply to specific properties. In these Docs, you'll see a Chain diagram when a specific variation of the Chain is used.
 
+
+{{{plugin-sate-sequenceNav}}}

@@ -33,7 +33,7 @@ The following properties can be used to adjust the default behavior of the Seque
 
 #### `sequence` <span class="type array">Array</span>
 
-An Array of [Page descriptors](/docs/page-data#pageDescriptors) to use as the sequence. Note that if the current page does not appear in the provided `sequence` then the plugin will not appear.
+An Array of [Page descriptors](/docs/page-descriptors) to use as the sequence. Note that if the current page does not appear in the provided `sequence` then the plugin will not appear.
 
 
 #### `classes` <span class="type array">Array</span>
@@ -51,7 +51,7 @@ A string to use as the prompt when rendering the previous page link. Defaults to
 A string to use as the prompt when rendering the previous next link. Defaults to "next:"
 
 
-#### `prev` & `next` <a href="/docs/page-data#pageDescriptors" class="type page-descriptor">Page Descriptor</a>
+#### `prev` & `next` <a href="/docs/page-descriptors" class="type page-descriptor">Page Descriptor</a>
 
 `prev` and `next` properties allow you to override the sequence on a given page. This can be especially useful on the first or last page of a sequence to specify a jump to another unrelated sequence.
 

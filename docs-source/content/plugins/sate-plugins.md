@@ -78,6 +78,6 @@ Specifies an array of Strings to use as the `class` attribute on the plugin's ou
 
 {{#plugin-sate-sequenceNav}}
 {
-    "prev": "/docs/page-data"
+    "prev": "/docs/page-descriptors"
 }
 {{/plugin-sate-sequenceNav}}

@@ -18,7 +18,6 @@ This file contains the site-level configuration. The [`website.json`](/docs/webs
 
 Sate uses the `website.json` file to locate the content sources directory. Lets assume the content looks like this:
 
-<pre>
     ./content
         index.html
         about.html
@@ -26,7 +25,6 @@ Sate uses the `website.json` file to locate the content sources directory. Lets 
             index.html
             sate-website.html
             using-sate.html
-</pre>
 
 When serving these pages as a website, Sate maps the above file structure into URLs like so:
 
@@ -60,8 +58,7 @@ Here is an example of a content file making use of all three standard sections:
 
 
     {
-        "date": "2013-06-13",
-        "name": "Some Good Page"
+        "date": "2013-06-13"
     }
 
     @intro:
@@ -95,7 +92,7 @@ Sate can infer the page name from the directory ("Products") and the type from t
 
 ### Custom Sections
 
-You can also create your own section markers by using the `@name:` pattern. The content you include in your custom sections will be parsed and injected into the partials dictionary for the page before the page is rendered. You can leverage this process to help keep your `intro` and `content` blocks DRY by declaring one-off inline partials and then referencing them from the same file using standard Mustache partial syntax:
+You can also create your own section markers by using the `@name:` pattern. The content you include in your custom sections will be parsed and injected into the [partials](/docs/page-data#partials) dictionary for the page before the page is rendered. You can leverage this process to help keep your `intro` and `content` blocks DRY by declaring one-off inline partials and then referencing them from the same file using standard Mustache partial syntax:
 
 {{=<% %>=}}
 
