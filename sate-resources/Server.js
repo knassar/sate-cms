@@ -2,7 +2,7 @@
     var fs = require('fs'),
         path = require('path');
 
-    var baseServer = function(website, Sate) {
+    var baseServer = function(website) {
         // @TODO: upgrade to latest version of connect 
         //          need to require all sub-modules individually
         
@@ -102,7 +102,7 @@
         }
     };
     
-    var handlerForRequest = function(request, Sate) {
+    var handlerForRequest = function(request) {
         for (var requestMatcher in Sate.resourceRequestHandlers) {
             if (Sate.resourceRequestHandlers.hasOwnProperty(requestMatcher) && 
                 Sate.resourceRequestHandlers[requestMatcher].matcher.test(request.url)) {
@@ -114,11 +114,11 @@
     };
 
     module.exports = {
-        DevelopmentServer: function(website, Sate) {
-            var server = baseServer(website, Sate);
+        DevelopmentServer: function(website) {
+            var server = baseServer(website);
             server.use(function(req, res) {
                 
-                var handler = handlerForRequest(req, Sate);
+                var handler = handlerForRequest(req);
                 
                 var headers = handler.headersForRequest(req);
                 
@@ -142,11 +142,11 @@
                 }).listen(website.args.port);
             return server;
         },
-        ProductionServer: function(website, Sate) {
-            var server = baseServer(website, Sate);
+        ProductionServer: function(website) {
+            var server = baseServer(website);
             server.use(function(req, res) {
                 
-                var handler = handlerForRequest(req, Sate);
+                var handler = handlerForRequest(req);
                 var code = handler.httpCodeForRequest(req, website);
                 
                 res.writeHead(code, handler.headersForRequest(req));

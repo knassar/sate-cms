@@ -1,11 +1,11 @@
-function Help(Sate) {
+function Help() {
     var extend = require(Sate.nodeModInstallDir+'node.extend'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
-        (new Command(Sate)),
+        (new Command()),
         {
-            _super: (new Command(Sate)),
+            _super: (new Command()),
             helpForCommand: null,
             helpForWhat: function(args) {
                 if (args) {
@@ -24,8 +24,8 @@ function Help(Sate) {
     return cmd;
 }
 
-var exec = function(args, Sate) {
-    var cmd = new Help(Sate);
+var exec = function(args) {
+    var cmd = new Help();
     cmd.helpForWhat(args);
     cmd.execute();
 };

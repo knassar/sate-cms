@@ -1,12 +1,12 @@
-function Analyze(Sate) {
+function Analyze() {
     var extend = require(Sate.nodeModInstallDir+'node.extend'),
         flow = require(Sate.nodeModInstallDir+'flow'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
-        (new Command(Sate)),
+        (new Command()),
         {
-            _super: (new Command(Sate)),
+            _super: (new Command()),
             site: null,
             reportAnalyze: function() {
                 var site = sateCMS.site;
@@ -27,7 +27,7 @@ function Analyze(Sate) {
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Analyze"] );
                 console.log( " +-> processing website config..." );
-                this.site = new Sate.Website(this.args, Sate);
+                this.site = new Sate.Website(this.args);
                 // @TODO: Analyze This
                 self = this;
                 flow.exec(
@@ -42,8 +42,8 @@ function Analyze(Sate) {
         });
     return cmd;
 }
-var exec = function(args, Sate) {
-    var cmd = new Analyze(Sate);
+var exec = function(args) {
+    var cmd = new Analyze();
     cmd.captureFlags(args);
     cmd.execute();
 };

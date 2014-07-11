@@ -1,13 +1,13 @@
-function Deploy(Sate) {
+function Deploy() {
     var extend = require(Sate.nodeModInstallDir+'node.extend'),
         flow = require(Sate.nodeModInstallDir+'flow'),
         fs = require('fs'),
         path = require('path'),
         ncp = require(Sate.nodeModInstallDir+'ncp'),
         StyleCompositor = require(__dirname+'/../sate-resources/StyleCompositor.js'),
-        styleCompositor = new StyleCompositor(Sate),
+        styleCompositor = new StyleCompositor(),
         ScriptCompositor = require(__dirname+'/../sate-resources/ScriptCompositor.js'),
-        scriptCompositor = new ScriptCompositor(Sate),
+        scriptCompositor = new ScriptCompositor(),
         Command = require(__dirname+'/command');
     
     var cleanDir = function(target) {
@@ -30,9 +30,9 @@ function Deploy(Sate) {
     };
 
     var cmd = extend(true,
-        (new Command(Sate)),
+        (new Command()),
         {
-            _super: (new Command(Sate)),
+            _super: (new Command()),
             commandName: 'deploy',
             args: {
                 targetPath: false,
@@ -50,7 +50,7 @@ function Deploy(Sate) {
             targetPagePaths: {},
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Deploy"] );
-                this.site = new Sate.Website(this.args, Sate);
+                this.site = new Sate.Website(this.args);
                 self = this;
                 flow.exec(
                     function() {
@@ -171,8 +171,8 @@ function Deploy(Sate) {
 }
 
 
-var exec = function(args, Sate) {
-    var cmd = new Deploy(Sate);
+var exec = function(args) {
+    var cmd = new Deploy();
     cmd.captureFlags(args);
     cmd.execute();
 };

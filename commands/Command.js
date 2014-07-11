@@ -1,4 +1,4 @@
-function Command(Sate) {
+function Command() {
     var fs = require('fs'),
         path = require('path');
 

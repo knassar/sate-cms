@@ -2,11 +2,11 @@
 * Sate Page Menu plugin
 * Use like: {{plugin-sate-menu}}
 */
-module.exports = function(Sate) {
+module.exports = function() {
     var Plugin = require(__dirname+'/../Plugin'),
         util = require('util');
 
-    var plg = new Plugin(Sate, {
+    var plg = new Plugin({
         type: 'sate-menu',
         version: '0.5.0',
         mainTag: 'ul',
@@ -17,7 +17,7 @@ module.exports = function(Sate) {
         },
         hasSubItems: false,
         includeSublevel: false,
-        compile: function(props, page, Sate, complete) {
+        compile: function(props, page, complete) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;
             Sate.chain.inPlace(this, props);

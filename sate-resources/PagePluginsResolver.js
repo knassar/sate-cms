@@ -4,13 +4,13 @@ var pluginTemplatesByType = {};
 var deployPluginStyleSheetURL = "/styles/sate-plugins.css";
 var deployPluginScriptURL = "/scripts/sate-plugins.js";
 
-var initializePluginInDir = function(pluginType, pluginsDir, Sate) {
+var initializePluginInDir = function(pluginType, pluginsDir) {
     var path = require('path');
     
     var plugin;
     try {
         PluginClass = require(path.join(pluginsDir, pluginType, 'plugin.js'));
-        plugin = new PluginClass(Sate);
+        plugin = new PluginClass();
     }
     catch (err) {
         Sate.Log.logError('could not import plugin '+pluginType, 2);
@@ -18,7 +18,7 @@ var initializePluginInDir = function(pluginType, pluginsDir, Sate) {
     return plugin;
 };
 
-var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) {
+var resolvePlugin = function(pluginData, resolvedPlugins, page, complete) {
 
     var fs = require('fs'),
         path = require('path'),
@@ -40,12 +40,12 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) 
         pluginClassesByType[pluginType] = PluginClass;
     }
 
-    var plugin = new PluginClass(Sate);
+    var plugin = new PluginClass();
     
     var compile = function(finishedCompile) {
         flow.exec(
             function() {
-                plugin.compile(pluginData, page, Sate, this);
+                plugin.compile(pluginData, page, this);
             },
             function() {
                 if (!page['plugin-'+pluginType]) {
@@ -117,7 +117,7 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, Sate, complete) 
     }
 };
 
-function PagePluginsResolver(Sate) {
+function PagePluginsResolver() {
     var flow = require(Sate.nodeModInstallDir+'flow');
 
     var resolver = this;
@@ -125,7 +125,7 @@ function PagePluginsResolver(Sate) {
         var resolvedPlugins = [];
         flow.serialForEach(page.plugins,
             function(plugin, idx) {
-                resolvePlugin(plugin, resolvedPlugins, page, Sate, this);
+                resolvePlugin(plugin, resolvedPlugins, page, this);
             },
             function(error, newVal) {},
             function() {
@@ -149,7 +149,7 @@ function PagePluginsResolver(Sate) {
             files.forEach(function(filename) {
                 var stats = fs.statSync(path.join(pluginsDir, filename));
                 if (stats.isDirectory()) {
-                    var plugin = initializePluginInDir(filename, pluginsDir, Sate);
+                    var plugin = initializePluginInDir(filename, pluginsDir);
                     if (plugin) {
                         plugins.push(plugin);
                     }

@@ -1,4 +1,4 @@
-function SiteMapGenerator(Sate) {
+function SiteMapGenerator() {
     try {
     var fs = require('fs'),
         path = require('path'),
@@ -28,7 +28,7 @@ function SiteMapGenerator(Sate) {
         }
         
         if (index) {
-            page = extend(true, page, Sate.Page.dataFromFile(Sate, path.join(directory, index), encoding));
+            page = extend(true, page, Sate.Page.dataFromFile(path.join(directory, index), encoding));
         }
 
         if (!page.name) {
@@ -62,7 +62,7 @@ function SiteMapGenerator(Sate) {
                             subPages: {}
                         };
     
-                        article = extend(true, article, Sate.Page.dataFromFile(Sate, filepath, encoding));
+                        article = extend(true, article, Sate.Page.dataFromFile(filepath, encoding));
                         if (!article.name) {
                             article.name = Sate.utils.pageNameFromFileName(fileName);
                         }

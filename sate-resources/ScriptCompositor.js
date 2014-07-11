@@ -1,10 +1,10 @@
-function ScriptCompositor(Sate) {
+function ScriptCompositor() {
     var fs = require('fs'),
         path = require('path'),
         util = require('util'),
         flow = require(Sate.nodeModInstallDir+'flow'),
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
-        pluginsResolver = new PagePluginsResolver(Sate);
+        pluginsResolver = new PagePluginsResolver();
             
     var compositor = {
         pluginScripts: [],

@@ -2,14 +2,14 @@
 * Sate logo and link to sate resource
 * Use like: {{sate-powered}}
 */
-module.exports = function(Sate) {
+module.exports = function() {
     var Plugin = require(__dirname+'/../Plugin');
 
-    var plg = new Plugin(Sate, {
+    var plg = new Plugin({
         type: 'sate-powered',
         version: '0.8.0',
         sateGithubUrl: "##",
-        compile: function(props, page, Sate, complete) {
+        compile: function(props, page, complete) {
             complete.apply();
         },
         templates: {'main': 'powered-by-sate.tpl'},

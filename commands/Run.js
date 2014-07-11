@@ -1,12 +1,12 @@
-function Run(Sate) {
+function Run() {
     var extend = require(Sate.nodeModInstallDir+'node.extend'),
         flow = require(Sate.nodeModInstallDir+'flow'),
         Command = require(__dirname+'/command');
     
     var cmd = extend(true,
-        (new Command(Sate)),
+        (new Command()),
         {
-            _super: (new Command(Sate)),
+            _super: (new Command()),
             commandName: 'run',
             args: {
                 port: 3000,
@@ -19,7 +19,7 @@ function Run(Sate) {
             site: null,
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Run"] );
-                this.site = new Sate.Website(this.args, Sate);
+                this.site = new Sate.Website(this.args);
                 self = this;
                 flow.exec(
                     function() {
@@ -27,7 +27,7 @@ function Run(Sate) {
                     },
                     function() {
                         Sate.Log.logAction("starting server...", 0);
-                        var server = new Sate.Server.ProductionServer(cmd.site, Sate);
+                        var server = new Sate.Server.ProductionServer(cmd.site);
                         Sate.Log.logAction("listening on port "+cmd.site.args.port+"...", 1);
                     }
                 );
@@ -37,8 +37,8 @@ function Run(Sate) {
 }
 
 
-var exec = function(args, Sate) {
-    var cmd = new Run(Sate);
+var exec = function(args) {
+    var cmd = new Run();
     cmd.captureFlags(args);
     cmd.execute();
 };

@@ -2,16 +2,16 @@
 * Sate Sequence Navigation plugin
 * Use like: {{plugin-sate-sequenceNav}}
 */
-module.exports = function(Sate) {
+module.exports = function() {
     var Plugin = require(__dirname+'/../Plugin'),
         util = require('util');
 
-    var plg = new Plugin(Sate, {
+    var plg = new Plugin({
         type: 'sate-sequenceNav',
         version: '0.4.0',
         previousPrompt: "previous: ",
         nextPrompt: "next: ",
-        compile: function(props, page, Sate, complete) {
+        compile: function(props, page, complete) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;
             Sate.chain.inPlace(this, props);

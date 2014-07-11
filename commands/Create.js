@@ -1,4 +1,4 @@
-function Create(Sate) {
+function Create() {
     var extend = require(Sate.nodeModInstallDir+'node.extend'),
         fs = require('fs'),
         path = require('path'),
@@ -139,7 +139,7 @@ function Create(Sate) {
 }
 
 
-var exec = function(args, Sate) {
+var exec = function(args) {
     var cmd = new Create(Sate);
     cmd.captureFlags(args);
     cmd.execute();

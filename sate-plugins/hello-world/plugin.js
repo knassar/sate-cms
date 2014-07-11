@@ -2,7 +2,7 @@
 * Hello World!
 * A template for creating a plugin
 **/
-module.exports = function(Sate) {
+module.exports = function() {
     var Plugin = require(__dirname+'/../Plugin');
 
     // private properties and methods that should be accessible at both compile- and render-time:
@@ -12,7 +12,7 @@ module.exports = function(Sate) {
     };
 
     // create a plugin instance as a sub-class of Plugin
-    var plg = new Plugin(Sate, {
+    var plg = new Plugin({
         // the 'type' property must match the directory name
         type: 'hello-world',
         
@@ -23,7 +23,7 @@ module.exports = function(Sate) {
         language: "english",
         
         // the compile method, 
-        compile: function(props, page, Sate, complete) {
+        compile: function(props, page, complete) {
             // do any configuration or defaulting here
             if (!languageSupported(this.language)) {
                 this.language = supportedLangs[0];

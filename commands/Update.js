@@ -1,4 +1,4 @@
-function Update(Sate) {
+function Update() {
 
     var fs = require('fs'),
         path = require('path'),
@@ -44,9 +44,9 @@ function Update(Sate) {
     };
     
     var cmd = extend(true,
-        (new Command(Sate)),
+        (new Command()),
         {
-            _super: (new Command(Sate)),
+            _super: (new Command()),
             commandName: 'update',
             args: {
                 force: false,
@@ -133,8 +133,8 @@ function Update(Sate) {
     return cmd;
 }
 
-var exec = function(args, Sate) {
-    var cmd = new Update(Sate);
+var exec = function(args) {
+    var cmd = new Update();
     cmd.captureFlags(args);
     cmd.execute();
 };

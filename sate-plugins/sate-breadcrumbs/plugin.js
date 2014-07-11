@@ -2,18 +2,18 @@
 * Sate Breadcrumb navigation plugin
 * Use like: {{plugin-sate-breadcrumbs}}
 */
-module.exports = function(Sate) {
+module.exports = function() {
     var Plugin = require(__dirname+'/../Plugin'),
         util = require('util');
 
-    var plg = new Plugin(Sate, {
+    var plg = new Plugin({
         type: 'sate-breadcrumbs',
         version: '0.5.0',
         headingTag: 'h2',
         separator: ':',
         minCrumbs: 1,
         includePageName: true,
-        compile: function(props, page, Sate, complete) {
+        compile: function(props, page, complete) {
             this.page = page.pageAscent();
             this.thisPageName = page.name;
             Sate.chain.inPlace(this, props);

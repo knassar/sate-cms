@@ -1,4 +1,4 @@
-function Docs(Sate) {
+function Docs() {
     var extend = require(Sate.nodeModInstallDir+'node.extend'),
         path = require('path'),
         flow = require(Sate.nodeModInstallDir+'flow'),
@@ -53,7 +53,7 @@ function Docs(Sate) {
             },
             execute: function() {
                 Sate.Log.logBox( ["Starting Sate - Docs"] );
-                this.site = new Sate.Website(this.args, Sate);
+                this.site = new Sate.Website(this.args);
                 self = this;
                 flow.exec(
                     function() {
@@ -68,7 +68,7 @@ function Docs(Sate) {
                     },
                     function() {
                         Sate.Log.logAction("starting server...", 0);
-                        var server = new Sate.Server.ProductionServer(self.site, Sate);
+                        var server = new Sate.Server.ProductionServer(self.site);
                         Sate.Log.logAction("Sate documentation available at http://localhost:"+cmd.site.args.port, 1);
                     }
                 );
@@ -77,8 +77,8 @@ function Docs(Sate) {
     return cmd;
 }
 
-var exec = function(args, Sate) {
-    var cmd = new Docs(Sate);
+var exec = function(args) {
+    var cmd = new Docs();
     cmd.captureFlags(args);
     cmd.execute();
 };

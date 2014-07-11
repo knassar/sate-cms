@@ -1,4 +1,4 @@
-function Website(args, Sate) {
+function Website(args) {
         var fs = require('fs'),
         path = require('path'),
         extend = require(Sate.nodeModInstallDir+'node.extend'),
@@ -64,7 +64,7 @@ function Website(args, Sate) {
     };
 
     var indexPage = function(id, pageData, website, parent) {
-        var page = new Sate.Page(id, pageData, parent, Sate);
+        var page = new Sate.Page(id, pageData, parent);
         website.pageByPath[page.url] = page;
         if (page.subPages) {
             for (var p in page.subPages) {
@@ -225,7 +225,7 @@ function Website(args, Sate) {
                         }
 
                         self.siteMap = {};
-                        var generator = Sate.SiteMapGenerator(Sate);
+                        var generator = Sate.SiteMapGenerator();
                         generator.crawlWebsite(self, this);
                     },
                     function() {

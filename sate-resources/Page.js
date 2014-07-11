@@ -1,4 +1,4 @@
-function Page(id, props, parent, Sate) {
+function Page(id, props, parent) {
     var fs = require('fs'),
         path = require('path'),
         util = require('util'),
@@ -41,7 +41,7 @@ function Page(id, props, parent, Sate) {
         dataResolver.resolve(page);
     };
 
-    var initialize = function(page, Sate) {
+    var initialize = function(page) {
         resolvePage(page);
         
         var extension = (page.contentExtension) ? '.'+page.contentExtension : Sate.Parser.extensionForParser(page.parser);
@@ -410,7 +410,7 @@ function Page(id, props, parent, Sate) {
         return html;
     };
     
-    initialize(newPage, Sate);
+    initialize(newPage);
 
     Sate.pageDescriptor = function(descr) {
         var descriptor;
@@ -429,11 +429,11 @@ function Page(id, props, parent, Sate) {
     return newPage;
 }
 
-Page.dataFromFile = function(Sate, directory, encoding) {
+Page.dataFromFile = function(directory, encoding) {
     var fs = require('fs'),
         path = require('path');
         PageContentParser = require(__dirname+'/PageContentParser'),
-        contentParser = new PageContentParser(Sate);
+        contentParser = new PageContentParser();
 
     var filepath = path.normalize(directory);
     var data = fs.readFileSync(filepath, {encoding: encoding});

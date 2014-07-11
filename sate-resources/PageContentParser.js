@@ -1,4 +1,4 @@
-function PageContentParser(Sate) {
+function PageContentParser() {
 
     var fs = require('fs'),
         path = require('path'),
@@ -7,7 +7,7 @@ function PageContentParser(Sate) {
 
     var blockMatcher = /^@([^\:]+):/mi;
 
-    var chainPageData = function (Sate, page, data) {
+    var chainPageData = function (page, data) {
         if (data.trim().length > 0) {
             try {
                 var pageData = JSON.parse(data);
@@ -39,7 +39,7 @@ function PageContentParser(Sate) {
                 page.compiledPartials[blockName] = parsedContent(block, page);
             }
             else {
-                chainPageData(Sate, page, block);
+                chainPageData(page, block);
             }
         }
     };
@@ -77,7 +77,7 @@ function PageContentParser(Sate) {
             matches = content.match(blockMatcher);
     
         if (matches && matches.length > 1) {
-            chainPageData(Sate, pageData, content.substring(0, matches.index));
+            chainPageData(pageData, content.substring(0, matches.index));
         }        
         return pageData;
     }

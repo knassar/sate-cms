@@ -21,7 +21,7 @@ if (!foundIMBins) {
 }
 
 
-module.exports = function(Sate) {
+module.exports = function() {
     var fs = require('fs'),
         path = require('path'),
         flow = require(Sate.nodeModInstallDir+'flow'),
@@ -248,7 +248,7 @@ module.exports = function(Sate) {
         return path.join(SateGalleryPluginThumbnailsRoot, galleryBasePath);
     };
 
-    var plg = new Plugin(Sate, {
+    var plg = new Plugin({
         type: 'sate-gallery',
         version: '0.8.2',
         thumbnail: SateGalleryPluginDefaultThumbnailParams,
@@ -258,7 +258,7 @@ module.exports = function(Sate) {
         thumbnails: [],
         heroes: [],
         generateThumbnailsOnDemand: true,
-        compile: function(props, page, Sate, complete) {
+        compile: function(props, page, complete) {
             Sate.chain.inPlace(this, props);
             if (!this.id) {
                 this.id = Sate.utils.md5(this.imagesPath);

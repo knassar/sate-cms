@@ -1,4 +1,4 @@
-function Plugin(Sate, subobj) {
+function Plugin(subobj) {
     var fs = require('fs'),
         util = require('util'),
         extend = require(Sate.nodeModInstallDir+'node.extend');
@@ -7,7 +7,7 @@ function Plugin(Sate, subobj) {
         type: subobj.type,
         version: '0.5.0',
         classes: [],
-        compile: function(props, page, Sate, complete) {
+        compile: function(props, page, complete) {
             complete.apply();
         },
         composeClasses: function(obj) {

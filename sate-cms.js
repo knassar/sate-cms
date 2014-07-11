@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 (function(){
     
-    var Sate = {
+    GLOBAL.Sate = {
             Command: {
                 help:   require(__dirname+'/commands/Help'),
                 develop:require(__dirname+'/commands/Develop'),
@@ -60,7 +60,7 @@
             }
             var args = processArgv.slice(0);
             if (!args[0]) {
-                Sate.Command.help(null, Sate);
+                Sate.Command.help(null);
                 process.exit(0);
             } else if (args[0].length > 0) {
                 if (Sate.Command.hasOwnProperty(args[0])) {
@@ -68,14 +68,14 @@
                     Sate.executingCommand = args[0];
                     processArgv.shift();
                 } else {
-                    Sate.Command.help(null, Sate);
+                    Sate.Command.help(null);
                     process.exit(0);
                 }
             }
         },
         execute: function(process) {
             this.processCommand(process.argv);
-            this.command(process.argv, Sate);
+            this.command(process.argv);
         }
     };
         
