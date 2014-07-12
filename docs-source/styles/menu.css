@@ -15,13 +15,13 @@
 
 .sate-docs .plugin-sate-menu.top-menu li a:hover 
 {
-    color: #c90;
+    color: #CA720A;
 }
 
 .sate-docs .plugin-sate-menu.top-menu > li.active > a 
 {
     font-weight: bold;
-	color: #c90;
+	color: #CA720A;
 }
 
 .sate-docs .plugin-sate-menu.top-menu > li:hover > ul 

@@ -8,7 +8,7 @@ span.arrow
 
     width: 2em;
     height: 0.1875em;
-    background-color: orange;
+    background-color: #FF7C00;
 }
 
 span.arrow.r 
@@ -38,14 +38,14 @@ span.arrow.r::after
 span.arrow.l::before
 {
     border-color: transparent;
-    border-right-color: orange;
+    border-right-color: #FF7C00;
     left: -1em;
 }
 
 span.arrow.r::after
 {
     border-color: transparent;
-    border-left-color: orange;
+    border-left-color: #FF7C00;
     right: -1em;
 }
 

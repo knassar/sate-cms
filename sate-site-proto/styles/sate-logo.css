@@ -13,7 +13,7 @@
 
 #sateLogoA {
     position: relative;
-    color: orange;
+    color: #FF7C00;
 }
 
 /* smiling eyes */
@@ -27,7 +27,7 @@
     width: 0.75em;
     height: 0.75em;
     border-radius: 50%;
-    border-top: orange 3px solid;
+    border-top: #FF7C00 3px solid;
 }
 #sateLogoA::before {
     left: 1em;
@@ -46,7 +46,7 @@
     width: 2.5em;
     height: 1.75em;
     border-radius: 50%;
-    border-bottom: orange 3px solid;
+    border-bottom: #FF7C00 3px solid;
     z-index: 1;
 }
 #sateLogoNameplate::after {
@@ -58,7 +58,7 @@
     width: 0.5em;
     height: 0.5em;
     border-radius: 50% 50% 50% 0;
-    background-color: orange;
+    background-color: #FF7C00;
     -webkit-transform: rotate(-30deg);
     -moz-transform: rotate(-30deg);
     -ms-transform: rotate(-30deg);

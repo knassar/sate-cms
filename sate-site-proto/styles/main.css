@@ -39,7 +39,7 @@ body {
     color: black;
     font-weight: bold;
     padding: 0.5em 1em;
-    border: orange 1px dashed;
+    border: #FF7C00 1px dashed;
 }
 
 .todo::before {

@@ -22,7 +22,7 @@ a.sate-logo .sate-logo-nameplate {
 
 a.sate-logo .sate-logo-nameplate .sate-logo-a {
     position: relative;
-    color: orange;
+    color: #FF7C00;
 }
 
 /* smiling eyes */
@@ -36,7 +36,7 @@ a.sate-logo .sate-logo-nameplate .sate-logo-a::after
     width: 0.75em;
     height: 1.5em;
     border-radius: 50%;
-    border-top: orange 2px solid;
+    border-top: #FF7C00 2px solid;
 }
 a.sate-logo .sate-logo-nameplate .sate-logo-a::before {
     left: 1em;
@@ -55,7 +55,7 @@ a.sate-logo .sate-logo-nameplate::before {
     width: 2.5em;
     height: 1.75em;
     border-radius: 50%;
-    border-bottom: orange 1px solid;
+    border-bottom: #FF7C00 1px solid;
     z-index: 1;
 }
 a.sate-logo .sate-logo-nameplate::after {
@@ -67,7 +67,7 @@ a.sate-logo .sate-logo-nameplate::after {
     width: 0.5em;
     height: 0.5em;
     border-radius: 50% 50% 50% 0;
-    background-color: orange;
+    background-color: #FF7C00;
     -webkit-transform: rotate(-30deg);
     -moz-transform: rotate(-30deg);
     -ms-transform: rotate(-30deg);
@@ -86,5 +86,5 @@ a.sate-logo .tagline {
 
 a.sate-logo .powered {
     font-size: 16px;
-    color: orange;
+    color: #FF7C00;
 }
