@@ -3,10 +3,9 @@
 * Use like: {{plugin-sate-breadcrumbs}}
 */
 module.exports = function() {
-    var Plugin = require(__dirname+'/../Plugin'),
-        util = require('util');
+    var util = require('util');
 
-    var plg = new Plugin({
+    var plg = new Sate.Plugin({
         type: 'sate-breadcrumbs',
         version: '0.6.0',
         headingTag: 'h2',
@@ -22,13 +21,11 @@ module.exports = function() {
         templates: {'main': 'breadcrumbs.tpl'},
         stylesheets: ['breadcrumbs.css'],
         objectToRender: function(config, page) {
-            var obj = Plugin.prototype.objectToRender.call(this, config, page);
+            var obj = Sate.Plugin.prototype.objectToRender.call(this, config, page);
             if (!obj) {
                 obj = {};
             }
 
-            this.composeClasses(obj);
-        
             obj.crumbs = [];
             var p = page;
             while (p.parent && !p.parent.isRoot) {

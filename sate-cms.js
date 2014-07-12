@@ -22,6 +22,7 @@
             Website: require(__dirname+'/sate-resources/Website'),
             SiteMapGenerator: require(__dirname+'/sate-resources/SiteMapGenerator'),
             Page: require(__dirname+'/sate-resources/Page'),
+            Plugin: require(__dirname+'/sate-resources/Plugin'),
             RequestHandler: require(__dirname+'/sate-resources/RequestHandler'),
             Server: require(__dirname+'/sate-resources/Server'),
             Log: require(__dirname+'/sate-resources/Log'),

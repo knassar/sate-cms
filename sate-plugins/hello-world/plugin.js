@@ -3,8 +3,6 @@
 * A template for creating a plugin
 **/
 module.exports = function() {
-    var Plugin = require(__dirname+'/../Plugin');
-
     // private properties and methods that should be accessible at both compile- and render-time:
     var supportedLangs = ['english', 'spanish', 'german', 'latin'];
     var languageSupported = function(lang) {
@@ -12,7 +10,7 @@ module.exports = function() {
     };
 
     // create a plugin instance as a sub-class of Plugin
-    var plg = new Plugin({
+    var plg = new Sate.Plugin({
         // the 'type' property must match the directory name
         type: 'hello-world',
         
@@ -51,7 +49,7 @@ module.exports = function() {
         // if you want to render nothing, return false
         objectToRender: function(config, page) {
             // attempt to identify which plugin is referenced by config
-            var obj = Plugin.prototype.objectToRender.call(this, config, page);
+            var obj = Sate.Plugin.prototype.objectToRender.call(this, config, page);
             
             if (!obj) {
                 // if we didn't want to have a default behavior, we would just return false here
@@ -77,9 +75,6 @@ module.exports = function() {
                 default:
                     obj.hello = "Hello World!";
             }
-            
-            // ensure that and user-specified classes are merged into the default class array
-            this.composeClasses(obj);
             
             // return the object for the template render
             return obj;

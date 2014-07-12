@@ -15,10 +15,16 @@
     margin-left: 6em;
 }
 
-.api-doc h3, h4 {
+.api-doc h3, h4 
+{
     margin-top: 2em;
     padding-top: 2em;
     border-top: #ccc 1px solid;
+    clear: left;
+}
+
+.api-doc h2 
+{
     clear: left;
 }
 

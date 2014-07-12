@@ -3,10 +3,9 @@
 * Use like: {{plugin-sate-menu}}
 */
 module.exports = function() {
-    var Plugin = require(__dirname+'/../Plugin'),
-        util = require('util');
+    var util = require('util');
 
-    var plg = new Plugin({
+    var plg = new Sate.Plugin({
         type: 'sate-menu',
         version: '0.5.0',
         mainTag: 'ul',
@@ -154,8 +153,6 @@ module.exports = function() {
             if (obj.items && obj.items.length == 0) {
                 this.findRelatedMenuItems(obj, page, config);
             }
-
-            this.composeClasses(obj);
 
             if (obj.parentLink && page.parent) {
                 obj.parent = page.parent.descriptor();

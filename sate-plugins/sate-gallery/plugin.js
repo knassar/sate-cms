@@ -25,8 +25,7 @@ module.exports = function() {
     var fs = require('fs'),
         path = require('path'),
         flow = require(Sate.nodeModInstallDir+'flow'),
-        im,
-        Plugin = require(__dirname+'/../Plugin');
+        im;
 
     var SateGalleryPluginThumbnailsRoot = 'sate-gallery-thumbs';
     var SateGalleryPluginDefaultBase = '--';
@@ -247,7 +246,7 @@ module.exports = function() {
         return path.join(SateGalleryPluginThumbnailsRoot, galleryBasePath);
     };
 
-    var plg = new Plugin({
+    var plg = new Sate.Plugin({
         type: 'sate-gallery',
         version: '0.8.2',
         thumbnail: SateGalleryPluginDefaultThumbnailParams,
@@ -284,8 +283,6 @@ module.exports = function() {
                     id: SateGalleryPluginDefaultBase
                 };
             }
-
-            this.composeClasses(obj);
 
             var thumbBaseURL = thumbnailBaseURL(obj);
 

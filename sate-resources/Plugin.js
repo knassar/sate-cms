@@ -83,6 +83,7 @@ Plugin.prototype = {
                 if (obj === false) {
                     return '';
                 } else {
+                    plugin.composeClasses(obj);
                     return Mustache.render(plugin.template, obj, obj.templates);
                 }
             };

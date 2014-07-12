@@ -6,17 +6,8 @@ function Update() {
         ncp = require(Sate.nodeModInstallDir+'ncp'),
         Command = require(__dirname+'/command');
 
-    var isAbstractPluginClass = function(pluginName) {
-        return (/Plugin\.js$/).test(pluginName);
-    };
-
     var versionForPlugin = function(pluginPath) {
-        var pluginClass;
-        if (isAbstractPluginClass(pluginPath)) {
-            pluginClass = require(fs.realpathSync(pluginPath));
-        } else {
-            pluginClass = require(fs.realpathSync(path.join(pluginPath, 'plugin.js')));
-        }
+        var pluginClass = require(fs.realpathSync(path.join(pluginPath, 'plugin.js')));
         return (new pluginClass(Sate, {})).version;
     };
 

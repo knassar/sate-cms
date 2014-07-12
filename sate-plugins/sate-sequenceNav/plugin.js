@@ -3,10 +3,9 @@
 * Use like: {{plugin-sate-sequenceNav}}
 */
 module.exports = function() {
-    var Plugin = require(__dirname+'/../Plugin'),
-        util = require('util');
+    var util = require('util');
 
-    var plg = new Plugin({
+    var plg = new Sate.Plugin({
         type: 'sate-sequenceNav',
         version: '0.5.0',
         previousPrompt: "previous: ",
@@ -33,7 +32,7 @@ module.exports = function() {
             }
         },
         objectToRender: function(config, page) {
-            var obj = Plugin.prototype.objectToRender.call(this, config, page);
+            var obj = Sate.Plugin.prototype.objectToRender.call(this, config, page);
             if (!obj) {
                 obj = {};
             }
@@ -73,8 +72,6 @@ module.exports = function() {
                 }
                 
             }
-            
-            this.composeClasses(obj);
             
             return obj;
         }
