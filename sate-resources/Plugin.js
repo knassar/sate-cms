@@ -1,7 +1,10 @@
+
 function Plugin(properties) {
     var fs = require('fs'),
         util = require('util'),
         extend = require(Sate.nodeModInstallDir+'node.extend');
+
+    this.prototype = Plugin.prototype;
 
     Sate.chain.inPlace(this, properties);
 
@@ -79,7 +82,7 @@ Plugin.prototype = {
                 if (plugin.templates.hasOwnProperty('main')) {
                     plugin.template = plugin.templates.main;
                 }
-                var obj = plugin.objectToRender(config, this);
+                var obj = plugin.objectToRender.call(plugin, config, this);
                 if (obj === false) {
                     return '';
                 } else {

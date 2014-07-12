@@ -21,7 +21,7 @@ module.exports = function() {
         templates: {'main': 'breadcrumbs.tpl'},
         stylesheets: ['breadcrumbs.css'],
         objectToRender: function(config, page) {
-            var obj = Sate.Plugin.prototype.objectToRender.call(this, config, page);
+            var obj = this.prototype.objectToRender.call(this, config, page);
             if (!obj) {
                 obj = {};
             }

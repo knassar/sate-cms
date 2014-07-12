@@ -32,7 +32,7 @@ module.exports = function() {
             }
         },
         objectToRender: function(config, page) {
-            var obj = Sate.Plugin.prototype.objectToRender.call(this, config, page);
+            var obj = this.prototype.objectToRender.call(this, config, page);
             if (!obj) {
                 obj = {};
             }

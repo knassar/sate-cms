@@ -11,6 +11,8 @@ function RequestHandler(requestPattern, properties) {
         Sate.Log.failWith("Invalid RequestHandler sub-type");
     }
 
+    this.prototype = RequestHandler.prototype;
+
     Sate.chain.inPlace(this, properties);
     
     this.requestPattern = requestPattern;

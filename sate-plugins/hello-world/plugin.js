@@ -49,7 +49,7 @@ module.exports = function() {
         // if you want to render nothing, return false
         objectToRender: function(config, page) {
             // attempt to identify which plugin is referenced by config
-            var obj = Sate.Plugin.prototype.objectToRender.call(this, config, page);
+            var obj = this.prototype.objectToRender.call(this, config, page);
             
             if (!obj) {
                 // if we didn't want to have a default behavior, we would just return false here

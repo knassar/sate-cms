@@ -4,12 +4,46 @@
 
 @intro:
 
-<p class="todo">This page is incomplete</p>
-
 The Sate.Plugin is the primary mechanism by which you can extend Sate's features. 
 
 
 @content:
+
+A Sate plugin must follow a simple, but strict file naming convension. Each plugin is contained in a directory whose name must match exactly the value of the plugin's [`type`](#type) property. The plugin source file must be named `plugin.js`. The plugin directory may contain any other resources necessary. For example, the `sate-gallery` plugin looks like this:
+
+    ./sate-gallery          // the plugin directory    *required*
+        plugin.js           // the plugin source file  *required*
+        gallery.tpl         // the main template
+        sate-gallery.css    // stylesheet for the gallery thumbnails and viewer
+        sate-gallery.js     // the gallery viewer client-side code
+
+The plugin source file itself must export a function that serves as an anonymous constructor for your plugin, and the object returned by that function must be of prototype `Sate.Plugin`.
+
+The following pattern meets these criteria:
+
+    module.exports = function() {
+        var plugin = new Sate.Plugin({
+            type: 'my-plugin',
+            version: '1.0.0',
+            compile: function(props, page, complete) {
+                // ... do compile-time stuff
+                complete();
+            },
+            templates: {
+                'main': 'my-plugin.tpl'
+            },
+            stylesheets: [
+                'my-plugin.css'
+            ],
+            objectToRender: function(config, page) {
+                var obj = this.prototype.objectToRender(config, page);
+                // ... do render-time stuff
+                return obj;
+            }
+        });
+
+        return plugin;
+    };
 
 ## Extending Sate.Plugin
 
@@ -37,15 +71,15 @@ A numeric version string in the format of `1.0.0`. This version is used by the `
 
 ### `templates`  <span class="type object">Object</span>
 
-An dictionary of templates and partials used by the plugin. The object key is the partial name, and the value is the template filepath relative to the plugin directory.
+An dictionary of templates and partials used by the plugin. The object key is the partial name, and the value is the template filepath relative to the plugin directory. If the plugin will be rendered, it **must** have at least one template with the reserved key of `main`.
 
 ### `stylesheets`  <span class="type array">Array</span>
 
-An array of `CSS` resources used by the plugin when rendered in the client. Filepaths must be relative to the plugin directory.
+An array of `CSS` resources to be linked to by the page in which the plugin is rendered. Filepaths must be relative to the plugin directory.
 
 ### `scripts`  <span class="type array">Array</span>
 
-An array of Script client-side resources used by the plugin. Filepaths must be relative to the plugin directory
+An array of Script client-side resources to be imported by the page in which the plugin is rendered. Filepaths must be relative to the plugin directory
 
 
 
@@ -61,11 +95,7 @@ An array of Script client-side resources used by the plugin. Filepaths must be r
 
 In the `compile` method, the plugin should perform all actions and processing it needs to perform during the `compile` Sate lifecycle phase. 
 
-The `props` argument is the compile-time configuration of the plugin instance provided by the user.
-
-The `page` argument is the Sate.Page on which the plugin was instantiated.
-
-The `complete` argument is a callback to tell Sate that your plugin is done compiling.
+The `props` argument is the compile-time configuration of the plugin instance provided by the user. The `page` argument is the [Sate.Page](/sate-apis/types/page) on which the plugin was instantiated. The `complete` argument is a callback to tell Sate that your plugin is done compiling.
 
 This method is called on each plugin instance as the last phase of the website compile process, after all pages have been compiled. When compile is invoked on a plugin, all website and page assets *except* other plugins are guaranteed to have been compiled and prepared for render.
 
@@ -80,13 +110,13 @@ The Sate.Plugin prototype provides a default noop implementation, so if your plu
 
 This method is called at render time, during the render pipeline of `page`. The `config` object contains any render-time configuration provided by the user for the plugin. Your implementation should return a single instance of your plugin, which will be injected directly into the render pipeline.
 
-This is your final opportunity to customize or configure the plugin object prior to rendering.
+This is also your final opportunity to customize or configure the plugin object prior to rendering.
 
 The Sate.Plugin prototype provides a default implementation which uses the `config` and attempts to match a plugin instance by `id`, then by `classes` and `type`, and finally locates the first instance by `type`. If it is able to locate an instance, it uses Sate.chain to merge in the `config` properties. If your plugin has no special render-time configuration needs you can omit this method in your implementation.
 
 If you do wish to do render-time configuration, or provide special handling for plugin instances pre-render, you can still take advantage of the prototype implementation by calling:
 
-    var obj = Sate.Plugin.prototype.objectToRender.call(this, config, page);
+    var obj = this.prototype.objectToRender.call(this, config, page);
     
 at the top of your own implementation of `objectToRender`.
 

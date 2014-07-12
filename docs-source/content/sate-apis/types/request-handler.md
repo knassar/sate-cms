@@ -70,7 +70,7 @@ This method must return a valid HTTP response code for the request.
 |`request`| <span class="type object">Object</span>|
 |`deliverResponse`| <span class="type function">Function</span>|
 
-In this method, you should do whatever work needs to be done to construct the appropriate response, and deliver the response by calling the `deliverResponse` callback. 
+In this method, you should do whatever work needs to be done to construct the appropriate response, and deliver the response by calling the `deliverResponse` callback, expects a string or data stream to return to the client.
 
 For example:
 
