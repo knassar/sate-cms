@@ -1,4 +1,15 @@
+
+function valid(properties) {
+    return (properties.headersForRequest && typeof properties.headersForRequest == 'function' &&
+            properties.httpCodeForRequest && typeof properties.httpCodeForRequest == 'function' &&
+            properties.handleRequest && typeof properties.handleRequest == 'function');
+}
+
 function RequestHandler(requestPattern, properties) {
+
+    if (!valid(properties)) {
+        Sate.Log.failWith("Invalid RequestHandler sub-type");
+    }
 
     Sate.chain.inPlace(this, properties);
     
