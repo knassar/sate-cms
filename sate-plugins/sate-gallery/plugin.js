@@ -90,7 +90,7 @@ module.exports = function() {
         sateGalleryThumbnailRequestHandler = Sate.resourceRequestHandlers[handlerRegex].handler;
     }
     else {
-        sateGalleryThumbnailRequestHandler = {
+        sateGalleryThumbnailRequestHandler = new Sate.RequestHandler(handlerRegex, {
             type: 'sate-gallery-thumbnail-request-handler',
             galleries: {},
             headersForRequest: function(request) {
@@ -130,9 +130,8 @@ module.exports = function() {
                     }
                 }
             }
-        };
+        });
         sateGalleryThumbnailRequestHandler.galleries[SateGalleryPluginDefaultBase] = {thumbnail: SateGalleryPluginDefaultThumbnailParams};
-        Sate.registerRequestHandlerForRequests(sateGalleryThumbnailRequestHandler, handlerRegex);
     }
     
     var imgExtRegex = /\.jpg|\.jpeg|\.gif|\.png$/mi;

@@ -27,7 +27,7 @@ function Run() {
                     },
                     function() {
                         Sate.Log.logAction("starting server...", 0);
-                        var server = new Sate.Server.ProductionServer(cmd.site);
+                        var server = new Sate.Server.StaticServer();
                         Sate.Log.logAction("listening on port "+cmd.site.args.port+"...", 1);
                     }
                 );

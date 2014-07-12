@@ -1,38 +1,43 @@
-(function() {
-    var fs = require('fs'),
-        path = require('path');
+var fs = require('fs'),
+    path = require('path');
 
-    var baseServer = function(website) {
-        // @TODO: upgrade to latest version of connect 
-        //          need to require all sub-modules individually
-        
-        var connect = require(Sate.nodeModInstallDir+'connect');
-        
-        var server = connect()
-            .use(connect.favicon(path.join(website.sitePath, 'favicon.ico')))
-            .use(connect.logger('dev')) // @TODO: use the right log-level
-            .use(connect.query());
-        return server;
-    };
+var baseServer = function() {
     
-    var RequestTargetType = {
-        Javascript: '.js',
-        CSS: '.css',
-        ICO: '.ico',
-        PNG: '.png',
-        JPG: '.jpg',
-        GIF: '.gif',
-        Page: '*'
-    };
+    createDefaultRequestHandler();
+    
+    // @TODO: upgrade to latest version of connect 
+    //          need to require all sub-modules individually
+    
+    var connect = require(Sate.nodeModInstallDir+'connect');
+    
+    var server = connect()
+        .use(connect.favicon(path.join(Sate.currentSite.sitePath, 'favicon.ico')))
+        .use(connect.logger('dev')) // @TODO: use the right log-level
+        .use(connect.query());
+    return server;
+};
 
-    var jsMatcher = /\.js$/;
-    var cssMatcher = /\.css$/;
-    var icoMatcher = /\.ico$/;
-    var jpgMatcher = /\.jpg|\.jpeg|\.jpe$/;
-    var pngMatcher = /\.png$/;
-    var gifMatcher = /\.gif$/;
-    
-    var defaultRequestHandler = {
+var RequestTargetType = {
+    Javascript: '.js',
+    CSS: '.css',
+    ICO: '.ico',
+    PNG: '.png',
+    JPG: '.jpg',
+    GIF: '.gif',
+    Page: '*'
+};
+
+var jsMatcher = /\.js$/;
+var cssMatcher = /\.css$/;
+var icoMatcher = /\.ico$/;
+var jpgMatcher = /\.jpg|\.jpeg|\.jpe$/;
+var pngMatcher = /\.png$/;
+var gifMatcher = /\.gif$/;
+
+var defaultRequestHandler;
+
+var createDefaultRequestHandler = function() {
+    defaultRequestHandler = new Sate.RequestHandler(Sate.RequestHandler.DefaultHandler, {
         typeFromRequest: function(request) {
             switch (true) {
                 case jsMatcher.test(request.url):
@@ -80,7 +85,7 @@
         },
         httpCodeForRequest: function(request, website) {
             var type = this.typeFromRequest(request);
-            
+        
             if (type == RequestTargetType.Page) {
                 return website.hasPageForPath(request.url) ? 200 : 404;
             } else {
@@ -89,7 +94,7 @@
         },
         handleRequest: function(request, website, deliverResponse) {
             var type = this.typeFromRequest(request);
-            
+        
             if (type == RequestTargetType.Page) {
                 // HACK HACK... this avoids a race condition with the end of complile.
                 // Not sure why yet
@@ -100,62 +105,64 @@
                 deliverResponse(website.resourceForPath(request.url));
             }
         }
-    };
-    
-    var handlerForRequest = function(request) {
-        for (var requestMatcher in Sate.resourceRequestHandlers) {
-            if (Sate.resourceRequestHandlers.hasOwnProperty(requestMatcher) && 
-                Sate.resourceRequestHandlers[requestMatcher].matcher.test(request.url)) {
+    });   
+};
 
-                return Sate.resourceRequestHandlers[requestMatcher].handler;
-            }
+var handlerForRequest = function(request) {
+    for (var pattern in Sate.resourceRequestHandlers) {
+        if (Sate.resourceRequestHandlers.hasOwnProperty(pattern) && 
+            Sate.resourceRequestHandlers[pattern].pattern.test(request.url)) {
+
+            return Sate.resourceRequestHandlers[pattern].handler;
         }
-        return defaultRequestHandler;
-    };
+    }
+    return defaultRequestHandler;
+};
 
-    module.exports = {
-        DevelopmentServer: function(website) {
-            var server = baseServer(website);
-            server.use(function(req, res) {
-                
-                var handler = handlerForRequest(req);
-                
-                var headers = handler.headersForRequest(req);
-                
-                var code = handler.httpCodeForRequest(req, website);
-                
-                res.writeHead(code, headers);
-                
-                var handleRequest = function() {
-                    handler.handleRequest(req, website, function(response) {
-                        res.end(response);
-                    });
-                };
-                
-                if (handler == defaultRequestHandler && headers['Content-Type'] == 'text/html') {
-                    website.recompile(true, handleRequest);
-                }
-                else {
-                    handleRequest.apply();
-                }
-                
-                }).listen(website.args.port);
-            return server;
-        },
-        ProductionServer: function(website) {
-            var server = baseServer(website);
-            server.use(function(req, res) {
-                
-                var handler = handlerForRequest(req);
-                var code = handler.httpCodeForRequest(req, website);
-                
-                res.writeHead(code, handler.headersForRequest(req));
+module.exports = {
+    DevelopmentServer: function() {
+        var server = baseServer();
+        var website = Sate.currentSite;
+        server.use(function(req, res) {
+        
+            var handler = handlerForRequest(req);
+        
+            var headers = handler.headersForRequest(req);
+        
+            var code = handler.httpCodeForRequest(req, website);
+        
+            res.writeHead(code, headers);
+        
+            var handleRequest = function() {
                 handler.handleRequest(req, website, function(response) {
                     res.end(response);
                 });
-
+            };
+        
+            if (handler == defaultRequestHandler && headers['Content-Type'] == 'text/html') {
+                website.recompile(true, handleRequest);
+            }
+            else {
+                handleRequest.apply();
+            }
+        
             }).listen(website.args.port);
-            return server;
-        }
-    };
-}());
+        return server;
+    },
+    StaticServer: function() {
+        var server = baseServer();
+        var website = Sate.currentSite;
+        server.use(function(req, res) {
+        
+            var handler = handlerForRequest(req);
+            var code = handler.httpCodeForRequest(req, website);
+        
+            res.writeHead(code, handler.headersForRequest(req));
+            handler.handleRequest(req, website, function(response) {
+                res.end(response);
+            });
+
+        }).listen(website.args.port);
+        return server;
+    }
+};

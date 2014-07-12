@@ -68,7 +68,7 @@ function Docs() {
                     },
                     function() {
                         Sate.Log.logAction("starting server...", 0);
-                        var server = new Sate.Server.ProductionServer(self.site);
+                        var server = new Sate.Server.StaticServer();
                         Sate.Log.logAction("Sate documentation available at http://localhost:"+cmd.site.args.port, 1);
                     }
                 );

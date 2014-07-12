@@ -14,16 +14,17 @@
                 update: require(__dirname+'/commands/Update'),
                 docs:   require(__dirname+'/commands/Docs')
             },
-            Log: require(__dirname+'/sate-resources/Log'),
+            chain: require(__dirname+'/sate-resources/chain'),
+            utils: require(__dirname+'/sate-resources/sate-utils'),
             PageType: require(__dirname+'/sate-resources/PageType'),
             Parser: require(__dirname+'/sate-resources/Parser'),
             IndexSort: require(__dirname+'/sate-resources/IndexSort'),
             Website: require(__dirname+'/sate-resources/Website'),
             SiteMapGenerator: require(__dirname+'/sate-resources/SiteMapGenerator'),
             Page: require(__dirname+'/sate-resources/Page'),
-            chain: require(__dirname+'/sate-resources/chain'),
+            RequestHandler: require(__dirname+'/sate-resources/RequestHandler'),
             Server: require(__dirname+'/sate-resources/Server'),
-            utils: require(__dirname+'/sate-resources/sate-utils'),
+            Log: require(__dirname+'/sate-resources/Log'),
             LogLevel: {
                 Quiet: 'quiet',
                 Normal: 'normal',
@@ -39,9 +40,9 @@
                 return this.pluginConfig[pluginType];
             },
             resourceRequestHandlers:{},
-            registerRequestHandlerForRequests: function(requestHandler, requestMatcher) {
-                this.resourceRequestHandlers[requestMatcher] = {
-                    matcher: requestMatcher,
+            registerRequestHandler: function(requestHandler) {
+                this.resourceRequestHandlers[requestHandler.requestPattern] = {
+                    pattern: requestHandler.requestPattern,
                     handler: requestHandler
                 };
             }
