@@ -17,7 +17,7 @@ module.exports = function() {
         type: 'hello-world',
         
         // the version of the plugin code
-        version: '0.5.0',
+        version: '0.6.0',
         
         // default config properties go here
         language: "english",
@@ -51,7 +51,7 @@ module.exports = function() {
         // if you want to render nothing, return false
         objectToRender: function(config, page) {
             // attempt to identify which plugin is referenced by config
-            var obj = this.super.objectToRender(config, page);
+            var obj = Plugin.prototype.objectToRender.call(this, config, page);
             
             if (!obj) {
                 // if we didn't want to have a default behavior, we would just return false here

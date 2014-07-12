@@ -8,7 +8,7 @@ module.exports = function() {
 
     var plg = new Plugin({
         type: 'sate-breadcrumbs',
-        version: '0.5.0',
+        version: '0.6.0',
         headingTag: 'h2',
         separator: ':',
         minCrumbs: 1,
@@ -22,7 +22,7 @@ module.exports = function() {
         templates: {'main': 'breadcrumbs.tpl'},
         stylesheets: ['breadcrumbs.css'],
         objectToRender: function(config, page) {
-            var obj = this.super.objectToRender(config, page);
+            var obj = Plugin.prototype.objectToRender.call(this, config, page);
             if (!obj) {
                 obj = {};
             }

@@ -8,7 +8,7 @@ module.exports = function() {
 
     var plg = new Plugin({
         type: 'sate-sequenceNav',
-        version: '0.4.0',
+        version: '0.5.0',
         previousPrompt: "previous: ",
         nextPrompt: "next: ",
         compile: function(props, page, complete) {
@@ -33,7 +33,7 @@ module.exports = function() {
             }
         },
         objectToRender: function(config, page) {
-            var obj = this.super.objectToRender(config, page);
+            var obj = Plugin.prototype.objectToRender.call(this, config, page);
             if (!obj) {
                 obj = {};
             }
