@@ -69,7 +69,8 @@ Here is an example of a content file making use of all three standard sections:
         in Index pages.
     </p>
     <p class="cool">
-        Notice that there's no repetition of the page name in this content. It will be inferred from this content's filename.
+        Notice that there's no repetition of the page name in this content. 
+        It will be inferred from this content's filename.
     </p>
 
     @content:
