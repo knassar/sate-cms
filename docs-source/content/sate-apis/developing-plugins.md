@@ -1,49 +1,15 @@
 
 @intro:
 
-
-<p class="todo">This page is incomplete</p>
-
+Plugins are the primary way for developers to extend Sate's functionality. Indeed, as you've seen in the [Sate Documentation](/docs), most of the automatic navigation features of Sate are implemented as Plugins.
 
 @content:
 
-## The `Plugin.js` Base Class
+The Plugin API is fairly light-weight, but gives you hooks into the [Sate lifecycle][lifecycle] to implement very powerful features. In combination with the Sate, Website, and Page APIs, you can gain access to information throughout the website structure.
 
-### Methods to Implement
-
-    compile(props, page, Sate, complete)
-    objectToRender(config, page)
+When writing a plugin, it is important to have a good understanding of the [Sate lifecycle][lifecycle] and the [Sate object types](/sate-apis/types) which will be required for the functionality you wish to create.
 
 
-
-
-
-### Readonly Plugin Properties
-
-The following properties are defined in the plugin implementation code and are not configurable by the user. These are overridden in your plugin code.
-
-#### `type`  <span class="type string">String</span>
-
-A string name identifying the plugin's directory. The `type` property must match the source directory of the plugin.
-
-#### `version`  <span class="type string">String</span>
-
-A numeric version string in the format of `1.0.0`. This version is used by the `sate update` command to determine whether or not a plugin needs updating.
-
-#### `templates`  <span class="type object">Object</span>
-
-An dictionary of template partials used by the plugin. The object key is the partial name, and the value is the template filepath relative to the plugin directory.
-
-#### `stylesheets`  <span class="type array">Array</span>
-
-An array of `CSS` resources used by the plugin when rendered in the client. Filepaths must be relative to the plugin directory.
-
-#### `scripts`  <span class="type array">Array</span>
-
-An array of Script client-side resources used by the plugin. Filepaths must be relative to the plugin directory
-
-
-
-
+[lifecycle]: /sate-apis/the-sate-lifecycle
 
 {{{plugin-sate-sequenceNav}}}

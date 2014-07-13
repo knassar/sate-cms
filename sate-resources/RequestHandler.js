@@ -17,10 +17,15 @@ function RequestHandler(requestPattern, properties) {
     
     this.requestPattern = requestPattern;
     
-    if (requestPattern) {
-        if (requestPattern != RequestHandler.DefaultHandler) {
-            Sate.registerRequestHandler(this);
-        }
+    if (Sate.executingCommand == 'deploy') {
+        Sate.Log.logError("Cannot register RequestHandler during Deploy directive. Skipping.", 1);
+    }
+    else if (requestPattern == RequestHandler.DefaultHandler) {
+        // don't register the default handler
+        return;
+    }
+    else if (requestPattern) {
+        Sate.registerRequestHandler(this);
     }
     else {
         Sate.Log.logError("Could not register RequestHandler. 'requestPattern' not defined.", 1);

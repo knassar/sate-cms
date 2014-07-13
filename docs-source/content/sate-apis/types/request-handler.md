@@ -4,10 +4,17 @@
 
 @intro:
 
-The RequestHandler is a specialized type that most developers will not need to deal with. However, in certain specialized cases, implementing a RequestHandler sub-type can allow a plugin to intercept URL requests from the `develop` server and provide a specialized response.
+The RequestHandler is a specialized type that most developers will not need to deal with. However, if your plugin must provide a custom response to certain HTTP requests, you can implement and register a RequestHandler for these request patterns. Sate will delegate incoming requests to the handler that best matches the request URL.
 
 @content:
 
+An example of where a RequestHandler is useful is the `sate-gallery` plugin. Since the Compile phase compiles the entire website, and the `develop` command recompiles on every incoming request, the automatic thumbnailing feature of `sate-gallery` would be prohibitively slow if it had to regenerate the thumbnail images on every page load.
+
+Instead, the plugin checks the [`Sate.executingCommand`](/sate-apis/types/sate#executingCommand) property, and when in `develop`, instead of generating thumbnail images for every gallery entry, it registers a RequestHandler for thumbnails paths with Sate. Then when requests come in for the thumbnails, it can generate the thumbnail images on-demand.
+
+## RequestHandler & Deploy
+
+Because the RequestHandler type solves a problem particular to the `develop` workflow, it is considered an error to attempt to register a RequestHandler during `deploy`. You should always check the `Sate.executingCommand` property before instantiating your RequestHandler. If you do create one during `deploy`, Sate will register a non-fatal error, and the handler will not be registered.
 
 ## Extending Sate.RequestHandler
 
@@ -70,7 +77,7 @@ This method must return a valid HTTP response code for the request.
 |`request`| <span class="type object">Object</span>|
 |`deliverResponse`| <span class="type function">Function</span>|
 
-In this method, you should do whatever work needs to be done to construct the appropriate response, and deliver the response by calling the `deliverResponse` callback, expects a string or data stream to return to the client.
+In this method, you should do whatever work needs to be done to construct the appropriate response. Then deliver the response by calling the `deliverResponse` callback, which expects a string or data stream to return to the client.
 
 For example:
 

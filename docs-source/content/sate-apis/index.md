@@ -1,18 +1,17 @@
 {
     "name": "Sate APIs",
     "articleSort": [
-        "/sate-apis/the-sate-lifecycle",
-        "/sate-apis/developing-plugins"
+        "/sate-apis/developing-plugins",
+        "/sate-apis/the-sate-lifecycle"
     ],
     "plugins": [
         {
             "type": "sate-menu",
             "id": "pageMenu",
-            "parentLink": true,
             "inherited": true,
             "items": [
-                "/sate-apis/the-sate-lifecycle",
                 "/sate-apis/developing-plugins",
+                "/sate-apis/the-sate-lifecycle",
                 {
                     "name": "Sate Types Documentation"
                 },

@@ -151,22 +151,6 @@ For example, if a plugin needs to perform an expensive computation during compil
 
 To use the shared plugin config store, call `Sate.configForPlugin` with the plugin type as the single argument. The return value is an object reference which can be populated with any properties you wish.
 
-### <a name="registerRequestHandlerForRequests"></a>`registerRequestHandlerForRequests(requestHandler, requestMatcher)` 
-
-| Arguments | |
-|:-|-|
-|`requestHandler`| <a class="type sate" href="/sate-apis/types/request-handler">RequestHandler</a>|
-|`requestMatcher`| <span class="type regex">Regular Expression</span>|
-
-This method allows plugins to register specialized request handlers for requests. This allows plugins which may want to defer content processing for faster performance when running in `develop`. 
-
-An example of this is the `sate-gallery` plugin, which generates thumbnails lazily during `develop`. To achieve this, it registers a RequestHandler instance for the regular expression `/^\/sate-gallery-thumbs\/.+/mi`. 
-
-When the Sate webserver is running, it compares all incoming request URLs with request handlers that have been registered. If there are any handlers registered for the given request, Sate will pass the request on to the handler, and the handler is responsible for providing the HTTP response. See [Request Handler][reqhand] for more details.
-
-
-[reqhand]: /sate-apis/types/request-handler
-
 
 {{{plugin-sate-sequenceNav}}}
 

@@ -65,13 +65,11 @@ The following properties are defined by you in your plugin sub-type. They are no
 
 A string name identifying the plugin's directory. The `type` property must match the source directory of the plugin.
 
-### `version`  <span class="type string">String</span>
-
-A numeric version string in the format of `1.0.0`. This version is used by the `sate update` command to determine whether or not a plugin needs updating.
-
 ### `templates`  <span class="type object">Object</span>
 
-An dictionary of templates and partials used by the plugin. The object key is the partial name, and the value is the template filepath relative to the plugin directory. If the plugin will be rendered, it **must** have at least one template with the reserved key of `main`.
+An dictionary of templates and partials used by the plugin. The object key is the partial name, and the value is the template filepath relative to the plugin directory. These will be loaded by Sate at compile-time, and the `main` template will be passed as the template to the render function, with any other templates available at render-time in the `partials` object.
+
+If the plugin will be rendered, it **must** have at least one template with the reserved key of `main`.
 
 ### `stylesheets`  <span class="type array">Array</span>
 
