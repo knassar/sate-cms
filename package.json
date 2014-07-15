@@ -13,7 +13,9 @@
     "imagemagick": "latest",
     "ncp": "latest",
     "flow": "latest",
-    "node.extend": "latest"
+    "node.extend": "latest",
+    "greatjson": "latest",
+    "cli-color": "latest"
   },
   
   "bin": {

@@ -1,0 +1,175 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    
+    "definitions": {
+        "pageDescriptor": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "description": "The unique root-relative URL of the descriptor target page",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "name": {
+                    "description": "The display name of the descriptor target page",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "url"
+            ]
+        },
+
+        "plugin": {
+            "title": "SatePlugin",
+            "description": "A Sate Plugin data object",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "classes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+
+        "page": {
+            "title": "SatePage",
+            "description": "A Sate Page data object",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "The display name of the descriptor target page",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "Page title",
+                    "type": "string"
+                },
+                "classes": {
+                    "description": "class attribute strings",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "subtitle": {
+                    "description": "page subtitle",
+                    "type": "string"
+                },
+                "articleSort":{
+                    "type": ["string", "array"],
+                    "pattern": "^Sate\.IndexSort\.[^\.]+$",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "type": {
+                    "type": "string",
+                    "pattern": "^Sate\.PageType\.[^\.]+$"
+                },
+                "parser": {
+                    "type": "string",
+                    "pattern": "^Sate\.Parser\.[^\.]+$"
+                },
+                "encoding":  {
+                    "type": "string"
+                },
+                "contentPath":  {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "extraStyles": {
+                    "description": "additional CSS includes",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "extraScripts": {
+                    "description": "additional JS includes",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+                "date": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "modified": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "plugins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/plugin" 
+                    }
+                },
+                "partials": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string",
+                        "format": "uri" 
+                    }
+                }
+            }
+        },
+
+        "website": {
+            "description": "A Sate Website JSON Manifest",
+            "type": "object",
+            "properties": {
+                "config": {
+                    "type": "object",
+                    "properties": {
+                        "buildDirName": {
+                            "type": "string"
+                        },
+                        "rootPage":  {
+                            "type": "string"
+                        },
+                        "rootPageUrl":  {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "contentSources":  {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "encoding":  {
+                            "type": "string"
+                        }
+                    }
+                },
+                "pageDefaults": { 
+                    "$ref": "#/definitions/page" 
+                },
+                "templates": {
+                    "description": "Dictionary of Templates",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                },
+            }
+        }
+    }
+    
+}

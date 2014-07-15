@@ -112,7 +112,7 @@ function Create() {
                 fs.writeFileSync(jsonFilename, json, opts);
             },
             execute: function() {
-                Sate.Log.logBox( ["Creating a Sate site"] );
+                Sate.Log.startBox( ["Creating a Sate site"] );
                 var target = this.args.createTarget;
                 console.log(" +-> verifying target directory: "+target );
                 Sate.utils.ensurePath(target);
@@ -130,7 +130,7 @@ function Create() {
                     if (err) {
                         console.log( err );
                     } else {
-                        Sate.Log.logBox(["Done", "run: ", "    cd "+target+"; sate develop", "to load your site"]);
+                        Sate.Log.successBox(["Done", "run: ", "    cd "+target+"; sate develop", "to load your site"]);
                     }
                 });
             }

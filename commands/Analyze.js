@@ -25,7 +25,7 @@ function Analyze() {
                 console.log("\n");
             },
             execute: function() {
-                Sate.Log.logBox( ["Starting Sate - Analyze"] );
+                Sate.Log.startBox( ["Starting Sate - Analyze"] );
                 console.log( " +-> processing website config..." );
                 this.site = new Sate.Website(this.args);
                 // @TODO: Analyze This

@@ -27,9 +27,9 @@
             Server: require(__dirname+'/sate-resources/Server'),
             Log: require(__dirname+'/sate-resources/Log'),
             LogLevel: {
-                Quiet: 'quiet',
-                Normal: 'normal',
-                Verbose: 'verbose'
+                Quiet: -1,
+                Normal: 0,
+                Verbose: 10
             },
             executingCommand: null,
             nodeModInstallDir: __dirname + '/node_modules/',

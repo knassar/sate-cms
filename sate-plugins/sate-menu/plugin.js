@@ -67,8 +67,10 @@ module.exports = function() {
                                 base = thisPage.url + "/";
                             }
                             item.items = [];
-                            for (var i = 0; i < thisPage.articles.length; i++) {
-                                item.items.push({"url": base + thisPage.articles[i].id});
+                            if (thisPage.articles) {
+                                thisPage.articles.forEach(function(article) {
+                                    item.items.push({"url": base + article.id});
+                                });
                             }
                         }
                         else if (menuPage.subPages) {

@@ -49,7 +49,7 @@ function Deploy() {
             site: null,
             targetPagePaths: {},
             execute: function() {
-                Sate.Log.logBox( ["Starting Sate - Deploy"] );
+                Sate.Log.startBox( ["Starting Sate - Deploy"] );
                 this.site = new Sate.Website(this.args);
                 self = this;
                 flow.exec(
@@ -162,7 +162,7 @@ function Deploy() {
                         scriptCompositor.execute(self.args.sitePath, self.args.targetPath, this);
                     },
                     function() {
-                        Sate.Log.logBox(["Deploy complete", "Generated website at: "+fs.realpathSync(self.args.targetPath)]);
+                        Sate.Log.successBox(["Deploy complete", "Generated website at: "+fs.realpathSync(self.args.targetPath)]);
                     }
                 );
             }

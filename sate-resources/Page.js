@@ -80,7 +80,6 @@ function Page(id, props, parent) {
             name: "untitled page",
             articleSort: Sate.IndexSort.DateDescending,
             type: Sate.PageType.Empty,
-            subPages: {},
             encoding: Sate.currentSite.config.encoding,
             contentPath: Sate.currentSite.contentPath,
             classes: [],
@@ -110,6 +109,7 @@ function Page(id, props, parent) {
         props, 
         {
             id: id,
+            subPages: {},
             templates: Sate.currentSite.compiledTemplates,
             compiledPartials: Sate.currentSite.compiledPartials,
             sitePath: Sate.currentSite.sitePath,

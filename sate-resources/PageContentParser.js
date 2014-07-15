@@ -3,18 +3,19 @@ function PageContentParser() {
     var fs = require('fs'),
         path = require('path'),
         util = require('util'),
+        _JSON = require(Sate.nodeModInstallDir+'greatjson'),
         markdown = require(Sate.nodeModInstallDir+'marked');
 
     var blockMatcher = /^@([^\:]+):/mi;
 
     var chainPageData = function (page, data) {
         if (data.trim().length > 0) {
-            try {
-                var pageData = JSON.parse(data);
-                Sate.chain.inPlace(page, pageData);
+            var pageData = _JSON.parse(data);
+            if (pageData instanceof Error) {
+                Sate.Log.logError("couldn't parse page data for "+page.url, 2, pageData);
             }
-            catch (err) {
-                Sate.Log.logError("couldn't parse page data for "+page.url, 2);
+            else {
+                Sate.chain.inPlace(page, pageData);
             }
         }
     }

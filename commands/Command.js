@@ -37,11 +37,11 @@ function Command() {
                     switch (args[i]) {
                         case '-v':
                         case '--verbose':
-                            this.args.logLevel = Sate.LogLevel.Verbose;
+                            Sate.Log.setLogLevel(Sate.LogLevel.Verbose);
                             break;
                         case '-q':
                         case '--quiet':
-                            this.args.logLevel = Sate.LogLevel.Quiet;
+                            Sate.Log.setLogLevel(Sate.LogLevel.Quiet);
                             break;
                         case '-h':
                         case '--help': 

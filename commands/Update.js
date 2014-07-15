@@ -63,15 +63,15 @@ function Update() {
 
             },
             updatePlugin: function(pluginName, onComplete) {
-                console.log( " +---> updating "+pluginName );
+                Sate.Log.logAction( "updating "+pluginName, 2 );
                 this.copyPlugin(pluginName, onComplete);
             },
             installPlugin: function(pluginName, onComplete) {
-                console.log( " +---> installing "+pluginName );
+                Sate.Log.logAction( "installing "+pluginName, 2 );
                 this.copyPlugin(pluginName, onComplete);
             },
             ensurePluginsUpToDate: function(done) {
-                console.log( " +--> plugins");
+                Sate.Log.logAction( "plugins", 1);
                 var sitePlugins = pluginVersions(path.join(this.args.sitePath, 'sate-cms/plugins')),
                     sourcePlugins = pluginVersions(path.join(__dirname, '../sate-plugins')),
                     copyPlugins = {};
@@ -113,10 +113,10 @@ function Update() {
                 }
             },
             execute: function() {
-                Sate.Log.logBox( ["Updating Sate Site"] );
-                console.log( " +-> checking website sources..." );
+                Sate.Log.startBox( ["Updating Sate Site"] );
+                Sate.Log.logAction( "checking website sources...", 0 );
                 this.ensurePluginsUpToDate(function() {
-                    Sate.Log.logBox( ["Update Done"] );
+                    Sate.Log.successBox( ["Update Done"] );
                     process.exit(0);
                 });
             }

@@ -18,7 +18,7 @@ function Develop() {
             },
             site: null,
             execute: function() {
-                Sate.Log.logBox( ["Starting Sate - Develop"] );
+                Sate.Log.startBox( ["Starting Sate - Develop"] );
                 this.site = new Sate.Website(this.args);
                 self = this;
                 flow.exec(
@@ -28,7 +28,7 @@ function Develop() {
                     function() {
                         Sate.Log.logAction("starting server...", 0);
                         var server = new Sate.Server.DevelopmentServer();
-                        Sate.Log.logAction("listening on port "+cmd.site.args.port+"...", 1);
+                        Sate.Log.logSuccess("listening on port "+cmd.site.args.port+"...");
                     }
                 );
             }

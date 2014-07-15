@@ -52,7 +52,7 @@ function Docs() {
 
             },
             execute: function() {
-                Sate.Log.logBox( ["Starting Sate - Docs"] );
+                Sate.Log.startBox( ["Starting Sate - Docs"] );
                 this.site = new Sate.Website(this.args);
                 self = this;
                 flow.exec(
@@ -69,7 +69,7 @@ function Docs() {
                     function() {
                         Sate.Log.logAction("starting server...", 0);
                         var server = new Sate.Server.StaticServer();
-                        Sate.Log.logAction("Sate documentation available at http://localhost:"+cmd.site.args.port, 1);
+                        Sate.Log.logSuccess("Sate documentation available at http://localhost:"+cmd.site.args.port);
                     }
                 );
             }

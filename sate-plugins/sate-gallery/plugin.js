@@ -83,54 +83,56 @@ module.exports = function() {
         });
     };
     
-    var handlerRegex = /^\/sate-gallery-thumbs\/.+/mi;
     var sateGalleryThumbnailRequestHandler;
-    if (Sate.resourceRequestHandlers[handlerRegex]) {
-        sateGalleryThumbnailRequestHandler = Sate.resourceRequestHandlers[handlerRegex].handler;
-    }
-    else {
-        sateGalleryThumbnailRequestHandler = new Sate.RequestHandler(handlerRegex, {
-            type: 'sate-gallery-thumbnail-request-handler',
-            galleries: {},
-            headersForRequest: function(request) {
-                headers = {
-                    'Content-Type': ''
-                };
-                switch (request.url.split('.').reverse()[0]) {
-                    case 'jpg':
-                    case 'jpeg':
-                        headers['Content-Type'] = 'image/jpeg';
-                        break;
-                    case 'png':
-                        headers['Content-Type'] = 'image/png';
-                        break;
-                    case 'gif':
-                        headers['Content-Type'] = 'image/gif';
-                        break;
-                }
-                return headers;
-            },
-            httpCodeForRequest: function(request) {
-                return 200;
-            },
-            handleRequest: function(request, website, deliverResponse) {
-                if (!foundIMBins) {
-                    deliverResponse('');
-                }
-                else {
-                    var thumb = website.resourceForPath(request.url);
-                    if (thumb) {
-                        deliverResponse(thumb);
+    if (Sate.executingCommand != 'deploy') {
+        var handlerRegex = /^\/sate-gallery-thumbs\/.+/mi;
+        if (Sate.resourceRequestHandlers[handlerRegex]) {
+            sateGalleryThumbnailRequestHandler = Sate.resourceRequestHandlers[handlerRegex].handler;
+        }
+        else {
+            sateGalleryThumbnailRequestHandler = new Sate.RequestHandler(handlerRegex, {
+                type: 'sate-gallery-thumbnail-request-handler',
+                galleries: {},
+                headersForRequest: function(request) {
+                    headers = {
+                        'Content-Type': ''
+                    };
+                    switch (request.url.split('.').reverse()[0]) {
+                        case 'jpg':
+                        case 'jpeg':
+                            headers['Content-Type'] = 'image/jpeg';
+                            break;
+                        case 'png':
+                            headers['Content-Type'] = 'image/png';
+                            break;
+                        case 'gif':
+                            headers['Content-Type'] = 'image/gif';
+                            break;
+                    }
+                    return headers;
+                },
+                httpCodeForRequest: function(request) {
+                    return 200;
+                },
+                handleRequest: function(request, website, deliverResponse) {
+                    if (!foundIMBins) {
+                        deliverResponse('');
                     }
                     else {
-                        generateThumbnail(request.url, this, function() {
-                            deliverResponse(website.resourceForPath(request.url));
-                        });
+                        var thumb = website.resourceForPath(request.url);
+                        if (thumb) {
+                            deliverResponse(thumb);
+                        }
+                        else {
+                            generateThumbnail(request.url, this, function() {
+                                deliverResponse(website.resourceForPath(request.url));
+                            });
+                        }
                     }
                 }
-            }
-        });
-        sateGalleryThumbnailRequestHandler.galleries[SateGalleryPluginDefaultBase] = {thumbnail: SateGalleryPluginDefaultThumbnailParams};
+            });
+            sateGalleryThumbnailRequestHandler.galleries[SateGalleryPluginDefaultBase] = {thumbnail: SateGalleryPluginDefaultThumbnailParams};
+        }
     }
     
     var imgExtRegex = /\.jpg|\.jpeg|\.gif|\.png$/mi;
@@ -175,10 +177,10 @@ module.exports = function() {
                 traverseImages(gallery, localPath(dir), this);
             },
             function() {
-                if (gallery.id && !sateGalleryThumbnailRequestHandler.galleries.hasOwnProperty(gallery.id)) {
-                    sateGalleryThumbnailRequestHandler.galleries[gallery.id] = gallery;
-                }
                 if (gallery.generateThumbnailsOnDemand === true) {
+                    if (gallery.id && !sateGalleryThumbnailRequestHandler.galleries.hasOwnProperty(gallery.id)) {
+                        sateGalleryThumbnailRequestHandler.galleries[gallery.id] = gallery;
+                    }
                     // early escape
                     complete.apply();
                 }

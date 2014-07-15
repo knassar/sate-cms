@@ -2,6 +2,7 @@ function Website(args) {
         var fs = require('fs'),
         path = require('path'),
         extend = require(Sate.nodeModInstallDir+'node.extend'),
+        _JSON = require(Sate.nodeModInstallDir+'greatjson'),
         flow = require(Sate.nodeModInstallDir+'flow');
 
     var website = {};
@@ -156,7 +157,13 @@ function Website(args) {
                 console.log( err );
                 error(err);
             } else {
-                website.json = JSON.parse(data);
+                var json = _JSON.parse(data);
+                if (json instanceof Error) {
+                    Sate.Log.failWith("Could Not Parse website.json", json);
+                }
+                else {
+                    website.json = json;
+                }
                 mergeConfig();
                 complete.apply(website);
             }
