@@ -69,15 +69,19 @@ Log = function() {
         setLogLevel: function(level) {
             logLevel = level;
         },
-        logSeparator: function() {
-            console.log( " +"+logLineDashes() );
-        },
         logSuccess: function(msg) {
             logSuccess( " +"+xChars(dash, 1)+"> "+msg);
         },
         logAction: function(msg, depth) {
+            var prefx;
+            if (depth == 0) {
+                prefx = " +"+xChars(dash, depth * 2 + 1)
+            }
+            else {
+                prefx = "  "+xChars(" ", depth * 2)+ "-";
+            }
             if (depth - logLevel < 1) {
-                logOK( " +"+xChars(dash, depth * 2 + 1)+"> "+msg, depth);
+                logOK( prefx+"> "+msg, depth);
             }
         },
         logError: function(msg, depth, err) {
