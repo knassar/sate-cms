@@ -7,13 +7,11 @@
 
 @intro:
 
-
+Like you would expect, there is no need to specify most of the possible properties of the `website.json` file. The defaults values are suitable for most cases. However, it is helpful to know how the file is structured so that you can choose when to override. 
 
 
 @content:
     
-Like you would expect, there is no need to specify most of the possible properties of the `website.json` file. The defaults values are suitable for most cases. However, it is helpful to know how the file is structured so that you can choose when to override. 
-
 The `website.json` has three main sections, each of which has different functions:
 
  * `config`
