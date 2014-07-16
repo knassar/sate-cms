@@ -7,7 +7,7 @@ module.exports = function() {
 
     var plg = new Sate.Plugin({
         type: 'sate-menu',
-        version: '0.5.0',
+        version: '0.6.0',
         mainTag: 'ul',
         items: [],
         classes: [],
@@ -147,10 +147,9 @@ module.exports = function() {
             var obj = this.pluginDataFromPage(page, config);
             
             if (!obj || obj == null) {
-                obj = Sate.chain.inPlace(this, config);
-            } else {
-                obj = Sate.chain(obj, config);
-            }
+                obj = this;
+            } 
+            obj = Sate.chain(obj, config);
 
             if (obj.items && obj.items.length == 0) {
                 this.findRelatedMenuItems(obj, page, config);

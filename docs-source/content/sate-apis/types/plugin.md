@@ -120,9 +120,7 @@ at the top of your own implementation of `objectToRender`.
 
 If you choose to implement this method without calling the prototype implementation, you should remember to merge the `config` properties into your instance:
 
-    if (!obj || obj == null) {
-        obj = Sate.chain.inPlace(this, config);
-    } else {
+    if (obj) {
         obj = Sate.chain(obj, config);
     }
     
