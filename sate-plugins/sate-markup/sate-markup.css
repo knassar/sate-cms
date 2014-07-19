@@ -1,0 +1,31 @@
+a.external 
+{
+    display: inline-block;
+    margin-right: 1em;
+    position: relative;
+}
+
+a.external::before
+{
+    content: "";
+    position: absolute;
+    width: 0.4em;
+    height: 0.4em;
+    right: -0.75em;
+    bottom: 0.5em;
+    background-color: white;
+    border: gray 1px solid;
+}
+
+a.external::after
+{
+    content: "";
+    position: absolute;
+    width: 0.4em;
+    height: 0.375em;
+    right: -0.95em;
+    bottom: 0.75em;
+    background-color: white;
+    border: gray 1px solid;
+    border-top-width: 0.15em;
+}

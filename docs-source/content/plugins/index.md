@@ -5,6 +5,8 @@
         "/plugins/breadcrumb-nav", 
         "/plugins/sequence-nav", 
         "/plugins/gallery", 
+        "/plugins/markup", 
+        "/plugins/mailto", 
         "/plugins/sate-powered"
     ],
     "plugins": [

@@ -100,6 +100,12 @@ function Page(id, props, parent) {
                 },
                 {
                     type: 'sate-sequenceNav'
+                },
+                {
+                    type: 'sate-markup'
+                },
+                {
+                    type: 'sate-mailto'
                 }
             ],
             partials: {},

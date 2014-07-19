@@ -1,5 +1,5 @@
+if (!Sate) var Sate = {};
 $(function() {
-    if (!Sate) var Sate = {};
     (function() {
         Sate.Gallery = (function() {
             var $viewer = $('<div id="sateGalleryHeroViewer"><div class="bg"></div><div class="images"><img class="hero-a"/><img class="hero-b"/></div><a class="nav close">&times; close</a><a class="nav prev">&lsaquo; previous</a><a class="nav next">next &rsaquo;</a><div id="galleryTitle"></div></div>').appendTo($('body')),
