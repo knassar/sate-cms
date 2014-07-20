@@ -35,12 +35,6 @@ The following properties can be used to adjust the default behavior of the Seque
 
 An Array of [Page descriptors](/docs/page-descriptors) to use as the sequence. Note that if the current page does not appear in the provided `sequence` then the plugin will not appear.
 
-
-#### `classes` <span class="type array">Array</span>
-
-Specifies an array of Strings to use as the `class` attribute on the outer `HTML` tag of the Sequence Nav instance.
-
-
 #### `previousPrompt` <span class="type string">String</span>
 
 A string to use as the prompt when rendering the previous page link. Defaults to "previous:"
