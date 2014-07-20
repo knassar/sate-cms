@@ -4,7 +4,7 @@
 
 @intro:
 
-The PageDescriptor is a light-weight JavaScript object that conforms to a minimum spec. 
+The PageDescriptor is a light-weight JavaScript object that uniquely identifies a given page in a Sate website.
 
 @content:
 
