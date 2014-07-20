@@ -2,7 +2,7 @@
     "articleSort": [
         "/plugins/sate-plugins", 
         "/plugins/menu", 
-        "/plugins/breadcrumb-nav", 
+        "/plugins/breadcrumbs", 
         "/plugins/sequence-nav", 
         "/plugins/gallery", 
         "/plugins/markup", 
