@@ -51,3 +51,6 @@ Text to display in cases where the browser has JavaScript disabled.
     // This code is freeware provided these four comment lines remain intact
     // A wizard to generate this code is at http://www.jottings.com/obfuscator/
 
+
+{{{plugin-sate-sequenceNav}}}
+    
