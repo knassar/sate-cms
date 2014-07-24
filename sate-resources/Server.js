@@ -11,7 +11,6 @@ var baseServer = function() {
     var connect = require(Sate.nodeModInstallDir+'connect');
     
     var server = connect()
-        .use(connect.favicon(path.join(Sate.currentSite.sitePath, 'favicon.ico')))
         .use(connect.logger('dev')) // @TODO: use the right log-level
         .use(connect.query());
     return server;
