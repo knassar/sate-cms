@@ -85,10 +85,6 @@ To suppress a menu inherited from a sub-page, override the `items` property to `
 
 In addition to the standard [Page Descriptors][pagedescr] behavior, the following additional properties are supported on individual Page Descriptor objects within the `items` array:
 
-#### `classes` <span class="type array">Array</span>
-
-Specifies an array of Strings to use as the `class` attribute on the Menu Item.
-
 
 #### `items` <span class="type array">Array</span>
 
