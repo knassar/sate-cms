@@ -28,7 +28,7 @@ The directory structure you'll see is something like this:
         /content
             index.html 
             about.html
-            /images
+        /images
         /styles
         /sate-cms
             /error
