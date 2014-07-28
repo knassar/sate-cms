@@ -26,31 +26,21 @@ var RequestTargetType = {
     Page: '*'
 };
 
-var jsMatcher = /\.js$/;
-var cssMatcher = /\.css$/;
-var icoMatcher = /\.ico$/;
-var jpgMatcher = /\.jpg|\.jpeg|\.jpe$/;
-var pngMatcher = /\.png$/;
-var gifMatcher = /\.gif$/;
+var extensionMatcher = /(\.\w{1,})(?:\?.*)?$/m;
 
 var defaultRequestHandler;
 
 var createDefaultRequestHandler = function() {
     defaultRequestHandler = new Sate.RequestHandler(Sate.RequestHandler.DefaultHandler, {
         typeFromRequest: function(request) {
-            switch (true) {
-                case jsMatcher.test(request.url):
-                    return RequestTargetType.Javascript; 
-                case cssMatcher.test(request.url):
-                    return RequestTargetType.CSS; 
-                case icoMatcher.test(request.url):
-                    return RequestTargetType.ICO; 
-                case jpgMatcher.test(request.url):
-                    return RequestTargetType.JPG; 
-                case pngMatcher.test(request.url):
-                    return RequestTargetType.PNG; 
-                case gifMatcher.test(request.url):
-                    return RequestTargetType.GIF; 
+            var matches = extensionMatcher.exec(request.url);
+            if (matches && matches.length > 1) {
+                var extension = matches[1];
+                for (var type in RequestTargetType) {
+                    if (RequestTargetType.hasOwnProperty(type) && RequestTargetType[type] == extension) {
+                        return RequestTargetType[type];
+                    }
+                }
             }
             return RequestTargetType.Page;
         },
@@ -82,26 +72,32 @@ var createDefaultRequestHandler = function() {
             }
             return headers;
         },
+        cleanURL: function(request) {
+            // @TODO: parse and pass the url query args?
+            return request.url.replace(/(?:\?.*)?$/m, '');
+        },
         httpCodeForRequest: function(request, website) {
             var type = this.typeFromRequest(request);
-        
+            var url = this.cleanURL(request);
             if (type == RequestTargetType.Page) {
-                return website.hasPageForPath(request.url) ? 200 : 404;
+                return website.hasPageForPath(url) ? 200 : 404;
             } else {
-                return website.hasResourceForPath(request.url) ? 200 : 404;
+                return website.hasResourceForPath(url) ? 200 : 404;
             }
         },
         handleRequest: function(request, website, deliverResponse) {
             var type = this.typeFromRequest(request);
-        
+            
+            var url = this.cleanURL(request);
+            
             if (type == RequestTargetType.Page) {
                 // HACK HACK... this avoids a race condition with the end of complile.
                 // Not sure why yet
-                    setTimeout(function() {
-                        deliverResponse(website.pageForPath(request.url).render());
-                    }, 25);
+                setTimeout(function() {
+                    deliverResponse(website.pageForPath(url).render());
+                }, 25);
             } else {
-                deliverResponse(website.resourceForPath(request.url));
+                deliverResponse(website.resourceForPath(url));
             }
         }
     });   
