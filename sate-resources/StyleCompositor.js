@@ -78,7 +78,6 @@ function StyleCompositor() {
         if (lessMatcher.test(filename)) {
             traversalCounter++;
             Sate.Log.logAction("'"+filename+"'", 2);
-            //@TODO: Can't minify until I figure out how to inline standard CSS imports after minification
             compileLessSourceToCSS(path.join(filepath, filename), true, function(css) {
                 if (css) {
                     fs.writeFileSync(path.join(filepath, filename.replace(lessMatcher, '.css')), css, compositor.enc);
