@@ -9,29 +9,33 @@ function StyleCompositor() {
     
     var cssMatcher = /\.css$/mi;
     var lessMatcher = /\.less$/mi;
-    var importMatcher = /^.*@import\s+(?:url)?\(?['"]?([^'"]+)['"]?\)?;?/gmi;
     
     var inlineImports = function(compositor, filepath, filename) {
         var inlinedCss;
         if (cssMatcher.test(filename)) {
+            Sate.Log.logAction("'"+filename+"'", 2);
             var thisFilePath = path.join(filepath, filename);
             var css = " \n" + fs.readFileSync(thisFilePath, compositor.enc);
 
-            var lines = css.split('\n');
-            var inlined = [];
-            lines.forEach(function(line) {
-                var imp = importMatcher.exec(line);
-                if (imp && imp.length > 1) {
-                    inlined.push('\n/** '+ imp[0] +' **/');
-                    var subInline = inlineImports(compositor, filepath, imp[1]);
-                    inlined.push(subInline);
+            var inlinedCss = "";
+
+            var match = null;
+            var importMatcher = /@import\s*(?:url)?\(?\s*['"]?([\/-\w\.]+)['"]?\)?;?/gi;
+            var lastIndex = 0;
+            
+            while ((match = importMatcher.exec(css)) !== null) {
+                if (match.length > 1) {
+                    inlinedCss += css.substring(lastIndex, match.index);
+                    lastIndex = importMatcher.lastIndex;
+                    
+                    inlinedCss += '\n/** '+ match[0] +' **/\n';
+                    var subInline = inlineImports(compositor, filepath, match[1]);
+                    inlinedCss += subInline + '\n';
                 }
-                else {
-                    inlined.push(line);
-                }
-            });
-        
-            inlinedCss = inlined.join('\n');
+            }
+
+            inlinedCss += css.substring(lastIndex);
+
             fs.writeFileSync(thisFilePath, inlinedCss, compositor.enc);
         }
         return inlinedCss;
@@ -75,7 +79,7 @@ function StyleCompositor() {
             traversalCounter++;
             Sate.Log.logAction("'"+filename+"'", 2);
             //@TODO: Can't minify until I figure out how to inline standard CSS imports after minification
-            compileLessSourceToCSS(path.join(filepath, filename), false, function(css) {
+            compileLessSourceToCSS(path.join(filepath, filename), true, function(css) {
                 if (css) {
                     fs.writeFileSync(path.join(filepath, filename.replace(lessMatcher, '.css')), css, compositor.enc);
                 }
@@ -88,18 +92,20 @@ function StyleCompositor() {
 
     var traversalCounter = -1;
     var traversalCheck = function() {
-        if (traversalComplete && traversalCounter === 0) {
+        if (traversalComplete != null && traversalCounter === 0) {
             traversalComplete.apply();
             traversalComplete = null;
         }
     };
-    var traversalComplete;
+    var traversalComplete = null;
     var traverseStylesAndApply = function(compositor, dir, operation, complete) {
         if (traversalCounter == -1) {
             traversalCounter = 0;
         }
         
-        traversalComplete = complete;
+        if (complete) {
+            traversalComplete = complete;
+        }
         
         var files = fs.readdirSync(dir);
 
@@ -114,7 +120,7 @@ function StyleCompositor() {
             }
         });
         
-        traversalCheck();
+        traversalComplete();
     };
     
     var compositor = {
@@ -135,6 +141,10 @@ function StyleCompositor() {
                 function() {
                     Sate.Log.logAction("Compiling LESS Stylesheets", 1);
                     traverseStylesAndApply(self, path.join(targetPath, 'styles'), compileLess, this);
+                },
+                function() {
+                    // HACK HACK HACK
+                    setTimeout(this, 200);
                 },
                 function() {
                     Sate.Log.logAction("Inlining Stylesheet @imports", 1);
