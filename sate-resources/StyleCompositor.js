@@ -3,49 +3,118 @@ function StyleCompositor() {
         path = require('path'),
         util = require('util'),
         flow = require(Sate.nodeModInstallDir+'flow'),
+        less = require('less'),
         PagePluginsResolver = require(__dirname+'/PagePluginsResolver'),
         pluginsResolver = new PagePluginsResolver();
     
     var cssMatcher = /\.css$/mi;
-    var importMatcher = /^\s*@import\s+url\(['"]?([^'"]+)['"]?\);?/gmi;
-        
-    var d = 0;
+    var lessMatcher = /\.less$/mi;
+    var importMatcher = /^.*@import\s+(?:url)?\(?['"]?([^'"]+)['"]?\)?;?/gmi;
+    
     var inlineImports = function(compositor, filepath, filename) {
-        var thisFilePath = path.join(filepath, filename);
-        var css = " \n" + fs.readFileSync(thisFilePath, compositor.enc);
+        var inlinedCss;
+        if (cssMatcher.test(filename)) {
+            var thisFilePath = path.join(filepath, filename);
+            var css = " \n" + fs.readFileSync(thisFilePath, compositor.enc);
 
-        var lines = css.split('\n');
-        var inlined = [];
-        lines.forEach(function(line) {
-            var imp = importMatcher.exec(line);
-            if (imp && imp.length > 1) {
-                inlined.push('\n/** '+ imp[0] +' **/');
-                var subInline = inlineImports(compositor, filepath, imp[1]);
-                inlined.push(subInline);
-            }
-            else {
-                inlined.push(line);
-            }
-        });
+            var lines = css.split('\n');
+            var inlined = [];
+            lines.forEach(function(line) {
+                var imp = importMatcher.exec(line);
+                if (imp && imp.length > 1) {
+                    inlined.push('\n/** '+ imp[0] +' **/');
+                    var subInline = inlineImports(compositor, filepath, imp[1]);
+                    inlined.push(subInline);
+                }
+                else {
+                    inlined.push(line);
+                }
+            });
         
-        var inlinedCss = inlined.join('\n');
-        fs.writeFileSync(thisFilePath, inlinedCss, compositor.enc);
+            inlinedCss = inlined.join('\n');
+            fs.writeFileSync(thisFilePath, inlinedCss, compositor.enc);
+        }
         return inlinedCss;
     };
     
-    var traverseStylesAndInlineImports = function(compositor, dir) {
+    var compileLessSourceToCSS = function(lessSourcePath, minify, complete) {
+        var importPath = lessSourcePath.split('/').slice(0, -1).join('/');
+        var parser = new(less.Parser)({
+            paths: [importPath],
+            filename: lessSourcePath
+        });
+        
+        fs.readFile(lessSourcePath, {encoding: Sate.currentSite.config.encoding}, function(err, data) {
+            if (err) {
+                Sate.Log.logError("couldn't find LESS file '"+lessSourcePath+"'", 2);
+                complete("");
+                return;
+            }
+            try {
+                parser.parse(data, function (err, tree) {
+                    if (err) {
+                        throw Error(err);
+                    }
+
+                    var css = tree.toCSS({
+                        compress: minify
+                    });
+
+                    complete(css);
+                });
+            }
+            catch (e) {
+                Sate.Log.logError("LESS couldn't parse '"+lessSourcePath+"'", 2, e);
+                complete(data);
+            }
+        });
+    };
+    
+    var compileLess = function(compositor, filepath, filename) {
+        if (lessMatcher.test(filename)) {
+            traversalCounter++;
+            Sate.Log.logAction("'"+filename+"'", 2);
+            //@TODO: Can't minify until I figure out how to inline standard CSS imports after minification
+            compileLessSourceToCSS(path.join(filepath, filename), false, function(css) {
+                if (css) {
+                    fs.writeFileSync(path.join(filepath, filename.replace(lessMatcher, '.css')), css, compositor.enc);
+                }
+                traversalCounter--;
+
+                setTimeout(traversalCheck, 10);
+            });
+        }
+    };
+
+    var traversalCounter = -1;
+    var traversalCheck = function() {
+        if (traversalComplete && traversalCounter === 0) {
+            traversalComplete.apply();
+            traversalComplete = null;
+        }
+    };
+    var traversalComplete;
+    var traverseStylesAndApply = function(compositor, dir, operation, complete) {
+        if (traversalCounter == -1) {
+            traversalCounter = 0;
+        }
+        
+        traversalComplete = complete;
+        
         var files = fs.readdirSync(dir);
 
         files.forEach(function(file) {
             var filePath = path.join(dir, file);
             var stat = fs.statSync(filePath);
             if (stat.isDirectory()) {
-                traverseStylesAndInlineImports(compositor, filePath);
+                traverseStylesAndApply(compositor, filePath, operation);
             }
-            else if (stat.isFile() && cssMatcher.test(file)) {
-                inlineImports(compositor, dir, file);
+            else if (stat.isFile()) {
+                operation.apply(this, [compositor, dir, file]);
             }
         });
+        
+        traversalCheck();
     };
     
     var compositor = {
@@ -64,9 +133,12 @@ function StyleCompositor() {
             var lines;
             flow.exec(
                 function() {
+                    Sate.Log.logAction("Compiling LESS Stylesheets", 1);
+                    traverseStylesAndApply(self, path.join(targetPath, 'styles'), compileLess, this);
+                },
+                function() {
                     Sate.Log.logAction("Inlining Stylesheet @imports", 1);
-                    traverseStylesAndInlineImports(self, path.join(targetPath, 'styles'));
-                    this.apply();
+                    traverseStylesAndApply(self, path.join(targetPath, 'styles'), inlineImports, this);
                 },
                 function() {
                     Sate.Log.logAction("Compiling Sate Plugin Stylesheets", 1);
@@ -94,6 +166,9 @@ function StyleCompositor() {
                     complete.apply();
                 }
             );
+        },
+        compileLess: function(lessSourcePath, minify, complete) {
+            compileLessSourceToCSS(lessSourcePath, minify, complete);
         }
     };
     

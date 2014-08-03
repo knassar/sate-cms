@@ -1,5 +1,7 @@
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    StyleCompositor = require(__dirname+'/StyleCompositor.js');
+    
 
 var baseServer = function() {
     
@@ -19,6 +21,7 @@ var baseServer = function() {
 var RequestTargetType = {
     Javascript: '.js',
     CSS: '.css',
+    LESS: '.less',
     ICO: '.ico',
     PNG: '.png',
     JPG: '.jpg',
@@ -53,6 +56,7 @@ var createDefaultRequestHandler = function() {
                     headers['Content-Type'] = 'text/javascript';
                     break;
                 case RequestTargetType.CSS:
+                case RequestTargetType.LESS:
                     headers['Content-Type'] = 'text/css';
                     break;
                 case RequestTargetType.ICO:
@@ -79,26 +83,64 @@ var createDefaultRequestHandler = function() {
         httpCodeForRequest: function(request, website) {
             var type = this.typeFromRequest(request);
             var url = this.cleanURL(request);
-            if (type == RequestTargetType.Page) {
-                return website.hasPageForPath(url) ? 200 : 404;
-            } else {
-                return website.hasResourceForPath(url) ? 200 : 404;
+            switch (type) {
+                case RequestTargetType.Page:
+                    return website.hasPageForPath(url) ? 200 : 404;
+
+                case RequestTargetType.CSS:
+                    var found = website.hasResourceForPath(url);
+                    if (!found) {
+                        found = website.hasResourceForPath(this.cssToLessURL(url));
+                    }
+                    return found ? 200 : 404;
+
+                default:
+                    return website.hasResourceForPath(url) ? 200 : 404;
+                
             }
+        },
+        _styleCompositor: null,
+        styleCompositor: function() {
+            if (!this._styleCompositor) {
+                this._styleCompositor = new StyleCompositor();
+            }
+            return this._styleCompositor;
         },
         handleRequest: function(request, website, deliverResponse) {
             var type = this.typeFromRequest(request);
             
             var url = this.cleanURL(request);
             
-            if (type == RequestTargetType.Page) {
-                // HACK HACK... this avoids a race condition with the end of complile.
-                // Not sure why yet
-                setTimeout(function() {
-                    deliverResponse(website.pageForPath(url).render());
-                }, 25);
-            } else {
-                deliverResponse(website.resourceForPath(url));
+            switch (type) {
+                case RequestTargetType.Page:
+                    // HACK HACK... this avoids a race condition with the end of complile.
+                    // Not sure why yet
+                    setTimeout(function() {
+                        deliverResponse(website.pageForPath(url).render());
+                    }, 25);
+                    break;
+
+                case RequestTargetType.LESS:
+                    this.handleLESSRequest(url, deliverResponse);
+                    break;
+                    
+                case RequestTargetType.CSS:
+                    if (!website.hasResourceForPath(url)) {
+                        this.handleLESSRequest(this.cssToLessURL(url), deliverResponse);
+                        break;
+                    }
+                    // else falls through
+                    
+                default:
+                    deliverResponse(website.resourceForPath(url));
             }
+        },
+        cssToLessURL: function(url) {
+            return url.replace(/\.css$/mi, '.less');
+        },
+        handleLESSRequest: function(url, deliverResponse) {
+            var stylePath = path.join(fs.realpathSync(Sate.currentSite.sitePath), url);
+            this.styleCompositor().compileLess(stylePath, false, deliverResponse);
         }
     });   
 };
