@@ -6,14 +6,28 @@ module.exports = {
         if (!omitWords) {
             omitWords = noTitleWords;
         }
-        var words = str.split(/[\s\-]+/g);
-        for (var i=0; i < words.length; i++) {
-            if (i === 0 || omitWords.indexOf(words[i]) == -1) {
-                var word = words[i].substr(0, 1).toUpperCase() + words[i].substr(1);
-                str = str.replace(words[i], word);
+        var title = "";
+        var word = "";
+        var edge = /[\s\-]/;
+        for (var i = 0; i < str.length; i++) {
+            var c = str.charAt(i);
+            if (edge.test(c)) {
+                var lowerWord = word.toLowerCase();
+                if (title.length > 0 && omitWords.indexOf(lowerWord) != -1) {
+                    word = lowerWord;
+                }
+                
+                title += word + c;
+                word = "";
+            }
+            else if (word == "") {
+                word += c.toUpperCase();
+            }
+            else {
+                word += c;
             }
         }
-        return str;
+        return title + word;
     },
     dateFromDateString: function(dateString) {
         return new Date(dateString.replace(/-{1}/g, '/'));
