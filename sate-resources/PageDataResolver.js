@@ -49,7 +49,9 @@ var dateProps = [
     'modified'
 ];
 var resolveDate = function(dateProp, page) {
-    page[dateProp] = new Date(page[dateProp]);
+    if (page[dateProp]) {
+        page[dateProp] = Sate.utils.dateFromDateString(page[dateProp]);
+    }
 };
 
 function PageDataResolver() {

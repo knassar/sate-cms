@@ -1,4 +1,6 @@
 var noTitleWords = ['the', 'of', 'and', 'in', 'from'];
+var fileNamePattern = /^(?:(\d{4}-\d{2}-\d{2})-)?(.+)$/mi;
+
 module.exports = {
     toTitleCase: function(str, omitWords) {
         if (!omitWords) {
@@ -13,8 +15,28 @@ module.exports = {
         }
         return str;
     },
+    dateFromDateString: function(dateString) {
+        return new Date(dateString.replace(/-{1}/g, '/'));
+    },
+    pageDateFromFileName: function(str) {
+        var matches = fileNamePattern.exec(str);
+        if (matches.length > 2 && matches[1]) {
+            return this.dateFromDateString(matches[1]);
+        }
+        else {
+            return null;
+        }
+    },
     pageNameFromFileName: function(str, omitWords) {
-        return this.toTitleCase(str.replace(/-{1}/g, ' ').replace(/--/g, '-'));
+        var matches = fileNamePattern.exec(str);
+        var namePart;
+        if (matches.length > 0) {
+            namePart = matches[matches.length - 1];
+        }
+        else {
+            namePart = str;
+        }
+        return this.toTitleCase(namePart.replace(/-{1}/g, ' ').replace(/--/g, '-'));
     },
     ensurePath: function(filepath) {
         var fs = require('fs'),

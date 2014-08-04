@@ -150,7 +150,15 @@ function Page(id, props, parent) {
                 }
             },
             function() {
-                fs.stat(self.resolvedContentPath, this);
+                var date = Sate.utils.pageDateFromFileName(self.id);
+                if (date) {
+                    self.date = date;
+                    self.create = date;
+                    this.apply();
+                }
+                else {
+                    fs.stat(self.resolvedContentPath, this);
+                }
             },
             function(err, stats) {
                 if (stats) {
