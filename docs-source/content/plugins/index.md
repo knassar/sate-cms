@@ -1,5 +1,5 @@
 {
-    "articleSort": [
+    "articles": [
         "/plugins/sate-plugins", 
         "/plugins/menu", 
         "/plugins/breadcrumbs", 

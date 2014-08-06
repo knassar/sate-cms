@@ -32,7 +32,7 @@ function Analyze() {
                 self = this;
                 flow.exec(
                     function() {
-                        self.site.compile(true, this);
+                        self.site.compile(this);
                     },
                     function() {
                         Sate.Log.logAction("This is where analysis would be if it was working", 1);

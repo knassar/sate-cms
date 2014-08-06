@@ -39,7 +39,12 @@ module.exports = function() {
             var website = Sate.currentSite;
             if (util.isArray(obj.items)) {
                 obj.items = obj.items.map(function(item) {
-                    return Sate.pageDescriptor(item);
+                    if (item.type && item.typeOf == "Sate.Page") {
+                        return item.descriptor();
+                    }
+                    else {
+                        return Sate.pageDescriptor(item);
+                    }
                 })
 
                 obj.items.forEach(function(item) {
@@ -61,17 +66,8 @@ module.exports = function() {
                     }
                     else if (item.includeSublevel) {
                         var thisPage = website.pageForPath(item.url);
-                        if (thisPage && thisPage.type == Sate.PageType.Index) {
-                            var base = "/";
-                            if (!thisPage.isRoot) {
-                                base = thisPage.url + "/";
-                            }
-                            item.items = [];
-                            if (thisPage.articles) {
-                                thisPage.articles.forEach(function(article) {
-                                    item.items.push({"url": base + article.id});
-                                });
-                            }
+                        if (thisPage && thisPage.type == Sate.PageType.Index && thisPage.articles) {
+                            item.items = [].concat(thisPage.articles);
                         }
                         else if (menuPage.subPages) {
                             var items = [];
@@ -123,13 +119,14 @@ module.exports = function() {
         },
         findRelatedMenuItems: function(obj, page, config) {
             if (page.type == Sate.PageType.Index && util.isArray(page.articles)) {
-                var base = "/";
-                if (!page.isRoot) {
-                    base = page.url + "/";
-                }
-                for (var i = 0; i < page.articles.length; i++) {
-                    obj.items.push({"url":base + page.articles[i].id});
-                }
+                obj.items = page.articles.map(function(pageOrDescriptor) {
+                    if (pageOrDescriptor.typeOf == 'Sate.Page') {
+                        return pageOrDescriptor.descriptor();
+                    }
+                    else {
+                        return pageOrDescriptor;
+                    }
+                });
             }
             else if (!page.isRoot) {
                 page = page.parent;
@@ -158,10 +155,9 @@ module.exports = function() {
             if (obj.parentLink && page.parent) {
                 obj.parent = page.parent.descriptor();
             }
-            this.populateMenu(obj, page);
-            if (util.isArray(obj.items) && obj.items.length > 0) {
 
-            }
+            this.populateMenu(obj, page);
+
             return obj;
         }
     });

@@ -1,5 +1,5 @@
 {
-    "articleSort": [
+    "articles": [
         "/sate-apis/types/sate",
         "/sate-apis/types/website",
         "/sate-apis/types/page",

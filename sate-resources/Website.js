@@ -112,14 +112,14 @@ function Website(args) {
         });
     };
 
-    var compilePage = function(compiler, page, withMetrics) {
+    var compilePage = function(compiler, page) {
         var step = 'compile-page-'+page.url;
         compiler.stepStart(step);
         page.compile(function() {
             compiler.stepComplete(step);
         }, function(err) {
             compiler.stepError(step, err);
-        }, withMetrics);
+        });
     };
     
     var mergeConfig = function() {
@@ -198,16 +198,16 @@ function Website(args) {
                 }
             },
             rootPage: null,
-            parseJSON: function(withMetrics, complete) {
+            parseJSON: function(complete) {
                 Sate.Log.logAction("reading website.json", 0);
                 loadWebsiteJSON(this.sitePath, complete);
             },
-            compile: function(withMetrics, complete) {
+            compile: function(complete) {
                 this.isCompiling = true;
                 var self = this;
                 flow.exec(
                     function() {
-                        self.parseJSON(withMetrics, this);
+                        self.parseJSON(this);
                     },
                     function() {
                         Sate.Log.logAction("loading templates", 0);
@@ -245,7 +245,7 @@ function Website(args) {
                         for (var id in self.errorPages) {
                             if (self.errorPages.hasOwnProperty(id)) {
                                 Sate.Log.logAction(id, 1);
-                                self.errorPages[id].compile(withMetrics, this.MULTI(id));
+                                self.errorPages[id].compile(this.MULTI(id));
                                 count++;
                             }
                         }
@@ -259,21 +259,7 @@ function Website(args) {
                         for (var path in self.pageByPath) {
                             if (self.pageByPath.hasOwnProperty(path)) {
                                 Sate.Log.logAction(path, 1);
-                                self.pageByPath[path].compile(withMetrics, this.MULTI(path));
-                                count++;
-                            }
-                        }
-                        if (count == 0) {
-                            this.apply();
-                        }
-                    },
-                    function() {
-                        Sate.Log.logAction("compiling index pages", 0);
-                        var count = 0;
-                        for (var path in self.pageByPath) {
-                            if (self.pageByPath.hasOwnProperty(path) && self.pageByPath[path].type == Sate.PageType.Index) {
-                                Sate.Log.logAction(path, 1);
-                                self.pageByPath[path].composeArticleDigest(withMetrics, this.MULTI(path));
+                                self.pageByPath[path].compile(this.MULTI(path));
                                 count++;
                             }
                         }
@@ -287,7 +273,7 @@ function Website(args) {
                         for (var path in self.pageByPath) {
                             if (self.pageByPath.hasOwnProperty(path)) {
                                 Sate.Log.logAction(path, 1);
-                                self.pageByPath[path].resolvePlugins(withMetrics, this.MULTI(path));
+                                self.pageByPath[path].resolvePlugins(this.MULTI(path));
                                 count++;
                             }
                         }
@@ -310,7 +296,7 @@ function Website(args) {
                     }
                 );
             },
-            recompile: function(withMetrics, complete) {
+            recompile: function(complete) {
                 // clear compiled data
                 cleanObject(this.compiledPartials);
                 cleanObject(this.pageByPath);
@@ -318,7 +304,7 @@ function Website(args) {
                 this.compiled = false;
 
                 // compile again:
-                this.compile(withMetrics, complete);
+                this.compile(complete);
 
             },
             pageForPath: function(filePath) {

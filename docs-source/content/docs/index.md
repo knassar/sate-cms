@@ -1,6 +1,6 @@
 {
     "name": "Documentation",
-    "articleSort": [
+    "articles": [
         "/docs/sate-cli",
         "/docs/sate-website",
         "/docs/the-chain",

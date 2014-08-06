@@ -177,7 +177,7 @@ module.exports = {
             };
         
             if (handler == defaultRequestHandler && headers['Content-Type'] == 'text/html') {
-                website.recompile(true, handleRequest);
+                website.recompile(handleRequest);
             }
             else {
                 handleRequest.apply();

@@ -1,6 +1,6 @@
 {
     "name": "Getting Started with Sate",
-    "articleSort": [
+    "articles": [
         "/getting-started/installing-sate",
         "/getting-started/creating",
         "/getting-started/sate-basics"

@@ -52,7 +52,7 @@ module.exports = function() {
                     }
                 }
                 if (currPageIdx > 0 && !obj.prev) {
-                    obj.prev = seq[currPageIdx-1].descriptor();
+                    obj.prev = seq[currPageIdx-1];
                 }
                 else {
                     obj.prev = Sate.pageDescriptor(obj.prev);
@@ -62,7 +62,7 @@ module.exports = function() {
                 }
 
                 if (currPageIdx < seq.length -1 && !obj.next) {
-                    obj.next = seq[currPageIdx+1].descriptor();
+                    obj.next = seq[currPageIdx+1];
                 }
                 else {
                     obj.next = Sate.pageDescriptor(obj.next);

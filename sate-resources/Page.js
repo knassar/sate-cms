@@ -131,7 +131,7 @@ function Page(id, props, parent) {
             isRoot: (id == Sate.currentSite.config.rootPage)
         });
 
-    newPage.compile = function(withMetrics, complete) {
+    newPage.compile = function(complete) {
         var self = this;
         flow.exec(
             function() {
@@ -154,6 +154,7 @@ function Page(id, props, parent) {
                 if (date) {
                     self.date = date;
                     self.create = date;
+                    self.showStats = true;
                     this.apply();
                 }
                 else {
@@ -178,6 +179,31 @@ function Page(id, props, parent) {
                 processPageContent(self, data, this);
             },
             function() {
+                if (self.type == Sate.PageType.Index && self.subPages) {
+                    if (self.compiledPartials.content == "") {
+                        self.compiledPartials.content = self.compiledPartials.indexPageContent;
+                    }
+                    
+                    if (self.articles) {
+                        self.articles = self.articles.map(function(descr) {
+                            return Sate.pageDescriptor(descr);
+                        });
+                    }
+                    else {
+                        self.articles = [];
+                        for (var p in self.subPages) {
+                            if (self.subPages.hasOwnProperty(p)) {
+                                self.articles.push(self.subPages[p].descriptor());
+                            }
+                        }
+                    }
+                    if (this.articleSort) {
+                        this.articles.sort(this.articleSort);
+                    }
+                }
+                this.apply();
+            },
+            function() {
                 self.isCompiling = false;
                 complete.apply();
             }
@@ -188,60 +214,6 @@ function Page(id, props, parent) {
     };
     newPage.hasIntro = function() {
         return (this.compiledPartials.intro && this.compiledPartials.intro.length > 0);
-    };
-    newPage.composeArticleDigest = function(withMetrics, complete) {
-        var self = this;
-        
-        flow.exec(
-            function() {
-                if (self.type == Sate.PageType.Index && self.compiledPartials.content == "" && self.subPages) {
-                    self.compiledPartials.content = self.compiledPartials.indexPageContent;
-                    if (!self.articles) {
-                        self.articles = [];
-                        for (var p in self.subPages) {
-                            if (self.subPages.hasOwnProperty(p)) {
-                                self.articles.push(self.subPages[p].url);
-                            }
-                        }
-                    }
-                    this.apply();
-                }
-                else {
-                    complete();
-                }
-            },
-            function() {
-                var count = 0;
-                for (var p in self.articles) {
-                    if (self.articles.hasOwnProperty(p)) {
-                        var subPage = Sate.currentSite.pageForPath(self.articles[p]);
-                        subPage.resolvePlugins(withMetrics, this.MULTI(p));
-                        count++;
-                    }
-                }
-                if (count == 0) {
-                    this.apply();
-                }
-            },
-            function() {
-                var composedArticles = [];
-                for (var p in self.articles) {
-                    if (self.articles.hasOwnProperty(p)) {
-                        var subPage = Sate.currentSite.pageForPath(self.articles[p]);
-                        composeArticleIntroForIndexPage(self, subPage);
-                        composedArticles.push(subPage);
-                    }
-                }
-                self.articles = composedArticles;
-                if (self.articleSort) {
-                    self.articles.sort(self.articleSort);
-                }
-                this.apply();
-            },
-            function() {
-                complete();
-            }
-        );
     };
     newPage.eachSubpage = function(method, recurseSubpages) {
         if (this.subPages) {
@@ -257,6 +229,13 @@ function Page(id, props, parent) {
     };
     newPage.hasSubpages = function() {
         return this.subPages.length > 0;
+    };
+    newPage.closestPassingTest = function(test) {
+        var page = this;
+        while(page && !test(page)) {
+            page = page.parent;
+        }
+        return page;
     };
     newPage.classesString = function() {
         if (this.classes.filter) {
@@ -353,7 +332,7 @@ function Page(id, props, parent) {
             }
         });
     };
-    newPage.resolvePlugins = function(withMetrics, complete) {
+    newPage.resolvePlugins = function(complete) {
         pluginsResolver.resolve(this, complete);
     };
     newPage.pluginById = function(pluginId) {
@@ -413,11 +392,23 @@ function Page(id, props, parent) {
         }
         return p;
     };
+    
+    newPage.prepareIndexArticlesForRender = function(complete) {
+        this.articles = this.articles.map(function(descr) {
+            var subPage = Sate.currentSite.pageForPath(descr.url);
+            composeArticleIntroForIndexPage(this, subPage);
+            return subPage;
+        }, this);
+    };
+    
     newPage.render = function() {
         this.mergeStyles();
         this.mergeScripts();
         this.classes = this.classesString();
         this.deployRevision = '?v='+ new Date().getTime();
+        if (this.type == Sate.PageType.Index && util.isArray(this.articles)) {
+            this.prepareIndexArticlesForRender();
+        }
         var html = Mustache.render(this.templates[this.template], this, this.compiledPartials);
         return html;
     };

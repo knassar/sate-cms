@@ -64,7 +64,7 @@ function Docs() {
                     },
                     function() {
                         process.chdir(self.args.docsTargetPath);
-                        self.site.compile(true, this);
+                        self.site.compile(this);
                     },
                     function() {
                         Sate.Log.logAction("starting server...", 0);

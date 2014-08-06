@@ -82,7 +82,7 @@ function Deploy() {
                         this.apply();
                     },
                     function(err) {
-                        self.site.compile(true, this);
+                        self.site.compile(this);
                     },
                     function() {
                         var sourcePathMask = fs.realpathSync(self.args.sitePath);

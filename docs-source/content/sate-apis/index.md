@@ -1,6 +1,6 @@
 {
     "name": "Sate APIs",
-    "articleSort": [
+    "articles": [
         "/sate-apis/developing-plugins",
         "/sate-apis/the-sate-lifecycle"
     ],

@@ -23,7 +23,7 @@ function Develop() {
                 self = this;
                 flow.exec(
                     function() {
-                        self.site.compile(true, this);
+                        self.site.compile(this);
                     },
                     function() {
                         Sate.Log.logAction("starting server...", 0);
