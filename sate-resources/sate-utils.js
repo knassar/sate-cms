@@ -55,10 +55,17 @@ module.exports = {
     ensurePath: function(filepath) {
         var fs = require('fs'),
             path = require('path');
-            
+
+		if (fs.existsSync(filepath)) {
+			return;
+		}
+		
         var pathParts = filepath.split('/');
         
         var check = pathParts.shift();
+		if (check == '.' || check == '..') {
+			check = path.join(check, pathParts.shift());
+		}
         if (check.length > 0 && !fs.existsSync(check)) {
             fs.mkdirSync(check);
         }

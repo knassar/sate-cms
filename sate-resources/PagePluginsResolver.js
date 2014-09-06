@@ -127,7 +127,11 @@ function PagePluginsResolver() {
             function(plugin, idx) {
                 resolvePlugin(plugin, resolvedPlugins, page, this);
             },
-            function(error, newVal) {},
+            function(error, newVal) {
+				if (error) {
+	            	Sate.Log.logError(error, 1);
+				}
+            },
             function() {
                 page.plugins = resolvedPlugins;
                 complete.apply();

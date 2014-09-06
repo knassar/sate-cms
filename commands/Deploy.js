@@ -54,7 +54,7 @@ function Deploy() {
                 self = this;
                 flow.exec(
                     function() {
-                        self.site.parseJSON(true, this);
+                        self.site.parseJSON(this);
                     },
                     function() {
                         var buildLbl = self.site.config.buildDirName;
@@ -71,6 +71,10 @@ function Deploy() {
                         fs.readdir(self.args.targetPath, this);
                     },
                     function(err, targetFiles) {
+						if (err) {
+							Sate.utils.ensurePath(self.args.targetPath);
+						}
+						
                         if (!err && targetFiles.length > 0 && !self.args.overwrite) {
                             if (self.args.clean) {
                                 cleanDir(self.args.targetPath);
@@ -81,7 +85,7 @@ function Deploy() {
                         }
                         this.apply();
                     },
-                    function(err) {
+                    function() {
                         self.site.compile(this);
                     },
                     function() {
