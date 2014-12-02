@@ -15,7 +15,7 @@
     "flow": "latest",
     "node.extend": "latest",
     "greatjson": "latest",
-    "less": "latest",
+    "less": "1.x",
     "cli-color": "latest"
   },
   
