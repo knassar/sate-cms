@@ -57,11 +57,12 @@ var resolvePlugin = function(pluginData, resolvedPlugins, page, complete) {
                     page.addScript(deployPluginScriptURL);
                 }
                 else {
+					var linkPath = pluginPath.split('/').reverse().splice(0,3).reverse().join('/');
                     for (var s=0; s < plugin.stylesheets.length; s++) {
-                        page.addStylesheet('/'+path.join(pluginPath, plugin.stylesheets[s]));
+                        page.addStylesheet('/'+path.join(linkPath, plugin.stylesheets[s]));
                     }
                     for (var s=0; s < plugin.scripts.length; s++) {
-                        page.addScript('/'+path.join(pluginPath, plugin.scripts[s]));
+                        page.addScript('/'+path.join(linkPath, plugin.scripts[s]));
                     }
                 }
                 if (plugin.id) {
