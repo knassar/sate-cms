@@ -83,7 +83,7 @@
     // Command aliases
     Sate.Command.build = Sate.Command.deploy;
     Sate.Command.new = Sate.Command.create;
-    
+    Sate.Command.dev = Sate.Command.develop;
     
 
     // default command
