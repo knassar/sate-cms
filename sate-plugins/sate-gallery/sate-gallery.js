@@ -2,7 +2,7 @@ if (!Sate) var Sate = {};
 $(function() {
     (function() {
         Sate.Gallery = (function() {
-            var $viewer = $('<div id="sateGalleryHeroViewer"><div class="bg"></div><div class="images"><img class="hero-a"/><img class="hero-b"/></div><a class="nav close">&times; close</a><a class="nav prev">&lsaquo; previous</a><a class="nav next">next &rsaquo;</a><div id="galleryTitle"></div></div>').appendTo($('body')),
+            var $viewer = $('<div id="sateGalleryHeroViewer"><div class="bg"></div><div class="images"><img class="hero-a"/><img class="hero-b"/></div><div id="galleryTitle"></div><a class="nav close">&times; close</a><a class="nav prev">&lsaquo; previous</a><a class="nav next">next &rsaquo;</a></div>').appendTo($('body')),
                 $galleries = $('ul.sate-gallery'),
                 $imgCarrier = $viewer.children('div.images'),
                 $imgs = $galleries.find('li.thumbnail > img'),

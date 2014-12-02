@@ -47,6 +47,8 @@ module.exports = function() {
         }
     };
     
+	var pathToSources;
+	
     var generateThumbnail = function(thumbnailPath, handlerOrGallery, complete) {
         loadIM();
 
@@ -63,9 +65,8 @@ module.exports = function() {
             gallery = handlerOrGallery.galleries[galleryId];
         }
 
-        var imagePath = './'+pathParts.join('/');
-        thumbnailPath = path.join('.', thumbnailPath);
-        
+        var imagePath = path.join(pathToSources, pathParts.join('/'));
+        thumbnailPath = path.join(pathToSources, thumbnailPath);//path.join('.', thumbnailPath);
         Sate.utils.ensurePath(thumbnailPath);
         im.resize({
             srcPath: imagePath,
@@ -174,7 +175,8 @@ module.exports = function() {
                 this(cleanPath(gallery.imagesPath));
             },
             function(dir) {
-                traverseImages(gallery, localPath(dir), this);
+		        dir = path.join(pathToSources, dir.replace(/^[\/\.]*/m, ''));
+                traverseImages(gallery, dir, this);
             },
             function() {
                 if (gallery.generateThumbnailsOnDemand === true) {
@@ -226,17 +228,13 @@ module.exports = function() {
     };
 
     var cleanPath = function(path) {
-        return path.replace(/^[\/\.]*/m, '/');
-    };
-
-    var localPath = function(path) {
-        return path.replace(/^[\/\.]*/m, './');
+        return path.replace(pathToSources, '/').replace(/^[\/\.]*/m, '/');
     };
 
     var imageEntryForHero = function(hero, thumbBaseURL) {
         return {
             heroSrc: cleanPath(hero),
-            thumbSrc: '/' + path.join(thumbBaseURL, hero)
+            thumbSrc: '/' + path.join(thumbBaseURL, hero.replace(pathToSources, ''))
         };
     };
 
@@ -250,7 +248,7 @@ module.exports = function() {
 
     var plg = new Sate.Plugin({
         type: 'sate-gallery',
-        version: '0.8.2',
+        version: '0.8.5',
         thumbnail: SateGalleryPluginDefaultThumbnailParams,
         contentPath: '',
         thumbnailsPath: "gallery-thumbs",
@@ -259,6 +257,8 @@ module.exports = function() {
         heroes: [],
         generateThumbnailsOnDemand: true,
         compile: function(props, page, complete) {
+			pathToSources = fs.realpathSync(Sate.currentSite.sitePath);
+			
             Sate.chain.inPlace(this, props);
             if (!this.id) {
                 this.id = Sate.utils.md5(this.imagesPath);
@@ -311,7 +311,6 @@ module.exports = function() {
                     });
                 }
             }
-            
             if (obj.title) {
                 obj.galleryTitle = obj.title;
             }

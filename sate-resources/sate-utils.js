@@ -61,8 +61,11 @@ module.exports = {
 		}
 		
         var pathParts = filepath.split('/');
-        
+
         var check = pathParts.shift();
+		if (check.length == 0) {
+			check = '/'+pathParts.shift();
+		}
 		if (check == '.' || check == '..') {
 			check = path.join(check, pathParts.shift());
 		}
