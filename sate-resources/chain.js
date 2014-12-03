@@ -32,9 +32,15 @@ var copy = function(a) {
 };
 
 var uniqueArray = function(a) {
-    var u = [];
-    for (var i in a) {
-        if (u.indexOf(a[i]) == -1) {
+    var u = [],
+		k = [],
+		j = a.map(function(o) {
+			return JSON.stringify(o);
+		});
+	
+    for (var i in j) {
+        if (k.indexOf(j[i]) == -1) {
+			k.push(j[i]);
             u.push(a[i]);
         }
     }
