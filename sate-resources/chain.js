@@ -35,7 +35,12 @@ var uniqueArray = function(a) {
     var u = [],
 		k = [],
 		j = a.map(function(o) {
-			return JSON.stringify(o);
+			try {
+				return JSON.stringify(o);
+			}
+			catch (e) {
+				return o.toString();
+			}
 		});
 	
     for (var i in j) {
