@@ -20,12 +20,16 @@ function PageContentParser() {
         }
     }
 
+	var escapeMustacheForMarkdown = function(content) {
+		return content.replace(/\{\{\>/g, '{{\\>');
+	};
+
     var parsedContent = function(content, page) {
         if (page.parser == Sate.Parser.HTML) {
             return content;
         }
         else if (page.parser == Sate.Parser.Markdown) {
-            return markdown(content);
+            return markdown(escapeMustacheForMarkdown(content));
         }
         else {
             return content;
