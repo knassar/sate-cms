@@ -4,15 +4,15 @@
 * Use like: {{plugin-sate-gallery}}
 */
 
-var foundIMBins = false;
 // verify that ImageMagick dependency is installed
-if (!foundIMBins) {
+if (!Sate.configForPlugin('sate-gallery').foundIMBins) {
     var exec = require('child_process').exec;
     exec('convert -version', function(er, stdout, stderr) {
         if (stdout.toString().indexOf('ImageMagick') > -1) {
             var matches = /ImageMagick [\S]+/.exec(stdout.toString());
             if (matches && matches.length > 0) {
-                foundIMBins = true;
+                Sate.configForPlugin('sate-gallery').foundIMBins = true;
+				
                 return;
             }
         }
@@ -37,12 +37,15 @@ module.exports = function() {
         };
 
     var loadIM = function() {
-        if (foundIMBins) {
+        if (Sate.configForPlugin('sate-gallery').foundIMBins) {
             im = require(Sate.nodeModInstallDir+'imagemagick'); // node-imagemagick - https://github.com/rsms/node-imagemagick
         } else {
             // mock out im;
             im = {
-                resize: function() {}
+                resize: function(props, complete) {
+Sate.Log.logError("Couldn't find ImageMagick. Skipping thumbnail: " + props.srcPath, 2);
+complete.apply();
+                }
             };
         }
     };
@@ -66,7 +69,7 @@ module.exports = function() {
         }
 
         var imagePath = path.join(pathToSources, pathParts.join('/'));
-        thumbnailPath = path.join(pathToSources, thumbnailPath);//path.join('.', thumbnailPath);
+        thumbnailPath = path.join(pathToSources, thumbnailPath);
         Sate.utils.ensurePath(thumbnailPath);
         im.resize({
             srcPath: imagePath,
@@ -116,7 +119,7 @@ module.exports = function() {
                     return 200;
                 },
                 handleRequest: function(request, website, deliverResponse) {
-                    if (!foundIMBins) {
+                    if (!Sate.configForPlugin('sate-gallery').foundIMBins) {
                         deliverResponse('');
                     }
                     else {
@@ -201,7 +204,7 @@ module.exports = function() {
                 var count = 1;
                 flow.serialForEach(imagesToThumb, function(item, idx) {
                     var innerFlow = this;
-                    fs.stat(path.join('.', item.thumbSrc), function(err, stats) {
+                    fs.stat(path.join(pathToSources, item.thumbSrc), function(err, stats) {
                         if (err) {
                             generateThumbnail(item.thumbSrc, gallery, innerFlow);
                             count++;
@@ -211,6 +214,9 @@ module.exports = function() {
                         }
                     });
                 },function(error, newVal) {
+					if (error) {
+						console.log(error);
+					}
                     if (count % 3 == 0) {
                         process.stdout.write(".");
                     }
