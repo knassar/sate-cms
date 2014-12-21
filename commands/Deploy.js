@@ -89,6 +89,13 @@ function Deploy() {
                         self.site.compile(this);
                     },
                     function() {
+						var next = this;
+						// temporary hack because of a race condition when using this.MULTI()
+                        setTimeout(function() {
+							next.apply();
+						}, 200);
+                    },
+                    function() {
                         var sourcePathMask = fs.realpathSync(self.args.sitePath);
 
                         Sate.Log.logAction("Copying static files and directories", 0);
